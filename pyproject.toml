@@ -1,0 +1,55 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "parslet"
+version = "0.5.0"
+description = "Simplify Python workflows with a minimal DAG engine."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    {name = "Parslet Team", email = "team@example.com"},
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+keywords = ["workflow", "dag", "automation"]
+dependencies = [
+    "networkx",
+    "pillow",
+    "psutil",
+    "pydot",
+    "rich",
+]
+
+[project.scripts]
+parslet = "parslet.main_cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Kanegraffiti/Parslet"
+Documentation = "https://github.com/Kanegraffiti/Parslet/tree/main/docs"
+Source = "https://github.com/Kanegraffiti/Parslet"
+
+[project.optional-dependencies]
+dask = ["dask"]
+parsl = ["parsl"]
+
+[tool.setuptools]
+packages = {find = {include = ["parslet*"], exclude = ["termux", "use_cases", "tests"]}}
+[tool.black]
+line-length = 88
+
+[tool.flake8]
+max-line-length = 88
+exclude = ["__pycache__", ".git", ".pytest_cache", "build", "dist"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true

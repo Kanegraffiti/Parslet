@@ -1,0 +1,10 @@
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+.vscode/
+*.log
+Parslet_Results/
+checkpoint.json
+examples/assets/

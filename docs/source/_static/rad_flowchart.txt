@@ -1,0 +1,10 @@
+RAD Pipeline Flowchart Placeholder
+---------------------------------
+
+[input image] -> [TinyMeanModel]
+                [TinyStdModel]
+     \___________    |    _________/
+                 \__ v __/
+                   [agreement check]
+                   /             \
+            [diagnosis]     [review flag]

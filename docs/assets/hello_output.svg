@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="208" viewBox="0 0 800 208">
+<rect width="100%" height="100%" fill="black"/>
+<text x="10" y="16" font-family="monospace" font-size="14" fill="white">--- Output for entry future 1: &#x27;sum_results_765b6864&#x27; (Function: sum_results) ---</text>
+<text x="10" y="32" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;)   Status: SUCCESSFUL</text>
+<text x="10" y="48" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;)   Result: 100</text>
+<text x="10" y="64" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;) </text>
+<text x="10" y="80" font-family="monospace" font-size="14" fill="white">--- Task Execution Benchmarks (Direct Run) ---</text>
+<text x="10" y="96" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;)   Task: add_3a793c68 (add), Status: SUCCESS, Time: 0.5074s</text>
+<text x="10" y="112" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;)   Task: add_a9f49fbd (add), Status: SUCCESS, Time: 0.5079s</text>
+<text x="10" y="128" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;)   Task: square_9404bcc3 (square), Status: SUCCESS, Time: 0.5007s</text>
+<text x="10" y="144" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;)   Task: square_dd4f0ebe (square), Status: SUCCESS, Time: 0.5057s</text>
+<text x="10" y="160" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;)   Task: sum_results_765b6864 (sum_results), Status: SUCCESS, Time: 0.5068s</text>
+<text x="10" y="176" font-family="monospace" font-size="14" fill="white">13:32:46 - __main__ - [INFO] (&lt;module&gt;) </text>
+<text x="10" y="192" font-family="monospace" font-size="14" fill="white">--- Direct execution of hello.py finished ---</text>
+</svg>
