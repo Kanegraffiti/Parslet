@@ -38,10 +38,6 @@
 ## Introduction
 Parslet lets you describe tasks as Python functions and arrange them into Directed Acyclic Graphs (DAGs). It executes tasks in the right order, handles parallelism where possible and runs entirely offline. Perfect for small automation scripts or edge devices. When you need to scale out, the same tasks can be run under Parsl thanks to a lightweight bridge module.
 
-You can replace the default images with your own artwork by editing the files in
-`docs/assets/`. A short description of each asset and the recommended sizes can
-be found in [docs/assets/README.md](docs/assets/README.md).
-
 ## Features
 - **Simple decorators.** Turn functions into tasks with `@parslet_task`.
 - **Automatic dependencies.** Pass future results between tasks and let Parslet build the DAG.
