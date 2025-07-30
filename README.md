@@ -1,89 +1,160 @@
-<div id="top"></div>
+# Parslet   
+**Power-Aware, Android-Native Workflow Automation Framework**
 
-<p align="center">
-  <img src="docs/assets/parslet_banner.svg" alt="Parslet" width="70%" />
-</p>
+![Parsl-compatible](https://img.shields.io/badge/parsl-compatible-blue.svg)
+![Termux-Ready](https://img.shields.io/badge/termux-ready-brightgreen.svg)
+![License](https://img.shields.io/github/license/Kanegraffiti/Parslet)
 
-<p align="center">
-  <em>Simplify Python workflows with a minimal DAG engine.</em>
-</p>
 
-<p align="center">
-  <a href="https://github.com/Kanegraffiti/Parslet/actions/workflows/ci.yml">
-    <img src="https://github.com/Kanegraffiti/Parslet/actions/workflows/ci.yml/badge.svg" alt="CI Status" />
-  </a>
-  <a href="https://github.com/Kanegraffiti/Parslet/actions/workflows/docs.yml">
-    <img src="https://github.com/Kanegraffiti/Parslet/actions/workflows/docs.yml/badge.svg" alt="Docs Status" />
-  </a>
-  <img src="https://img.shields.io/badge/version-0.5.0-blue?style=for-the-badge" alt="Version" />
-  <img src="https://img.shields.io/badge/python-3.11+-blue?style=for-the-badge" alt="Python Versions" />
-  <a href="https://opensource.org/license/mit/">
-    <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License" />
-  </a>
-</p>
+Parslet is a lightweight, offline-friendly workflow automation engine inspired by [Parsl](https://parsl-project.org/) and optimized for constrained environments like Android tablets, solar-powered stations, and remote telecom sites.  
+It supports DAG-based execution, dynamic plugin loading, offline failover strategies, and compatibility layers for both Parsl and Dask.
 
-<img src="https://raw.githubusercontent.com/eli64s/readme-ai/main/docs/docs/assets/svg/line-gradient.svg" width="100%" height="3px" alt="line" />
+**Built with Africa in mind — scalable everywhere.**
 
-## Quick Links
-- [Introduction](#introduction)
-- [Features](#features)
-- [Quickstart](#quickstart)
-- [Optional Extras](#optional-extras)
-- [Examples](#examples)
-- [Contributing](#contributing)
-- [License](#license)
 
-<img src="https://raw.githubusercontent.com/eli64s/readme-ai/main/docs/docs/assets/svg/line-gradient.svg" width="100%" height="3px" alt="line" />
+## Live Documentation
 
-## Introduction
-Parslet lets you describe tasks as Python functions and arrange them into Directed Acyclic Graphs (DAGs). It executes tasks in the right order, handles parallelism where possible and runs entirely offline. Perfect for small automation scripts or edge devices. When you need to scale out, the same tasks can be run under Parsl thanks to a lightweight bridge module.
+[View the Docs](https://kanegraffiti.github.io/Parslet/)
 
-## Features
-- **Simple decorators.** Turn functions into tasks with `@parslet_task`.
-- **Automatic dependencies.** Pass future results between tasks and let Parslet build the DAG.
-- **Thread-based execution.** Parallelize independent tasks with adaptive worker counts.
-- **Battery aware.** Optional scheduler reduces workers on low-power systems.
-- **Exportable DAGs.** Output to DOT or PNG for easy visualization.
-- **Compatibility adapters.** Interoperate with Parsl and Dask using
-  `convert_task_to_parsl` and `parslet.compat.dask_adapter`. The
-  `parslet convert` command translates existing workflows. See the
-  [docs](docs/getting_started.md#converting-existing-parsl-or-dask-workflows)
-  for details.
-- **Hybrid execution.** Combine local runs with Parsl-managed tasks via `execute_hybrid`.
-- **Federated relay.** Use `FileRelay` to copy results to a remote gateway.
+Published via GitHub Pages using Sphinx.
+
 
 ## Quickstart
-Clone this repository and install Parslet in editable mode:
+
+Clone and install:
+
 ```bash
 git clone https://github.com/Kanegraffiti/Parslet.git
 cd Parslet
-pip install -e .
-parslet run examples/hello.py --battery-mode
+pip install .
 ```
-The last command runs a tiny demo workflow with battery-saver settings.
 
-## Optional Extras
-Install compatibility packages as needed:
+Run a minimal workflow:
+
+```python
+from parslet import Task, DAG
+
+def hello(name):
+    return f"Hello, {name}!"
+
+greet = Task(fn=hello, inputs=["Parsl"])
+dag = DAG(tasks=[greet])
+dag.run()
+```
+
+---
+
+## Deep Tech Use Case: Power + Telecom Innovation
+
+> Submitted under the **IHS Challenge category** for Africa Deep Tech Challenge 2025.
+
+**Highlights:**
+
+- **Solar Scheduling DAGs**  
+  Automate energy distribution based on sunlight, battery state, and load priority.
+
+- **Remote Monitoring for Power Infrastructure**  
+  Build intelligent pipelines for telecom towers using battery, inverter, and grid metrics.
+
+- **Failover & Power-Conscious Mode**  
+  Pause/resume DAGs based on low battery conditions to protect uptime.
+
+- **Hybrid Orchestration**  
+  Relay DAGs between mobile and cloud intelligently via plugin adapters.
+
+ See examples: [`/use_cases`](./use_cases)  
+ Related doc section: [Challenge](https://kanegraffiti.github.io/Parslet/challenge.html)
+
+
+## Features
+
+- Offline-first CLI and plugin architecture
+- Termux + Android support out-of-the-box
+- Power-aware and voltage-triggered DAG pausing
+- Hybrid cloud/mobile orchestration plugins
+- Export compatibility with Parsl and Dask
+- SVG flowchart auto-generation from DAGs
+- Strong test suite and linting
+
+
+## Docs & Architecture
+
+- [ Full Documentation](https://kanegraffiti.github.io/Parslet/)
+- [ Architecture Overview](https://kanegraffiti.github.io/Parslet/architecture.html)
+- [ CLI Commands & Usage](https://kanegraffiti.github.io/Parslet/usage.html)
+- [ Benchmark Results](https://kanegraffiti.github.io/Parslet/benchmark_results.html)
+
+To rebuild the docs locally:
+
 ```bash
-pip install parslet[dask]
-pip install parslet[parsl]
+cd docs
+make html
 ```
 
-## Examples
-Explore the `examples/` folder for small demos like image processing and text cleaning. Some examples such as `mobile_edge_inference` and `multi_ai_diagnosis` will try to load lightweight models from [Hugging Face](https://huggingface.co/) using the `transformers` library. If the models cannot be downloaded (e.g. in an offline environment) these scripts gracefully fall back to deterministic stub behaviour. Real-world use cases live in `use_cases/`.
-See `docs/project_report.md` for a detailed project report including sample benchmarks.
+Then open `docs/build/html/index.html`.
 
-## Testing
-Install the development requirements and run the unit tests:
-```bash
-pip install -r requirements.txt
-pytest
-```
-All tests should pass. Running `flake8` ensures the code style matches the project's guidelines.
 
 ## Contributing
-Pull requests are welcome! Please format with `black` and run `flake8` and `pytest` before submitting.
+
+We welcome contributions!
+
+To get started:
+
+```bash
+# Install dependencies
+pip install -r docs/requirements.txt
+make install-dev
+
+# Run tests
+make test
+```
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for coding guidelines.
+
+
+## PyPI Installation (Coming Soon)
+
+Once published:
+
+```bash
+pip install parslet
+```
+
+
+## Run All Examples
+
+To run all examples:
+
+```bash
+python run_all_examples.py
+```
+
+Tested on:
+- Android 12/14 via Termux
+- Linux Mint XFCE (July 2025)
+
+
+## Project Structure
+
+```
+parslet/            → Core DAG engine, hybrid plugins, scheduler
+docs/               → Sphinx docs + visuals
+examples/           → Minimal and advanced use cases
+tests/              → Unit tests
+use_cases/          → Real-world deployment DAGs
+termux/             → CLI helpers for Android
+scripts/            → Automation tools
+```
+
 
 ## License
-Parslet is distributed under the [MIT License](LICENSE).
 
+This project is licensed under the MIT License.  
+See [LICENSE](./LICENSE) for full details.
+
+
+## Acknowledgements
+
+Built by [Kelechi Nwankwo](https://github.com/Kanegraffiti) during the **Africa Deep Tech Challenge 2025**  
+Inspired by [Parsl](https://github.com/Parsl/parsl)  
+Gratitude to the Outreachy community and the Parsl core maintainers.
