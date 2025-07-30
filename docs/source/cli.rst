@@ -1,56 +1,52 @@
-CLI
-===
+Your Remote Control: The Parslet CLI
+=====================================
 
-The ``parslet`` command line interface is the main entry point for running
-workflows.  It loads your workflow module, builds the DAG and executes the
-tasks.  Most options mirror functionality described in :doc:`usage` and can be
-combined freely.
+The ``parslet`` command is your remote control for running your recipes. It's how you tell Parslet what to do. You use it right from your terminal.
 
-Use ``parslet run <workflow.py>`` to start a run. You can also execute a DAG
-saved to a ``.dag`` or ``.json`` file with ``parslet run --dag path`` and
-create such a file using ``parslet export --dag path <workflow.py>``.
+The main command is simple:
 
-Common options
---------------
+.. code-block:: bash
 
-``--max-workers <N>``
-    Override the number of worker threads.  If omitted, Parslet chooses a value
-    based on CPU cores and available RAM.
+   parslet run <your_recipe.py>
+
+This tells Parslet to find your recipe, build the flowchart, and run all the steps. But the remote control has a bunch of other cool buttons (we call them options or flags) that you can use!
+
+The Buttons on Your Remote Control
+----------------------------------
+
+Here are some of the most common buttons you can press:
+
+``--max-workers <Number>``
+    Lets you tell Parslet exactly how many "assistant chefs" to use. If you don't use this, Parslet will decide for you based on your device's power.
 
 ``--battery-mode``
-    Reduce concurrency to conserve power.  When used without
-    ``--max-workers`` this often results in a single worker thread.  See
-    :doc:`battery_mode` for more about how the scheduler reacts to low battery.
+    This is the **power-saver button**. It tells Parslet to be gentle on your battery. See :doc:`battery_mode` to learn more.
 
 ``--monitor``
-    Start a lightweight web dashboard on the given port to monitor progress.
+    Want to watch your recipe as it runs? This button starts up a little dashboard so you can see your tasks' progress in real-time.
 
 ``--failsafe-mode``
-    If tasks hit resource limits they are retried serially in a fallback executor.
+    If a task fails because your device runs out of resources, this button tells Parslet to try again in a slower, safer way.
 
-``--checkpoint-file <FILE>``
-    Save completed tasks so interrupted runs can continue.
+``--checkpoint-file <your_file.json>``
+    This is the **"save my progress" button**. It's a lifesaver for long recipes.
 
 ``--simulate``
-    Build the DAG and display an ASCII representation together with
-    current RAM and battery levels. No tasks are executed.
+    This is the "preview" button. It will show you the flowchart for your recipe and check your device's RAM and battery, but it won't actually run any of the tasks. It's great for double-checking your work.
 
 ``--export-dot`` / ``--export-png``
-    Export the DAG for visualization.  See :doc:`exporting` for details.
+    These buttons tell Parslet to take a picture of your recipe's flowchart for you. See :doc:`exporting` for more details.
 
 ``--log-level`` and ``--verbose``
-    Control console logging verbosity. If the `Rich` library is installed the
-    CLI displays colourful tables of task benchmarks.
+    These control how much information Parslet prints to the screen while it's working. If you have the `Rich` library installed, it will even show you a beautiful, colorful report card for your tasks.
 
-Example
--------
+An Example
+----------
 
-Run the image filter example and export a PNG of the DAG:
+Let's run our photo filter recipe and also ask for a picture of the flowchart.
 
 .. code-block:: bash
 
    parslet run examples/image_filter.py --export-png dag.png
 
-For a full list of options run ``parslet run --help``.  You can also consult
-:doc:`tasks` for how to define functions the CLI can execute. The ``export``
-subcommand has its own help text available via ``parslet export --help``.
+Want to see all the buttons? Just type ``parslet run --help`` into your terminal.

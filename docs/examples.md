@@ -1,156 +1,84 @@
-# Parslet Case Studies
+# Parslet Recipes: Real-World Examples
 
-This page highlights a few small workflows that demonstrate how Parslet can be used in practice. Each example ships with the repository under `examples/`.
+The best way to learn is by doing! We've cooked up a bunch of simple "recipes" (what we call workflows or case studies) to show you what Parslet can do in the real world.
 
-## 1. Hello Workflow
+You can find all of these in the `examples/` folder.
 
-File: `examples/hello.py`
+### 1. The "Hello World" Recipe
+**File:** `examples/hello.py`
 
-This introductory workflow consists of three small tasks that perform basic arithmetic. It illustrates how to declare tasks, link them through dependencies and run the resulting DAG using the CLI.
+This is the perfect place to start. It's a super simple recipe that does some basic math. It's great for learning how to:
+- Create a task.
+- Connect tasks to each other.
+- Run a recipe from the command line.
 
-Run it with:
-
+**Try it:**
 ```bash
 parslet run examples/hello.py
 ```
 
-## 2. Image Processing Pipeline
+### 2. The Photo Filter Recipe
+**File:** `examples/image_filter.py`
 
-File: `examples/image_filter.py`
+This recipe shows you how to use Parslet to edit a photo. It's a mini-pipeline that will:
+1. Load a picture.
+2. Make it black and white.
+3. Add a blur effect.
+4. Save the new picture.
 
-This case study shows how Parslet can orchestrate image manipulation using the Pillow library. The pipeline loads an image, converts it to grayscale, blurs it and then writes the result back to disk. Because each step is a task, operations that do not depend on one another can run in parallel.
+Because each step is a separate task, Parslet can run some of them at the same time to be more efficient!
 
-```
-load_image --> to_grayscale --> blur_image --> save_image
-```
-
-Use `--export-png` to visualize the DAG:
-
+**Try it (and see a picture of your recipe!):**
 ```bash
 parslet run examples/image_filter.py --export-png pipeline.png
 ```
+This will create a cool diagram of your workflow called `pipeline.png`.
 
-## 3. Text Cleaning and Analysis
+### 3. The Text Cleaner-Upper Recipe
+**File:** `examples/text_cleaner.py`
 
-File: `examples/text_cleaner.py`
+This is a great example of a data-cleaning recipe that you can run completely offline. It takes a messy text file and:
+1. Makes everything lowercase.
+2. Removes all the punctuation.
+3. Counts how many times each word appears.
+4. Saves the result as a clean JSON file.
 
-This workflow ingests plain text, removes punctuation, performs basic normalization and counts word frequencies. The final counts are stored as JSON. It is a good template for building data-cleaning pipelines that run entirely offline.
-
-Execute it with:
-
+**Try it:**
 ```bash
 parslet run examples/text_cleaner.py
 ```
 
-## 4. RAD Pipeline
+### 4. The Mini-Hospital AI Recipe
+**File:** `examples/rad_pipeline.py`
 
-File: `examples/rad_pipeline.py`
+This recipe shows off our **RAD by Parslet** idea. It's a mini-pipeline for a doctor in a remote clinic. It runs two small AI models on a medical image and saves the diagnosis.
 
-This workflow showcases the **RAD by Parslet** pipeline used on edge devices. It runs two lightweight models on an image and stores the metadata and diagnosis.
-
+**Try it:**
 ```bash
 parslet run examples/rad_pipeline.py
 ```
 
-## 5. Video Frame Extraction
+### 5. The Video Frame Grabber
+**File:** `examples/video_frames.py`
 
-File: `examples/video_frames.py`
+This recipe uses a popular tool called OpenCV to pull out all the individual frames (pictures) from a video file and count them.
 
-Extracts frames from a video file using OpenCV (if installed) and counts them.
-
+**Try it:**
 ```bash
 parslet run examples/video_frames.py --video my_video.mp4
 ```
+(You'll need to have a video file named `my_video.mp4` for this to work).
 
-## 6. CSV Cleaning and Classification
+---
 
-File: `examples/csv_clean_classify/workflow.py`
+We have many more examples for you to explore, from cleaning CSV files to simulating sensor data on a tiny computer. The best way to learn is to open up the files, read the simple Python code, and see how the `ParsletFuture` "IOUs" are passed from one task to the next.
 
-Loads a local CSV file, removes empty rows, classifies them with a simple rule
-and writes the cleaned data to a new CSV.
+### Want to Run Them All at Once?
 
-```bash
-parslet run examples/csv_clean_classify/workflow.py
-```
-
-## 7. Edge Sensor Processing
-
-File: `examples/edge_mcu_sensor_processing.py`
-
-Simulates sensor readings on a microcontroller, smooths the data, detects
-anomalies and stores diagnostic logs.
-
-```bash
-parslet run examples/edge_mcu_sensor_processing.py
-```
-
-## 8. Mobile Edge Inference
-
-File: `examples/mobile_edge_inference.py`
-
-Runs a lightweight image classification model offline. If the optional
-`transformers` package is available it will be used; otherwise a fallback result
-is produced.
-
-```bash
-parslet run examples/mobile_edge_inference.py
-```
-
-## 9. Multi-AI Diagnosis
-
-File: `examples/multi_ai_diagnosis.py`
-
-Combines outputs from two models to analyze a medical scan. The final diagnosis
-is only accepted if the models agree, otherwise a human review flag is written.
-
-```bash
-parslet run examples/multi_ai_diagnosis.py
-```
-
-## 10. Photo Enhancer
-
-File: `examples/photo_enhancer/workflow.py`
-
-Sharpens a photo with Pillow. If the device battery is low the workflow waits
-briefly before proceeding.
-
-```bash
-parslet run examples/photo_enhancer/workflow.py
-```
-
-## 11. RAD Parslet DAG
-
-File: `examples/rad_parslet/rad_dag.py`
-
-Wrapper around the radiology helper utilities. It runs two tiny models on an
-image and saves metadata, diagnosis and a review flag.
-
-```bash
-parslet run examples/rad_parslet/rad_dag.py
-```
-
-## 12. Telecom Tower Power Monitor
-
-File: `use_cases/telecom_power_monitor.py`
-
-Analyzes power logs from a remote telecom tower to forecast maintenance needs.
-The workflow computes average battery level, generator runtime and solar output
-to recommend actions like battery replacement or generator inspection. It is
-designed to run offline at the tower site.
-
-```bash
-parslet run use_cases/telecom_power_monitor.py
-```
-
-These examples are intentionally small so they remain approachable for newcomers. Inspect the source code for each example to see how tasks pass their results to subsequent tasks using `ParsletFuture` objects.
-
-## Running all examples
-
-A helper script `run_all_examples.py` executes several workflows sequentially and prints both their results and timing information.
+We made a special script that runs all the main examples for you and prints out their results and how long they took to run.
 
 ```bash
 python run_all_examples.py
 ```
 
-Any example requiring optional dependencies will be skipped automatically so the rest can still run.
-\nExample outputs can be found in `docs/assets/example_logs/`.
+Don't worry if you don't have all the extra libraries installed. The script is smart enough to skip any examples you don't have the tools for.

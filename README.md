@@ -1,160 +1,170 @@
-# Parslet
-**A lightweight workflow engine for offline-first and edge computing.**
+# Parslet: Your Pocket-Sized Workflow Assistant
+**A tiny tool for running automated to-do lists (we call them workflows) on your Python projects. It's built to work anywhere, especially on your phone.**
 
 ![Parsl-compatible](https://img.shields.io/badge/parsl-compatible-blue.svg)
 ![Termux-Ready](https://img.shields.io/badge/termux-ready-brightgreen.svg)
 ![License](https://img.shields.io/github/license/Kanegraffiti/Parslet)
 
-Parslet is a Python library for running automated workflows, especially in environments with limited power and unreliable internet. It allows you to define a series of tasks and the dependencies between them, and it executes them as efficiently as possible—even on a Raspberry Pi or an Android phone via Termux.
+### So, What is Parslet?
 
-**Built with Africa in mind—scalable everywhere.**
+Parslet is a tiny workflow engine built in Python. That means it's a tool that helps you automate a bunch of tasks in a specific order, especially on phones and devices that can’t run heavy-duty software. Think of it like a smart to-do list for your computer or phone, but instead of reminding you to do things, **it actually does them for you in the right order, automatically.**
 
-## Documentation
+Imagine this real-world example:
 
-**The best place to start is the new [Introduction to Parslet](https://kanegraffiti.github.io/Parslet/introduction.html).**
+You run a small juice business with your besty. Every morning you:
 
-The full documentation is published via GitHub Pages and includes a getting started guide, architecture overview, and more.
+1.  Wash the fruits
+2.  Peel them
+3.  Blend them
+4.  Pour into bottles
+5.  Label and store
 
-[**View the Docs**](https://kanegraffiti.github.io/Parslet/)
+Now imagine you could automate this entire process using a small robot. You just tell it the steps once, and it does them every morning, in order. You get to spend quality time with your besty.
 
-
-## Quickstart
-
-Clone and install:
-
-```bash
-git clone https://github.com/Kanegraffiti/Parslet.git
-cd Parslet
-pip install .
-```
-
-Create a file named `my_workflow.py`:
-
-```python
-from parslet import parslet_task, ParsletFuture
-from typing import List
-
-@parslet_task
-def say_hello(name: str) -> str:
-    return f"Hello, {name}!"
-
-@parslet_task
-def emphasize(text: str) -> str:
-    return f"{text.upper()}!"
-
-def main() -> List[ParsletFuture]:
-    # This workflow says hello, then emphasizes the greeting.
-    greeting = say_hello("Parslet")
-    emphasized_greeting = emphasize(greeting)
-    
-    # Return the final task's future
-    return [emphasized_greeting]
-```
-
-Run it from your terminal:
-
-```bash
-parslet run my_workflow.py
-```
+**That’s what Parslet does, but for software tasks.**
 
 ---
 
-## Use Cases & Features
+### What Kinds of Tasks Can It Handle?
 
-Parslet is ideal for running automated pipelines on edge devices.
+In a real-world tech setting, you could use Parslet to:
 
-**Key Features:**
+1.  Run a script to **collect data** from a website.
+2.  Then, **clean up** that messy data.
+3.  Then, **save** the clean data to a file.
+4.  Then, **back up** that file to a server.
+5.  Finally, **send you an email** confirming the job is done.
 
-- **Offline-First:** No cloud connection required. Workflows run locally.
-- **Power-Aware:** A `--battery-mode` reduces concurrency to save power.
-- **Resource-Conscious:** Adapts to available CPU and memory.
-- **Parsl & Dask Compatible:** Includes tools to convert workflows from Parsl or Dask syntax.
-- **Termux Ready:** Designed and tested for use on Android devices.
+All of this, in the right order, without you needing to babysit it.
 
-See the [`use_cases/`](./use_cases) and [`examples/`](./examples) directories for real-world applications like:
-- Analyzing telecom tower power logs.
-- Scheduling solar panel maintenance.
-- Running offline image classification for crop diagnosis.
+---
 
+### Why is Parslet Special?
 
-## Docs & Architecture
+Most tools like this are built for powerful servers in a data center. Parslet is different. It’s designed from the ground up to:
 
-- [Full Documentation](https://kanegraffiti.github.io/Parslet/)
-- [Architecture Overview](https://kanegraffiti.github.io/Parslet/architecture.html)
-- [CLI Commands & Usage](https://kanegraffiti.github.io/Parslet/usage.html)
-- [Benchmark Results](https://kanegraffiti.github.io/Parslet/benchmark_results.html)
+-   **Be Super Lightweight:** It works on a Raspberry Pi or even an Android phone.
+-   **Run in Termux:** It’s built and tested to work perfectly inside [Termux](https://termux.dev/en/), the command-line tool for Android.
+-   **Work Offline:** No internet? No problem. Your workflows will still run.
+-   **Empower Everyone:** It’s for students, creators, and developers in Africa and beyond who might not have a laptop but have a brilliant idea.
 
-To rebuild the docs locally:
+---
 
-```bash
-cd docs
-make html
-```
+### How Does It Work? (The "Magic")
 
-Then open `docs/build/html/index.html`.
+It uses something called a **DAG** (Directed Acyclic Graph), which is just a fancy way of saying:
 
+> “Step B only runs after Step A is done.”
 
-## Contributing
+You define these steps (we call them **tasks**) in a simple Python file. Parslet reads your file, understands the order, and handles the rest. It manages failures and runs everything as efficiently as possible.
 
-We welcome contributions!
+---
 
-To get started:
+## 🚀 Let's Get Started! (Quickstart)
 
-```bash
-# Install dependencies
-pip install -r docs/requirements.txt
-make install-dev
+Ready to try it? You can be up and running in less than a minute.
 
-# Run tests
-make test
-```
+1.  **Get the Code:**
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for coding guidelines.
+    First, you'll need to copy the project files to your device.
 
+    ```bash
+    git clone https://github.com/Kanegraffiti/Parslet.git
+    cd Parslet
+    ```
 
-## PyPI Installation (Coming Soon)
+2.  **Install It:**
 
-Once published:
+    Now, tell Python to install Parslet so you can use it from anywhere.
 
-```bash
-pip install parslet
-```
+    ```bash
+    pip install .
+    ```
 
+3.  **Create Your First "Recipe"**
 
-## Run All Examples
+    Create a new file called `my_first_workflow.py` and paste this in. This is your recipe, telling Parslet what to do.
 
-To run all examples:
+    ```python
+    from parslet import parslet_task, ParsletFuture
+    from typing import List
 
-```bash
-python run_all_examples.py
-```
+    # This is a "task." It's just a normal Python function
+    # with a special @parslet_task note for Parslet.
+    @parslet_task
+    def say_hello(name: str) -> str:
+        print(f"Task 1: Saying hello to {name}")
+        return f"Hello, {name}!"
 
-Tested on:
-- Android 12/14 via Termux
-- Linux Mint XFCE (July 2025)
+    # Here's a second task.
+    @parslet_task
+    def make_it_loud(text: str) -> str:
+        print("Task 2: Making the text loud!")
+        return f"{text.upper()}!"
 
+    # This is the main "recipe" function.
+    # Parslet looks for this to know how your tasks connect.
+    def main() -> List[ParsletFuture]:
+        # First, we tell Parslet to run the say_hello task.
+        # It doesn't run yet! It just gives us an "IOU" for the result.
+        greeting_iou = say_hello("Parslet")
+        
+        # Next, we give the "IOU" from the first task to the second task.
+        # This tells Parslet: "Wait for task 1 to finish before starting task 2."
+        loud_greeting_iou = make_it_loud(greeting_iou)
 
-## Project Structure
+        # We return the very last IOU. This tells Parslet, "We're done when this is done."
+        return [loud_greeting_iou]
+    ```
 
-```
-parslet/            → Core DAG engine, hybrid plugins, scheduler
-docs/               → Sphinx docs + visuals
-examples/           → Minimal and advanced use cases
-tests/              → Unit tests
-use_cases/          → Real-world deployment DAGs
-termux/             → CLI helpers for Android
-scripts/            → Automation tools
-```
+4.  **Run It!**
 
+    Now for the fun part. Tell Parslet to run your new recipe.
+
+    ```bash
+    parslet run my_first_workflow.py
+    ```
+
+You'll see the `print` statements from your tasks as they run, in the correct order!
+
+---
+
+## What Else Can It Do? (Features)
+
+Parslet is small, but it's packed with neat features for real-world use.
+
+-   **Works Offline:** Your automated recipes run even without an internet connection.
+-   **Saves Battery:** Use the special `--battery-mode` to tell Parslet to take it easy and conserve power.
+-   **Smart About Resources:** It automatically checks your device's CPU and memory to run smoothly without crashing.
+-   **Plays Well with Others:** If you ever move to a big server, Parslet has tools to convert your recipes to run on powerful systems like Parsl or Dask.
+-   **Made for Termux:** We use it and test it on Android phones, so you know it'll work.
+
+Want to see more? Check out the `use_cases/` and `examples/` folders for more advanced recipes!
+
+---
+
+## Want to Learn More? (Documentation)
+
+We've written down everything you need to know in a simple, friendly way.
+
+-   [**See All Features (Full Documentation)**](https://kanegraffiti.github.io/Parslet/)
+-   [**How It Really Works (Architecture)**](https://kanegraffiti.github.io/Parslet/architecture.html)
+-   [**The Remote Control (CLI Commands)**](https://kanegraffiti.github.io/Parslet/usage.html)
+
+---
+
+## Come Build With Us! (Contributing)
+
+We'd love your help making Parslet even better. It's easy to get started. Check out our [Contributing Guide](./CONTRIBUTING.md).
+
+---
 
 ## License
 
-This project is licensed under the MIT License.  
-See [LICENSE](./LICENSE) for full details.
-
+This project is licensed under the MIT License. See [LICENSE](./LICENSE) for the full text.
 
 ## Acknowledgements
 
-Built by [Kelechi Nwankwo](https://github.com/Kanegraffiti) during the **Africa Deep Tech Challenge 2025**  
-Inspired by [Parsl](https://github.com/Parsl/parsl)  
-Gratitude to the Outreachy community and the Parsl core maintainers.
+Built by [Kelechi Nwankwo](https://github.com/Kanegraffiti) for the **Africa Deep Tech Challenge 2025**.  
+Inspired by the powerful [Parsl](https://github.com/Parsl/parsl) project.  
+A big thank you to the Outreachy community and the Parsl maintainers.

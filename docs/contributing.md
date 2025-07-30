@@ -1,17 +1,25 @@
-# Contributing to Parslet Docs
+# Helping Out with the Docs
 
-Thank you for improving the documentation! To build the HTML docs locally run:
+Thank you for wanting to help make our documentation even better! Every little bit helps, and we appreciate you.
+
+### Seeing Your Changes
+
+Want to see what the documentation looks like with your changes? You can build the HTML pages right on your own machine. Just run this command from the main project folder:
 
 ```bash
 make -C docs html
 ```
 
-The rendered pages will appear under `docs/build/html`.
+After it's done, you can find the shiny new HTML pages in the `docs/build/html` folder. Just open the `index.html` file in your browser to see the result!
 
-To run the project's tests execute:
+### A Quick Check-Up
+
+Before you share your changes with us, it's always a good idea to run the project's tests to make sure everything is still working perfectly.
 
 ```bash
 pytest
 ```
 
-Please ensure all tests pass before submitting a pull request.
+This helps us keep the project healthy and happy.
+
+Thank you again for your help!

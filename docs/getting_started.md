@@ -1,79 +1,92 @@
-# Getting Started with Parslet
+# Getting Started: Your First Parslet Recipe
 
-> **New to Parslet?** For a more detailed explanation of what Parslet is and the problems it solves, please read the [Introduction to Parslet](./introduction.md) first.
+> **Are you brand new to Parslet?** We recommend reading our friendly [Introduction to Parslet](./introduction.md) first to get the big picture!
 
-This guide introduces the basics of installing Parslet and running your first workflow. Parslet is designed for offline-first environments but also includes a bridge to the Parsl runtime when you need to scale up to HPC resources.
+This guide will walk you through installing Parslet and creating your very first automated recipe (we call it a "workflow"). Let's get cooking!
 
-## Installation
+### Step 1: Getting Parslet on Your Device
 
-Clone the repository and install Parslet in editable mode:
+First things first, you need to get the Parslet code onto your computer or phone.
+
 ```bash
+# This copies the project from GitHub
 git clone https://github.com/Kanegraffiti/Parslet.git
+
+# Now, step inside the new project folder
 cd Parslet
+
+# This command installs Parslet so you can use it
 pip install -e .
 ```
-The development requirements listed in `requirements.txt` may be useful when
-running the tests or working on documentation.
+The `-e` part is a special instruction that installs the project in "editable" mode. This is great for developers because it means any changes you make to the code are instantly available.
 
-## Defining a Workflow
+### Step 2: Writing Your First Recipe
 
-A Parslet workflow is a regular Python script that defines tasks using the `@parslet_task` decorator. The script must contain a `main()` function that returns the *terminal* futures for the workflow.
+A Parslet recipe is just a plain Python file. The magic happens with a special note called a decorator (`@parslet_task`) that you add to your functions.
+
+Every recipe also needs a `main()` function. This is the starting point that tells Parslet how all your steps connect.
+
+Let's create a file called `my_recipe.py` and add the following:
 
 ```python
 from parslet import parslet_task, ParsletFuture
-
-@parslet_task
-def add_one(x: int) -> int:
-    return x + 1
-
-@parslet_task
-def multiply(a: int, b: int) -> int:
-    return a * b
-
 from typing import List
 
+# This is our first task. It's just a Python function
+# with a @parslet_task note on top.
+@parslet_task
+def add_one(number: int) -> int:
+    print(f"Running task: add_one({number})")
+    return number + 1
+
+# Here's a second task.
+@parslet_task
+def multiply_by_five(number: int) -> int:
+    print(f"Running task: multiply_by_five({number})")
+    return number * 5
+
+# This is our main recipe function. Parslet looks for this!
 def main() -> List[ParsletFuture]:
-    a = add_one(1)
-    b = multiply(a, 5)
-    return [b]
+    # We call our first task. It doesn't run yet!
+    # It just gives us an "IOU" for the result.
+    iou_from_add = add_one(1) # This will eventually be 2
+
+    # Now, we give the IOU from the first task to the second task.
+    # This tells Parslet: "Wait for add_one to finish before you start."
+    iou_from_multiply = multiply_by_five(iou_from_add) # This will eventually be 10
+
+    # We return the very last IOU. This tells Parslet the recipe is done
+    # when this final step is complete.
+    return [iou_from_multiply]
 ```
 
-Running `parslet run workflow.py` will execute the tasks in the correct order and print the result.
+When you run this with `parslet run my_recipe.py`, Parslet will read the file, see the connections, and run the tasks in the right order.
 
-## Using Parsl with Parslet
+### Step 3: Playing Well with the Big Kids (Parsl & Dask)
 
-Parlset tasks are standard Python functions, so you can also execute them with [Parsl](https://parsl-project.org/). The `parslet.core.parsl_bridge` module provides helpers to wrap tasks as Parsl apps:
+One of Parslet's superpowers is that it helps you "graduate" to bigger tools when you need more power.
 
-```python
-from parslet import convert_task_to_parsl, execute_with_parsl
+-   **Using Parsl:** You can take your Parslet recipe and run it with its big brother, Parsl. We have a special helper tool that makes this easy. It's great for when you get access to a powerful server and need to run your recipe there.
 
-# Reuse the tasks defined above
+-   **Converting from Parsl or Dask:** Did someone give you a recipe that was written for the "big kid" tools? No problem! Parslet has a command-line converter that can translate Parsl or Dask scripts into Parslet scripts for you.
 
-if __name__ == "__main__":
-    futures = main()
-    results = execute_with_parsl(futures)
-    print(results)
-```
+    ```bash
+    # To convert a Parsl script:
+    parslet convert --from-parsl their_cool_script.py
 
-`execute_with_parsl` builds the Parslet DAG and runs it using Parsl's runtime. This allows you to integrate Parslet workflows into larger Parsl deployments when needed. The helper disables Parsl's telemetry by default and creates a unique `run_dir` for each invocation to avoid hanging shutdowns seen in some Parsl versions.
+    # To convert a Dask script:
+    parslet convert --from-dask another_cool_script.py
+    ```
+    This will create a new `_parslet.py` file that you can run right away!
 
-## Converting Existing Parsl or Dask Workflows
+### Never Lose Your Work! (Resuming Recipes)
 
-Legacy workflows written for Parsl or Dask can be translated to Parslet using the CLI:
+Imagine you're running a recipe that takes a long time, and your battery dies halfway through. So frustrating!
+
+Parslet has a "checkpoint" feature to save you. Just add `--checkpoint-file` when you run your recipe:
 
 ```bash
-parslet convert --from parsl old_pipeline.py
-parslet convert --from dask data_flow.py
+parslet run my_long_recipe.py --checkpoint-file my_progress.json
 ```
 
-This produces a new `*_parslet.py` file with equivalent `@parslet_task` decorators.
-
-## Resuming Interrupted Runs
-
-Long workflows can be resumed if they are run with the `--checkpoint-file` option. Completed tasks are stored in the specified JSON file and skipped on subsequent executions:
-
-```bash
-parslet run my_workflow.py --checkpoint-file run_state.json
-```
-
-Parslet also performs a quick connectivity check at startup. If no internet connection is available or a VPN is active a warning is logged so network-related failures are easier to diagnose.
+Parslet will now keep a record of every step it finishes. If it gets interrupted, just run the exact same command again. Parslet will read your progress file and cleverly skip all the steps that are already done, picking up right where it left off. It's a real lifesaver!

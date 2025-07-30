@@ -1,30 +1,32 @@
-Architecture
-============
+The Parslet Engine: How It All Fits Together
+===========================================
 
-The core of Parslet is designed to be compact and easy to understand.  Workflows
-are defined as a graph of tasks and executed locally by a lightweight runner.
-Each element is loosely coupled so you can run small examples on laptops or
-mobile devices while still scaling up on desktops.
+The heart of Parslet is designed to be small, simple, and easy to understand. Think of it as a small team of workers, each with a very specific job. This design lets you run simple recipes on your phone but also handle bigger jobs on your laptop.
 
 .. image:: ../visuals/architecture.png
-   :alt: Architecture diagram
+   :alt: A diagram showing the different parts of the Parslet engine.
 
-* **Tasks** – functions decorated with ``@parslet_task`` which return
-  ``ParsletFuture`` objects.  Dependencies are created by passing futures to
-  other tasks.
-* **DAG** – constructed from the futures returned by ``main()`` and backed by
-  ``networkx`` for cycle detection and topological sorting.
-* **DAGRunner** – runs tasks using a ``ThreadPoolExecutor``.  It relies on the
-  ``AdaptiveScheduler`` which inspects CPU count, available RAM and battery
-  level to decide on a worker count.
-* **Exporter** – optional helpers for writing the DAG to DOT or PNG files.
-* **Parsl bridge** – utilities that allow the same tasks to be executed with the
-  Parsl runtime when needed.
+Here's a look at the main players on the team:
 
-The example workflows under ``examples/`` show how these pieces fit together in
-practice. ``hello.py`` demonstrates the basics while ``image_filter.py`` builds
-a small image processing pipeline. ``rad_pipeline.py`` showcases the **RAD by
-Parslet** workflow used on resource-constrained devices. You can export any DAG
-using :doc:`exporting`.
-For a step-by-step guide on writing your own workflow see :doc:`usage`.
+*   **The Recipe Steps (`@parslet_task` & `ParsletFuture`)**
+    This is where it all starts. You take a normal Python function and add a ``@parslet_task`` stamp to it. When you call it, you get back an "IOU" note (a ``ParsletFuture``). You create the order of your recipe by passing these IOUs from one step to the next.
 
+*   **The Flowchart Builder (`DAG`)**
+    This worker takes your final IOU and follows all the connections backward to draw a complete flowchart (a DAG) of your recipe. It uses a powerful library called ``networkx`` to make sure your recipe doesn't have any impossible loops.
+
+*   **The Head Chef (`DAGRunner` & `AdaptiveScheduler`)**
+    This is the boss who runs the whole kitchen. The ``DAGRunner`` takes the flowchart and starts executing the steps. It has a smart helper, the ``AdaptiveScheduler``, which checks your phone's CPU, RAM, and battery to decide how many assistant chefs (worker threads) to use. This keeps everything running smoothly without crashing your device.
+
+*   **The Photographer (`Exporter`)**
+    This is an optional worker you can call on. Its job is to take a picture of your flowchart, saving it as a DOT or PNG file so you can see a visual map of your recipe.
+
+*   **The Translator (`Parsl Bridge`)**
+    This worker helps your Parslet recipes speak a different language. It provides tools to let your recipes run on Parslet's "big brother," the powerful Parsl system, for when you need to do some really heavy lifting on a big server.
+
+Want to see how this team works together in practice? The best way is to look at our examples!
+- ``examples/hello.py`` shows you the absolute basics.
+- ``examples/image_filter.py`` shows you how to build a simple photo-editing recipe.
+- ``rad_pipeline.py`` shows off a more advanced recipe for doing AI-powered diagnosis on a phone.
+
+To learn how to get a picture of your own recipe, see our guide on :doc:`exporting`.
+For a step-by-step guide on writing your first recipe, check out :doc:`usage`.
