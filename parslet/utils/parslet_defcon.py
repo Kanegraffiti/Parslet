@@ -25,7 +25,9 @@ def check_pr_changes(paths: list[Path]) -> bool:
         for node in ast.walk(tree):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
                 if node.func.id in {"exec", "eval", "system"}:
-                    logger.warning("Unsafe call %s found in %s", node.func.id, path)
+                    logger.warning(
+                        "Unsafe call %s found in %s", node.func.id, path
+                    )
                     return False
     return True
 

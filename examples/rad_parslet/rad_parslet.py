@@ -11,7 +11,10 @@ import logging
 from pathlib import Path
 from typing import Tuple
 
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 from PIL import Image
 
 logger = logging.getLogger(__name__)
@@ -37,7 +40,9 @@ class LowMemoryError(RuntimeError):
     """Raised when system RAM is below threshold."""
 
     def __init__(self, ram_mb: float) -> None:
-        super().__init__(f"Available RAM {ram_mb:.1f}MB below required minimum")
+        super().__init__(
+            f"Available RAM {ram_mb:.1f}MB below required minimum"
+        )
         self.ram_mb = ram_mb
 
 

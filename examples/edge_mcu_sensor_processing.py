@@ -15,7 +15,10 @@ from pathlib import Path
 from typing import List, Dict
 
 from parslet.core import parslet_task, ParsletFuture, DAG, DAGRunner
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +86,10 @@ def detect_anomalies(data: List[float], threshold: float = 5.0) -> List[int]:
 
 @parslet_task
 def save_results(
-    clean: List[float], anomalies: List[int], out_dir: Path, resources: Dict[str, bool]
+    clean: List[float],
+    anomalies: List[int],
+    out_dir: Path,
+    resources: Dict[str, bool],
 ) -> str:
     """Save cleaned data and anomaly info."""
     log_path = out_dir / "diagnostics.log"
@@ -97,7 +103,9 @@ def save_results(
         for idx, val in enumerate(clean):
             writer.writerow([idx, val])
     with open(json_path, "w", encoding="utf-8") as f:
-        json.dump({"anomaly_indices": anomalies, "resources": resources}, f, indent=2)
+        json.dump(
+            {"anomaly_indices": anomalies, "resources": resources}, f, indent=2
+        )
     logging.info("Results saved")
     return str(csv_path)
 

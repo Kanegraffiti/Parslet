@@ -127,7 +127,9 @@ class DAG:
 
             # Ensure the current future is registered as a task and a graph node.
             if current_future.task_id not in self.tasks:
-                self.graph.add_node(current_future.task_id, future_obj=current_future)
+                self.graph.add_node(
+                    current_future.task_id, future_obj=current_future
+                )
                 self.tasks[current_future.task_id] = current_future
 
             # Discover dependencies from args and kwargs.
@@ -146,7 +148,9 @@ class DAG:
             for dep_future in dependencies_to_explore:
                 # Add dependency as a task and graph node if it's new.
                 if dep_future.task_id not in self.tasks:
-                    self.graph.add_node(dep_future.task_id, future_obj=dep_future)
+                    self.graph.add_node(
+                        dep_future.task_id, future_obj=dep_future
+                    )
                     self.tasks[dep_future.task_id] = dep_future
 
                 # Add an edge from the dependency to the current task.
@@ -207,7 +211,9 @@ class DAG:
                 # It's a defensive measure.
                 cycle_info = "A cycle was detected, but could not determine the specific tasks involved."
 
-            raise DAGCycleError(f"Task dependency graph is invalid. {cycle_info}")
+            raise DAGCycleError(
+                f"Task dependency graph is invalid. {cycle_info}"
+            )
 
     def get_execution_order(self) -> List[str]:
         """
@@ -259,7 +265,9 @@ class DAG:
             KeyError: If the `task_id` is not found in the DAG's registered tasks.
         """
         if task_id not in self.tasks:
-            raise KeyError(f"Task ID '{task_id}' not found in the DAG's task registry.")
+            raise KeyError(
+                f"Task ID '{task_id}' not found in the DAG's task registry."
+            )
         return self.tasks[task_id]
 
     def get_dependencies(self, task_id: str) -> List[str]:
@@ -298,7 +306,9 @@ class DAG:
             raise KeyError(f"Task ID '{task_id}' not found in the DAG graph.")
         return list(self.graph.successors(task_id))
 
-    def draw_dag(self, ascii_only: bool = True, filepath: str | None = None) -> str:
+    def draw_dag(
+        self, ascii_only: bool = True, filepath: str | None = None
+    ) -> str:
         """Return a simple visualisation of the DAG.
 
         If ``ascii_only`` is True or Graphviz is not available, an ASCII
@@ -348,7 +358,9 @@ class DAG:
             bool: True if all reachable futures are known to the DAG, False otherwise.
         """
         queue = deque(entry_futures)
-        visited_ids: Set[str] = set()  # Tracks futures visited during this check
+        visited_ids: Set[str] = (
+            set()
+        )  # Tracks futures visited during this check
 
         while queue:
             current_future = queue.popleft()

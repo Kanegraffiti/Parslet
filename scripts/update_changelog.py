@@ -14,14 +14,18 @@ existing_set = set(existing_entries)
 
 # Find last commit that touched CHANGELOG
 last_commit = (
-    subprocess.check_output(["git", "log", "-1", "--format=%H", "--", "CHANGELOG.md"])
+    subprocess.check_output(
+        ["git", "log", "-1", "--format=%H", "--", "CHANGELOG.md"]
+    )
     .decode()
     .strip()
 )
 
 # Collect commit subjects since last changelog update
 log = (
-    subprocess.check_output(["git", "log", f"{last_commit}..HEAD", "--pretty=%s"])
+    subprocess.check_output(
+        ["git", "log", f"{last_commit}..HEAD", "--pretty=%s"]
+    )
     .decode()
     .splitlines()
 )

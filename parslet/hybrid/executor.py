@@ -39,7 +39,9 @@ def execute_hybrid(
         from parsl.config import Config
         from parsl.executors.threads import ThreadPoolExecutor
     except Exception as exc:
-        raise ImportError("Parsl must be installed for hybrid execution") from exc
+        raise ImportError(
+            "Parsl must be installed for hybrid execution"
+        ) from exc
 
     parsl.clear()
     if parsl_config is None:
@@ -56,7 +58,8 @@ def execute_hybrid(
     for task_id in order:
         pf = dag.get_task_future(task_id)
         resolved_args = [
-            results[a.task_id] if isinstance(a, ParsletFuture) else a for a in pf.args
+            results[a.task_id] if isinstance(a, ParsletFuture) else a
+            for a in pf.args
         ]
         resolved_kwargs = {
             k: results[v.task_id] if isinstance(v, ParsletFuture) else v
@@ -65,7 +68,9 @@ def execute_hybrid(
 
         if pf.func.__name__ in remote_tasks:
             parsl_app = convert_task_to_parsl(pf.func)
-            results[task_id] = parsl_app(*resolved_args, **resolved_kwargs).result()
+            results[task_id] = parsl_app(
+                *resolved_args, **resolved_kwargs
+            ).result()
         else:
             results[task_id] = pf.func(*resolved_args, **resolved_kwargs)
 

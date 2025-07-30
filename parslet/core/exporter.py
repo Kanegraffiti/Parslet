@@ -5,7 +5,9 @@ from typing import TYPE_CHECKING, Optional
 logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from .dag import DAG  # To avoid circular import at runtime if DAG imports exporter
+    from .dag import (
+        DAG,
+    )  # To avoid circular import at runtime if DAG imports exporter
 
 # Attempt to import pydot. This is a soft dependency.
 # If pydot is not available, export functions will raise PydotImportError.
@@ -111,8 +113,12 @@ def dag_to_dot_string(dag: "DAG") -> str:
         PydotImportError: If the `pydot` library is not installed (propagated from `dag_to_pydot`).
         RuntimeError: If conversion to the `pydot.Dot` object fails (propagated).
     """
-    pydot_graph = dag_to_pydot(dag)  # This will raise if pydot is not available.
-    if pydot_graph is None:  # Should not happen if PydotImportError is raised correctly
+    pydot_graph = dag_to_pydot(
+        dag
+    )  # This will raise if pydot is not available.
+    if (
+        pydot_graph is None
+    ):  # Should not happen if PydotImportError is raised correctly
         raise RuntimeError(
             "pydot graph generation failed unexpectedly, returning None."
         )
@@ -137,7 +143,9 @@ def save_dag_to_png(dag: "DAG", output_path: str) -> None:
         RuntimeError: If any other error occurs during PNG creation or writing,
                       such as file permission issues or unexpected `pydot` errors.
     """
-    pydot_graph = dag_to_pydot(dag)  # Handles pydot import and initial conversion.
+    pydot_graph = dag_to_pydot(
+        dag
+    )  # Handles pydot import and initial conversion.
     if pydot_graph is None:  # Defensive check
         raise RuntimeError(
             "pydot graph generation failed unexpectedly, returning None, cannot save to PNG."
@@ -232,7 +240,9 @@ if __name__ == "__main__":
 
                 # Build DAG
                 test_dag = DAG()
-                test_dag.build_dag([future_c])  # Build with the terminal future
+                test_dag.build_dag(
+                    [future_c]
+                )  # Build with the terminal future
                 test_dag.validate_dag()  # Ensure it's valid
                 logger.info("Dummy DAG created successfully for testing.")
 
@@ -244,11 +254,15 @@ if __name__ == "__main__":
                         f"DOT String generated (first 100 chars): {dot_str[:100]}..."
                     )
                     # Example: save to a file
-                    with open("test_dag_output.dot", "w", encoding="utf-8") as f:
+                    with open(
+                        "test_dag_output.dot", "w", encoding="utf-8"
+                    ) as f:
                         f.write(dot_str)
                     logger.info("Full DOT string saved to test_dag_output.dot")
                 except Exception as e:
-                    logger.error(f"Error in dag_to_dot_string test: {e}", exc_info=True)
+                    logger.error(
+                        f"Error in dag_to_dot_string test: {e}", exc_info=True
+                    )
 
                 # Test save_dag_to_png
                 logger.info("\nTesting save_dag_to_png():")
@@ -277,7 +291,9 @@ if __name__ == "__main__":
                 except (
                     PydotImportError
                 ) as pie:  # Should be caught earlier by PYDOT_AVAILABLE
-                    logger.error(f"PNG EXPORT FAILED: Pydot library not found. {pie}")
+                    logger.error(
+                        f"PNG EXPORT FAILED: Pydot library not found. {pie}"
+                    )
                 except Exception as e:
                     logger.error(
                         f"Error in save_dag_to_png test: {type(e).__name__} - {e}",
@@ -290,7 +306,9 @@ if __name__ == "__main__":
                     exc_info=True,
                 )
         else:
-            logger.warning("\nSkipping DAG export tests as pydot is not available.")
+            logger.warning(
+                "\nSkipping DAG export tests as pydot is not available."
+            )
 
     except ImportError:
         logger.error(

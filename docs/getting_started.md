@@ -1,5 +1,7 @@
 # Getting Started with Parslet
 
+> **New to Parslet?** For a more detailed explanation of what Parslet is and the problems it solves, please read the [Introduction to Parslet](./introduction.md) first.
+
 This guide introduces the basics of installing Parslet and running your first workflow. Parslet is designed for offline-first environments but also includes a bridge to the Parsl runtime when you need to scale up to HPC resources.
 
 ## Installation

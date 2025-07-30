@@ -15,13 +15,18 @@ except Exception:  # pragma: no cover - optional
     pipeline = None
 
 from parslet.core import parslet_task, ParsletFuture, DAG, DAGRunner
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 
 
 @parslet_task
 def create_output_dir(base: Optional[str] = None) -> Path:
     """Create timestamped result directory."""
-    base_path = Path(base or Path(__file__).resolve().parent.parent / "RADPars_Results")
+    base_path = Path(
+        base or Path(__file__).resolve().parent.parent / "RADPars_Results"
+    )
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     out_dir = base_path / timestamp
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -89,7 +94,9 @@ def save_annotated_image(
 
 @parslet_task
 def model_a_inference(
-    img: Optional[np.ndarray], out_dir: Path, resources: Dict[str, Optional[float]]
+    img: Optional[np.ndarray],
+    out_dir: Path,
+    resources: Dict[str, Optional[float]],
 ) -> Dict[str, object]:
     if img is None or not resources.get("proceed", True):
         return {"diagnosis": None, "confidence": 0.0}
@@ -106,13 +113,17 @@ def model_a_inference(
             logging.getLogger(__name__).warning("HF model A failed: %s", exc)
             mean_val = float(np.mean(img))
             diagnosis = (
-                "No abnormality detected" if mean_val > 100 else "Possible abnormality"
+                "No abnormality detected"
+                if mean_val > 100
+                else "Possible abnormality"
             )
             confidence = 0.9 if mean_val > 100 else 0.8
     else:
         mean_val = float(np.mean(img))
         diagnosis = (
-            "No abnormality detected" if mean_val > 100 else "Possible abnormality"
+            "No abnormality detected"
+            if mean_val > 100
+            else "Possible abnormality"
         )
         confidence = 0.9 if mean_val > 100 else 0.8
     result = {"diagnosis": diagnosis, "confidence": confidence}
@@ -123,7 +134,9 @@ def model_a_inference(
 
 @parslet_task
 def model_b_inference(
-    img: Optional[np.ndarray], out_dir: Path, resources: Dict[str, Optional[float]]
+    img: Optional[np.ndarray],
+    out_dir: Path,
+    resources: Dict[str, Optional[float]],
 ) -> Dict[str, object]:
     if img is None or not resources.get("proceed", True):
         return {"diagnosis": None, "confidence": 0.0}
@@ -140,13 +153,17 @@ def model_b_inference(
             logging.getLogger(__name__).warning("HF model B failed: %s", exc)
             std_val = float(np.std(img))
             diagnosis = (
-                "No abnormality detected" if std_val < 50 else "Possible abnormality"
+                "No abnormality detected"
+                if std_val < 50
+                else "Possible abnormality"
             )
             confidence = 0.85 if std_val < 50 else 0.75
     else:
         std_val = float(np.std(img))
         diagnosis = (
-            "No abnormality detected" if std_val < 50 else "Possible abnormality"
+            "No abnormality detected"
+            if std_val < 50
+            else "Possible abnormality"
         )
         confidence = 0.85 if std_val < 50 else 0.75
     result = {"diagnosis": diagnosis, "confidence": confidence}
@@ -180,7 +197,9 @@ def finalize_results(
         "battery_safe": resources.get("battery_safe"),
         "timestamp": datetime.now().isoformat(),
         "models_used": ["tinycnn-v1.onnx", "tesseract-ocr"],
-        "annotated_image": Path(annotated_path).name if annotated_path else None,
+        "annotated_image": (
+            Path(annotated_path).name if annotated_path else None
+        ),
     }
     with open(out_dir / "meta.json", "w") as f:
         json.dump(meta, f)
@@ -202,8 +221,12 @@ def main(image_name: str = "scan.png") -> list[ParsletFuture]:
     annotated_future = save_annotated_image(
         img_future, edges_future, out_dir_future, resources_future
     )
-    a_future = model_a_inference(edges_future, out_dir_future, resources_future)
-    b_future = model_b_inference(edges_future, out_dir_future, resources_future)
+    a_future = model_a_inference(
+        edges_future, out_dir_future, resources_future
+    )
+    b_future = model_b_inference(
+        edges_future, out_dir_future, resources_future
+    )
     final_future = finalize_results(
         a_future, b_future, resources_future, out_dir_future, annotated_future
     )

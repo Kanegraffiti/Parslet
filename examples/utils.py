@@ -22,7 +22,9 @@ def ensure_sample_video() -> Path:
         import cv2  # type: ignore
         import numpy as np  # type: ignore
     except Exception:
-        raise RuntimeError("opencv-python and numpy are required for sample video")
+        raise RuntimeError(
+            "opencv-python and numpy are required for sample video"
+        )
 
     asset_dir = Path(__file__).resolve().parent / "assets"
     asset_dir.mkdir(parents=True, exist_ok=True)

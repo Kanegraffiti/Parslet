@@ -238,7 +238,9 @@ def parslet_task(
         # uses direct function references stored in ParsletFutures.
         if task_name in _TASK_REGISTRY:
             existing_func = _TASK_REGISTRY[task_name]
-            existing_protected = getattr(existing_func, "_parslet_protected", False)
+            existing_protected = getattr(
+                existing_func, "_parslet_protected", False
+            )
             if existing_protected and not _ALLOW_REDEFINE:
                 raise ValueError(
                     f"Task '{task_name}' is protected and already defined. Use --force-redefine to override."

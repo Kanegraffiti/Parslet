@@ -23,10 +23,14 @@ class CheckpointManager:
                     data = json.load(f)
                 if isinstance(data, dict):
                     self.completed = {
-                        tid for tid, status in data.items() if status == "SUCCESS"
+                        tid
+                        for tid, status in data.items()
+                        if status == "SUCCESS"
                     }
             except Exception as e:  # pragma: no cover - file may be malformed
-                logger.warning(f"Could not read checkpoint file {self.filepath}: {e}")
+                logger.warning(
+                    f"Could not read checkpoint file {self.filepath}: {e}"
+                )
 
     def mark_complete(self, task_id: str, status: str) -> None:
         """Record a successfully finished task.
@@ -48,4 +52,6 @@ class CheckpointManager:
             with open(self.filepath, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
         except Exception as e:  # pragma: no cover - disk write error
-            logger.warning(f"Failed to update checkpoint file {self.filepath}: {e}")
+            logger.warning(
+                f"Failed to update checkpoint file {self.filepath}: {e}"
+            )

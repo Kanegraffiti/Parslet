@@ -14,7 +14,10 @@ from typing import Dict, List
 from PIL import Image
 
 from parslet.core import parslet_task, ParsletFuture, DAG, DAGRunner
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +49,9 @@ def check_resources(
 
 
 @parslet_task
-def gather_images(folder: str, resources: Dict[str, bool]) -> List[Path] | None:
+def gather_images(
+    folder: str, resources: Dict[str, bool]
+) -> List[Path] | None:
     if not resources.get("proceed", True):
         return None
     path = Path(folder)
@@ -54,7 +59,9 @@ def gather_images(folder: str, resources: Dict[str, bool]) -> List[Path] | None:
         logger.error("Image folder %s missing", folder)
         return None
     images = [
-        p for p in path.iterdir() if p.suffix.lower() in {".jpg", ".png", ".jpeg"}
+        p
+        for p in path.iterdir()
+        if p.suffix.lower() in {".jpg", ".png", ".jpeg"}
     ]
     return images
 
@@ -74,7 +81,9 @@ def classify_images(paths: List[Path] | None) -> List[Dict[str, float]]:
             predictions.append(
                 {"file": p.name, "disease_score": round(float(score), 3)}
             )
-        except Exception as exc:  # noqa: broad-except - corrupted images possible
+        except (
+            Exception
+        ) as exc:  # noqa: broad-except - corrupted images possible
             logger.warning("Failed to process %s: %s", p, exc)
     return predictions
 

@@ -15,7 +15,10 @@ from PIL import Image
 
 from examples.utils import ensure_sample_image
 from parslet.core import DAG, DAGRunner, ParsletFuture, parslet_task
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 
 try:
     from transformers import pipeline
@@ -77,7 +80,10 @@ def run_model(img: Image.Image | None) -> Dict[str, object]:
                 model="hf-internal-testing/tiny-random-resnet",
             )
             pred = clf(img)[0]
-            return {"object": pred["label"], "confidence": float(pred["score"])}
+            return {
+                "object": pred["label"],
+                "confidence": float(pred["score"]),
+            }
         except Exception as exc:  # pragma: no cover - network or torch issues
             logger.warning("HuggingFace inference failed: %s", exc)
 

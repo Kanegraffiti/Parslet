@@ -12,7 +12,10 @@ from pathlib import Path
 from typing import Dict, List
 
 from parslet.core import parslet_task, ParsletFuture, DAG, DAGRunner
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +68,9 @@ def process_jobs(jobs: List[int]) -> List[int]:
 
 
 @parslet_task
-def save_results(results: List[int], dest: Path, resources: Dict[str, bool]) -> str:
+def save_results(
+    results: List[int], dest: Path, resources: Dict[str, bool]
+) -> str:
     out_path = dest / "results.json"
     log_path = dest / "diagnostics.log"
     logging.basicConfig(filename=log_path, level=logging.INFO)

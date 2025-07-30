@@ -101,7 +101,9 @@ def get_available_ram_mb() -> Optional[float]:
         return available_ram_mb
     except Exception as e:
         # Catch any exception that might occur during the psutil call.
-        logger.error(f"Error retrieving available RAM using psutil: {e}", exc_info=True)
+        logger.error(
+            f"Error retrieving available RAM using psutil: {e}", exc_info=True
+        )
         return None
 
 
@@ -156,7 +158,9 @@ def get_battery_level() -> Optional[int]:
             exc_info=False,
         )
 
-    logger.debug("Battery level could not be determined with available methods.")
+    logger.debug(
+        "Battery level could not be determined with available methods."
+    )
     return None
 
 

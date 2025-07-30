@@ -31,7 +31,10 @@ class ParslToParsletTranslator(ast.NodeTransformer):
 
     def visit_Call(self, node: ast.Call) -> ast.AST:
         """Emit a warning when ``DataFlowKernel`` is used."""
-        if isinstance(node.func, ast.Name) and node.func.id == "DataFlowKernel":
+        if (
+            isinstance(node.func, ast.Name)
+            and node.func.id == "DataFlowKernel"
+        ):
             warnings.warn(
                 "Parsl DataFlowKernel is not supported; Parslet manages scheduling internally.",
                 stacklevel=2,
@@ -121,7 +124,9 @@ class DataFlowKernel:  # pragma: no cover - simple shim
         )
 
     def __getattr__(self, attr):
-        raise AttributeError("DataFlowKernel is only a compatibility stub in Parslet")
+        raise AttributeError(
+            "DataFlowKernel is only a compatibility stub in Parslet"
+        )
 
 
 __all__ = [

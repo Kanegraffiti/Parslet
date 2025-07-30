@@ -14,7 +14,10 @@ from pathlib import Path
 from typing import Dict, Iterable, List
 
 from parslet.core import parslet_task, ParsletFuture, DAG, DAGRunner
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +49,9 @@ def check_resources(
 
 
 @parslet_task
-def load_responses(path: str, resources: Dict[str, bool]) -> List[Dict[str, str]]:
+def load_responses(
+    path: str, resources: Dict[str, bool]
+) -> List[Dict[str, str]]:
     if not resources.get("proceed", True):
         return []
     src = Path(path)
@@ -71,7 +76,9 @@ def load_responses(path: str, resources: Dict[str, bool]) -> List[Dict[str, str]
 
 
 @parslet_task
-def validate_responses(items: Iterable[Dict[str, str]]) -> List[Dict[str, str]]:
+def validate_responses(
+    items: Iterable[Dict[str, str]],
+) -> List[Dict[str, str]]:
     valid: List[Dict[str, str]] = []
     for item in items:
         if item.get("id") and item.get("answer"):
@@ -88,7 +95,9 @@ def archive_responses(
     log_path = dest / "diagnostics.log"
     logging.basicConfig(filename=log_path, level=logging.INFO)
     with open(json_path, "w", encoding="utf-8") as f:
-        json.dump({"responses": responses, "resources": resources}, f, indent=2)
+        json.dump(
+            {"responses": responses, "resources": resources}, f, indent=2
+        )
     with zipfile.ZipFile(zip_path, "w") as zf:
         zf.write(json_path, arcname="survey.json")
     logging.info("Survey archived")

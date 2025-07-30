@@ -23,9 +23,13 @@ class Defcon:
                 logger.error("parse error %s: %s", path, exc)
                 return False
             for node in ast.walk(tree):
-                if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+                if isinstance(node, ast.Call) and isinstance(
+                    node.func, ast.Name
+                ):
                     if node.func.id in bad:
-                        logger.error("Forbidden call %s in %s", node.func.id, path)
+                        logger.error(
+                            "Forbidden call %s in %s", node.func.id, path
+                        )
                         return False
         return True
 
@@ -40,11 +44,16 @@ class Defcon:
     @staticmethod
     def tamper_guard(watched: Iterable[Path]) -> bool:
         """DEFCON3: ensure files unchanged."""
-        hashes = {p: hashlib.sha256(p.read_bytes()).hexdigest() for p in watched}
+        hashes = {
+            p: hashlib.sha256(p.read_bytes()).hexdigest() for p in watched
+        }
 
         def unchanged() -> bool:
             for p, h in hashes.items():
-                if not p.exists() or hashlib.sha256(p.read_bytes()).hexdigest() != h:
+                if (
+                    not p.exists()
+                    or hashlib.sha256(p.read_bytes()).hexdigest() != h
+                ):
                     logger.error("Tamper detected for %s", p)
                     return False
             return True

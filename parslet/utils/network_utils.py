@@ -31,7 +31,8 @@ def is_vpn_active() -> bool:
     try:
         interfaces = psutil.net_if_addrs()
         return any(
-            name.startswith("tun") or name.startswith("ppp") for name in interfaces
+            name.startswith("tun") or name.startswith("ppp")
+            for name in interfaces
         )
     except Exception as e:
         logger.debug(f"Unable to determine VPN status: {e}")

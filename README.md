@@ -1,22 +1,21 @@
-# Parslet   
-**Power-Aware, Android-Native Workflow Automation Framework**
+# Parslet
+**A lightweight workflow engine for offline-first and edge computing.**
 
 ![Parsl-compatible](https://img.shields.io/badge/parsl-compatible-blue.svg)
 ![Termux-Ready](https://img.shields.io/badge/termux-ready-brightgreen.svg)
 ![License](https://img.shields.io/github/license/Kanegraffiti/Parslet)
 
+Parslet is a Python library for running automated workflows, especially in environments with limited power and unreliable internet. It allows you to define a series of tasks and the dependencies between them, and it executes them as efficiently as possible—even on a Raspberry Pi or an Android phone via Termux.
 
-Parslet is a lightweight, offline-friendly workflow automation engine inspired by [Parsl](https://parsl-project.org/) and optimized for constrained environments like Android tablets, solar-powered stations, and remote telecom sites.  
-It supports DAG-based execution, dynamic plugin loading, offline failover strategies, and compatibility layers for both Parsl and Dask.
+**Built with Africa in mind—scalable everywhere.**
 
-**Built with Africa in mind — scalable everywhere.**
+## Documentation
 
+**The best place to start is the new [Introduction to Parslet](https://kanegraffiti.github.io/Parslet/introduction.html).**
 
-## Live Documentation
+The full documentation is published via GitHub Pages and includes a getting started guide, architecture overview, and more.
 
-[View the Docs](https://kanegraffiti.github.io/Parslet/)
-
-Published via GitHub Pages using Sphinx.
+[**View the Docs**](https://kanegraffiti.github.io/Parslet/)
 
 
 ## Quickstart
@@ -29,60 +28,61 @@ cd Parslet
 pip install .
 ```
 
-Run a minimal workflow:
+Create a file named `my_workflow.py`:
 
 ```python
-from parslet import Task, DAG
+from parslet import parslet_task, ParsletFuture
+from typing import List
 
-def hello(name):
+@parslet_task
+def say_hello(name: str) -> str:
     return f"Hello, {name}!"
 
-greet = Task(fn=hello, inputs=["Parsl"])
-dag = DAG(tasks=[greet])
-dag.run()
+@parslet_task
+def emphasize(text: str) -> str:
+    return f"{text.upper()}!"
+
+def main() -> List[ParsletFuture]:
+    # This workflow says hello, then emphasizes the greeting.
+    greeting = say_hello("Parslet")
+    emphasized_greeting = emphasize(greeting)
+    
+    # Return the final task's future
+    return [emphasized_greeting]
+```
+
+Run it from your terminal:
+
+```bash
+parslet run my_workflow.py
 ```
 
 ---
 
-## Deep Tech Use Case: Power + Telecom Innovation
+## Use Cases & Features
 
-> Submitted under the **IHS Challenge category** for Africa Deep Tech Challenge 2025.
+Parslet is ideal for running automated pipelines on edge devices.
 
-**Highlights:**
+**Key Features:**
 
-- **Solar Scheduling DAGs**  
-  Automate energy distribution based on sunlight, battery state, and load priority.
+- **Offline-First:** No cloud connection required. Workflows run locally.
+- **Power-Aware:** A `--battery-mode` reduces concurrency to save power.
+- **Resource-Conscious:** Adapts to available CPU and memory.
+- **Parsl & Dask Compatible:** Includes tools to convert workflows from Parsl or Dask syntax.
+- **Termux Ready:** Designed and tested for use on Android devices.
 
-- **Remote Monitoring for Power Infrastructure**  
-  Build intelligent pipelines for telecom towers using battery, inverter, and grid metrics.
-
-- **Failover & Power-Conscious Mode**  
-  Pause/resume DAGs based on low battery conditions to protect uptime.
-
-- **Hybrid Orchestration**  
-  Relay DAGs between mobile and cloud intelligently via plugin adapters.
-
- See examples: [`/use_cases`](./use_cases)  
- Related doc section: [Challenge](https://kanegraffiti.github.io/Parslet/challenge.html)
-
-
-## Features
-
-- Offline-first CLI and plugin architecture
-- Termux + Android support out-of-the-box
-- Power-aware and voltage-triggered DAG pausing
-- Hybrid cloud/mobile orchestration plugins
-- Export compatibility with Parsl and Dask
-- SVG flowchart auto-generation from DAGs
-- Strong test suite and linting
+See the [`use_cases/`](./use_cases) and [`examples/`](./examples) directories for real-world applications like:
+- Analyzing telecom tower power logs.
+- Scheduling solar panel maintenance.
+- Running offline image classification for crop diagnosis.
 
 
 ## Docs & Architecture
 
-- [ Full Documentation](https://kanegraffiti.github.io/Parslet/)
-- [ Architecture Overview](https://kanegraffiti.github.io/Parslet/architecture.html)
-- [ CLI Commands & Usage](https://kanegraffiti.github.io/Parslet/usage.html)
-- [ Benchmark Results](https://kanegraffiti.github.io/Parslet/benchmark_results.html)
+- [Full Documentation](https://kanegraffiti.github.io/Parslet/)
+- [Architecture Overview](https://kanegraffiti.github.io/Parslet/architecture.html)
+- [CLI Commands & Usage](https://kanegraffiti.github.io/Parslet/usage.html)
+- [Benchmark Results](https://kanegraffiti.github.io/Parslet/benchmark_results.html)
 
 To rebuild the docs locally:
 

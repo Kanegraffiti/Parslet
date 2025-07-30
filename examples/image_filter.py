@@ -77,7 +77,9 @@ def main() -> List[ParsletFuture]:
 if __name__ == "__main__":
     print("Parslet Image Filter Example")
     print("----------------------------")
-    print("This script defines a DAG to load an image, convert it to grayscale,")
+    print(
+        "This script defines a DAG to load an image, convert it to grayscale,"
+    )
     print("apply a blur, and save the result.")
     print("\nIMPORTANT:")
     print(
@@ -120,7 +122,9 @@ if __name__ == "__main__":
                 print(f"    Error: {result_info['error']}")
                 # If load_image failed, we might not have an output.
                 # The error for load_image itself will be printed by the task.
-                if future.name != "load_image":  # Avoid redundant error for load_image
+                if (
+                    future.name != "load_image"
+                ):  # Avoid redundant error for load_image
                     pass
             elif result_info["status"] == "skipped":
                 print("    Reason: A dependency failed.")

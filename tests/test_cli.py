@@ -49,7 +49,11 @@ def test_cli_examples_all_files(capsys):
     except SystemExit:
         pass
     out = capsys.readouterr().out
-    lines = [line for line in out.strip().splitlines() if "Plugins loaded" not in line]
+    lines = [
+        line
+        for line in out.strip().splitlines()
+        if "Plugins loaded" not in line
+    ]
     listed = sorted(lines)
     expected = sorted(f.name for f in Path("use_cases").glob("*.py"))
     assert listed == expected

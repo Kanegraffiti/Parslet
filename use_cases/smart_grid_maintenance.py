@@ -14,7 +14,10 @@ from typing import Dict, List
 import matplotlib.pyplot as plt
 
 from parslet.core import parslet_task, ParsletFuture, DAG, DAGRunner
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +49,9 @@ def check_resources(
 
 
 @parslet_task
-def parse_log(log_path: str, resources: Dict[str, bool]) -> Dict[str, float] | None:
+def parse_log(
+    log_path: str, resources: Dict[str, bool]
+) -> Dict[str, float] | None:
     if not resources.get("proceed", True):
         return None
     data: Dict[str, float] = {}

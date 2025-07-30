@@ -21,20 +21,33 @@ class DaskToParsletTranslator(ast.NodeTransformer):
         for idx, decorator in enumerate(node.decorator_list):
             # ``@delayed`` imported directly
             if isinstance(decorator, ast.Name) and decorator.id == "delayed":
-                node.decorator_list[idx] = ast.Name(id="parslet_task", ctx=ast.Load())
+                node.decorator_list[idx] = ast.Name(
+                    id="parslet_task", ctx=ast.Load()
+                )
             # ``@dask.delayed`` style
-            elif isinstance(decorator, ast.Attribute) and decorator.attr == "delayed":
-                node.decorator_list[idx] = ast.Name(id="parslet_task", ctx=ast.Load())
+            elif (
+                isinstance(decorator, ast.Attribute)
+                and decorator.attr == "delayed"
+            ):
+                node.decorator_list[idx] = ast.Name(
+                    id="parslet_task", ctx=ast.Load()
+                )
         return self.generic_visit(node)
 
     def visit_Call(self, node: ast.Call) -> ast.AST:
         """Strip ``.compute()`` calls so Parslet's runner manages execution."""
-        if isinstance(node.func, ast.Attribute) and node.func.attr == "compute":
+        if (
+            isinstance(node.func, ast.Attribute)
+            and node.func.attr == "compute"
+        ):
             # Convert obj.compute() -> obj
             return self.visit(node.func.value)
         if isinstance(node.func, ast.Name) and node.func.id == "delayed":
             node.func.id = "parslet_task"
-        if isinstance(node.func, ast.Attribute) and node.func.attr == "delayed":
+        if (
+            isinstance(node.func, ast.Attribute)
+            and node.func.attr == "delayed"
+        ):
             node.func.attr = "parslet_task"
         return self.generic_visit(node)
 

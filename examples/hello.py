@@ -120,7 +120,9 @@ def sum_results(res1: int, res2: int) -> int:
     logger.info(f"Executing sum_results({res1}, {res2})...")
     time.sleep(0.5)  # Simulate work
     result = res1 + res2
-    logger.info(f"Task 'sum_results({res1}, {res2})' finished. Result: {result}")
+    logger.info(
+        f"Task 'sum_results({res1}, {res2})' finished. Result: {result}"
+    )
     return result
 
 
@@ -205,7 +207,11 @@ if __name__ == "__main__":
         logger.info(f"Attempting to visualize DAG and save to '{viz_path}'...")
         save_dag_to_png(workflow_dag, viz_path)
         logger.info(f"DAG visualization saved to '{viz_path}'.")
-    except (ImportError, PydotImportError, GraphvizExecutableNotFoundError) as viz_e:
+    except (
+        ImportError,
+        PydotImportError,
+        GraphvizExecutableNotFoundError,
+    ) as viz_e:
         logger.warning(
             f"Could not visualize DAG: {viz_e}. Ensure pydot and Graphviz are installed."
         )
@@ -227,7 +233,9 @@ if __name__ == "__main__":
     # The DAGRunner handles the actual execution of tasks in the correct order.
     # It uses a ThreadPoolExecutor for concurrency.
     # For this direct run, we can pass the module's logger to the runner.
-    logger.info("\nStep 4: Initializing DAGRunner and starting DAG execution...")
+    logger.info(
+        "\nStep 4: Initializing DAGRunner and starting DAG execution..."
+    )
     # Example: Use 2 worker threads. Can be adjusted or left to default.
     runner = DAGRunner(max_workers=2, runner_logger=logger)
     runner.run(workflow_dag)  # This call blocks until the DAG completes.
@@ -256,7 +264,8 @@ if __name__ == "__main__":
             except Exception as e_task:
                 logger.error("  Status: FAILED")
                 logger.error(
-                    f"  Error:  {type(e_task).__name__}: {e_task}", exc_info=True
+                    f"  Error:  {type(e_task).__name__}: {e_task}",
+                    exc_info=True,
                 )
     else:
         logger.warning("No entry futures were defined by main().")
@@ -268,11 +277,15 @@ if __name__ == "__main__":
             logger.info("\n--- Task Execution Benchmarks (Direct Run) ---")
             # Basic print for direct run; CLI provides a Rich table.
             for task_id, data in sorted(benchmarks.items()):
-                future_obj = workflow_dag.tasks.get(task_id)  # Get future for func name
+                future_obj = workflow_dag.tasks.get(
+                    task_id
+                )  # Get future for func name
                 func_name = future_obj.func.__name__ if future_obj else "N/A"
                 status = data.get("status", "UNKNOWN")
                 exec_time = data.get("execution_time_s")
-                time_str = f"{exec_time:.4f}s" if exec_time is not None else "N/A"
+                time_str = (
+                    f"{exec_time:.4f}s" if exec_time is not None else "N/A"
+                )
                 logger.info(
                     f"  Task: {task_id} ({func_name}), Status: {status}, Time: {time_str}"
                 )

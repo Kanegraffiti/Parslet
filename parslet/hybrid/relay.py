@@ -28,7 +28,9 @@ class FileRelay:
                 stderr=subprocess.PIPE,
             )
             logger.info("Relayed %s to %s", path, self.destination)
-        except Exception as exc:  # pragma: no cover - network/scp may be absent
+        except (
+            Exception
+        ) as exc:  # pragma: no cover - network/scp may be absent
             logger.warning("Could not relay %s: %s", path, exc)
 
 

@@ -20,9 +20,12 @@ def make_stub_parsl():
 
     def python_app(func):
         def wrapper(*args, **kwargs):
-            resolved_args = [a.result() if hasattr(a, "result") else a for a in args]
+            resolved_args = [
+                a.result() if hasattr(a, "result") else a for a in args
+            ]
             resolved_kwargs = {
-                k: v.result() if hasattr(v, "result") else v for k, v in kwargs.items()
+                k: v.result() if hasattr(v, "result") else v
+                for k, v in kwargs.items()
             }
             return DummyFuture(func(*resolved_args, **resolved_kwargs))
 
@@ -74,7 +77,9 @@ def stub_parsl(monkeypatch):
     monkeypatch.setitem(sys.modules, "parsl", stub)
     monkeypatch.setitem(sys.modules, "parsl.config", stub.config)
     monkeypatch.setitem(sys.modules, "parsl.executors", stub.executors)
-    monkeypatch.setitem(sys.modules, "parsl.executors.threads", stub.executors.threads)
+    monkeypatch.setitem(
+        sys.modules, "parsl.executors.threads", stub.executors.threads
+    )
     return stub
 
 

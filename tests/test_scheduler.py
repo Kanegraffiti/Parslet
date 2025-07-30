@@ -12,7 +12,9 @@ def test_battery_mode_reduces_workers(monkeypatch):
         return 10
 
     monkeypatch.setattr("parslet.core.scheduler.get_cpu_count", fake_cpu)
-    monkeypatch.setattr("parslet.core.scheduler.get_available_ram_mb", fake_ram)
+    monkeypatch.setattr(
+        "parslet.core.scheduler.get_available_ram_mb", fake_ram
+    )
     monkeypatch.setattr("parslet.core.scheduler.get_battery_level", fake_batt)
 
     sched = AdaptiveScheduler(battery_mode=True)

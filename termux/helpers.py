@@ -56,7 +56,9 @@ def is_running_in_termux() -> bool:
 # This block allows for direct execution and testing of the functions in this module.
 if __name__ == "__main__":
     # Basic logging setup for __main__ to see messages from this module.
-    logging.basicConfig(level=logging.DEBUG)  # Set to DEBUG to see detection logs
+    logging.basicConfig(
+        level=logging.DEBUG
+    )  # Set to DEBUG to see detection logs
 
     logger.info("--- Termux Helper Test ---")
 

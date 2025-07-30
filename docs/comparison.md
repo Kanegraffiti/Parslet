@@ -1,14 +1,31 @@
-# Comparison: Parslet, Parsl and Dask
+# Parslet vs. Other Tools (Parsl, Dask)
 
-The table below outlines some key differences between Parslet, Parsl and Dask. The goal is to highlight where each tool excels and how they might complement one another.
+Parslet is one of many workflow tools available for Python. This guide helps you understand when to choose Parslet versus more complex tools like Parsl or Dask.
 
-| Feature | Parslet | Parsl | Dask |
-|---------|--------|-------|------|
-| Focus | Lightweight, local DAG execution | Large-scale, distributed workflows | Distributed computation and collections |
-| Installation | Few dependencies, runs without a cluster | Requires Parsl and an executor backend | Often used with distributed clusters or `dask.distributed` |
-| Task Definition | `@parslet_task` decorator returning `ParsletFuture` objects | `@python_app` or `@bash_app` decorators | `dask.delayed` or high-level APIs like Dask DataFrame |
-| Execution | Thread pool on local machine | Flexible execution backends (HTCondor, Kubernetes, etc.) | Scheduler processes and workers (local or distributed) |
-| Best For | Simple offline pipelines and education | HPC and large-scale scientific workflows | Parallelizing Python analytics and data engineering |
-| Parslet Compatibility | Native | Supported via `parslet.core.parsl_bridge` | Manual conversion required |
+The main takeaway: **Parslet is designed for simplicity and reliability on single, often resource-constrained devices.** Parsl and Dask are designed for power and scale on clusters of machines.
 
-Use Parslet when you need a minimal dependency DAG runner. Move to Parsl if you require remote execution or integration with HPC resources. Dask is often chosen for large-scale data analysis but can work alongside Parsl or Parslet when needed.
+### When to Use Parslet
+Choose Parslet when:
+- Your workflow needs to run **offline**.
+- You are working on a device with **limited power**, like a laptop on battery, a Raspberry Pi, or a phone.
+- You need a simple, lightweight tool with **very few dependencies**.
+- You are teaching or learning the concepts of workflow automation.
+
+### When to Use Parsl or Dask
+Consider graduating to Parsl or Dask when:
+- You need to distribute your workflow across **multiple computers** (i.e., a cluster or the cloud).
+- You are working with **massive datasets** that don't fit into your computer's memory.
+- You need to connect to specialized hardware or schedulers in a High-Performance Computing (HPC) environment.
+
+### Feature Comparison
+
+The table below outlines some key differences.
+
+| Feature           | Parslet                                       | Parsl                                              | Dask                                               |
+| ----------------- | --------------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
+| **Best For**      | Simple, offline pipelines on a single device  | Large-scale scientific workflows on HPC clusters   | Parallelizing large-scale data analysis            |
+| **Execution**     | Locally, on your device's thread pool         | Can execute on remote machines (HPC, cloud)        | Schedulers and workers on local or remote machines |
+| **Installation**  | Minimal dependencies, no cluster needed       | Requires a backend (e.g., HTCondor, Kubernetes)    | Often used with a distributed scheduler            |
+| **Task Definition** | `@parslet_task` decorator                     | `@python_app` or `@bash_app` decorators            | `dask.delayed` or high-level APIs (DataFrame)      |
+
+Parslet is a great starting point. It even includes utilities to help you convert your Parslet workflows to Parsl if you ever need to scale up!

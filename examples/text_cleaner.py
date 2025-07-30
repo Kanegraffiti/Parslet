@@ -57,7 +57,9 @@ def count_words(text: str) -> Dict[str, int]:
         words = text.split()
         word_counts: Dict[str, int] = {}
         for word in words:
-            if word:  # Ensure empty strings from multiple spaces are not counted
+            if (
+                word
+            ):  # Ensure empty strings from multiple spaces are not counted
                 word_counts[word] = word_counts.get(word, 0) + 1
         return word_counts
     except Exception as e:
@@ -108,9 +110,13 @@ if __name__ == "__main__":
     print(
         "To run this example, you need to create a dummy input file named 'input.txt'"
     )
-    print("in the same directory as this script. Populate it with some sample text.")
+    print(
+        "in the same directory as this script. Populate it with some sample text."
+    )
     print("For example:")
-    print("  Hello world! This is a test. This is, indeed, a test file for Parslet.")
+    print(
+        "  Hello world! This is a test. This is, indeed, a test file for Parslet."
+    )
     print("----------------------------\n")
 
     entry_futures = main()
@@ -128,7 +134,9 @@ if __name__ == "__main__":
 
     print("\nDAG Execution Results:")
     for future, result_info in results.items():
-        if future in entry_futures:  # We are typically interested in terminal nodes
+        if (
+            future in entry_futures
+        ):  # We are typically interested in terminal nodes
             print(f"  Task {future.name} (Terminal Node):")
             print(f"    Status: {result_info['status']}")
             if result_info["status"] == "completed":
@@ -144,7 +152,9 @@ if __name__ == "__main__":
         for future, res in results.items()
         if future in entry_futures
     ):
-        print("Output 'word_counts.txt' should be generated if all tasks succeeded.")
+        print(
+            "Output 'word_counts.txt' should be generated if all tasks succeeded."
+        )
     else:
         print(
             "One or more tasks failed. 'word_counts.txt' might not be generated or complete."

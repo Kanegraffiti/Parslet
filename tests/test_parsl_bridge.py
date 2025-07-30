@@ -78,7 +78,9 @@ def stub_parsl(monkeypatch):
     monkeypatch.setitem(sys.modules, "parsl", stub)
     monkeypatch.setitem(sys.modules, "parsl.config", stub.config)
     monkeypatch.setitem(sys.modules, "parsl.executors", stub.executors)
-    monkeypatch.setitem(sys.modules, "parsl.executors.threads", stub.executors.threads)
+    monkeypatch.setitem(
+        sys.modules, "parsl.executors.threads", stub.executors.threads
+    )
     return stub
 
 

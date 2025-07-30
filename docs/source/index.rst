@@ -1,16 +1,27 @@
-Welcome to Parslet's Docs
-=========================
+Welcome to Parslet
+==================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Getting Started
 
+   introduction
    usage
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Core Features
+
    cli
    tasks
    battery_mode
    exporting
    architecture
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Development
+
    contributing
    testing
    security

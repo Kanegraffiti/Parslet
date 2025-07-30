@@ -13,7 +13,9 @@ ASSET_PATH = ensure_sample_image()
 
 
 @parslet_task
-def run_analysis(image_path: str, out_dir: str = "rad_pipeline_results") -> List[Path]:
+def run_analysis(
+    image_path: str, out_dir: str = "rad_pipeline_results"
+) -> List[Path]:
     """Run the RAD analysis on ``image_path``."""
     meta, diag, review = analyze(image_path, out_dir, ignore_battery=True)
     return [meta, diag, review]

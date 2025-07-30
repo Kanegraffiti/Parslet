@@ -15,7 +15,10 @@ from pathlib import Path
 from typing import Dict, List
 
 from parslet.core import DAG, DAGRunner, ParsletFuture, parslet_task
-from parslet.utils.resource_utils import get_available_ram_mb, get_battery_level
+from parslet.utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+)
 
 logger = logging.getLogger(__name__)
 
