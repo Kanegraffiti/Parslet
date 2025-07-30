@@ -2,23 +2,15 @@
 
 > **Are you brand new to Parslet?** We recommend reading our friendly [Introduction to Parslet](./introduction.md) first to get the big picture!
 
-This guide will walk you through installing Parslet and creating your very first automated recipe (we call it a "workflow"). Let's get cooking!
+This guide will walk you through creating your very first automated recipe (we call it a "workflow").
 
-### Step 1: Getting Parslet on Your Device
+### Step 1: Installing Parslet
 
-First things first, you need to get the Parslet code onto your computer or phone.
+Before you can write a recipe, you need to install Parslet. We have created detailed, step-by-step instructions for Android (Termux), Linux, and Windows.
 
-```bash
-# This copies the project from GitHub
-git clone https://github.com/Kanegraffiti/Parslet.git
+**➡️ Please follow our complete [Installation Guide](./install.html) to get set up.**
 
-# Now, step inside the new project folder
-cd Parslet
-
-# This command installs Parslet so you can use it
-pip install -e .
-```
-The `-e` part is a special instruction that installs the project in "editable" mode. This is great for developers because it means any changes you make to the code are instantly available.
+The guide will walk you through cloning the project with Git and installing it in a way that lets you easily edit and run the code.
 
 ### Step 2: Writing Your First Recipe
 

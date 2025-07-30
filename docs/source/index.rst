@@ -5,8 +5,10 @@ Welcome to Parslet
    :maxdepth: 2
    :caption: Getting Started
 
+   install
    introduction
    usage
+   examples
 
 .. toctree::
    :maxdepth: 2
