@@ -60,7 +60,7 @@ You define these steps (we call them **tasks**) in a simple Python file. Parslet
 
 ---
 
-## 🚀 Let's Get Started! (Quickstart)
+## Let's Get Started! (Quickstart)
 
 Ready to try it? You can be up and running in less than a minute.
 
