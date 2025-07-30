@@ -119,6 +119,7 @@ def cli() -> None:
     elif args.cmd == "rad":
         from parslet.core import DAG, DAGRunner
         from examples.rad_parslet.rad_dag import main as rad_main
+
         futures = rad_main(args.image, args.out_dir)
         dag = DAG()
         dag.build_dag(futures)
@@ -136,12 +137,15 @@ def cli() -> None:
 
         if args.to_parsl:
             from parslet.compat import convert_parslet_to_parsl as conv
+
             suffix = "_parsl.py"
         elif args.from_parsl:
             from parslet.compat import convert_parsl_to_parslet as conv
+
             suffix = "_parslet.py"
         else:
             from parslet.compat import convert_dask_to_parslet as conv
+
             suffix = "_parslet.py"
 
         code = Path(args.script).read_text()
