@@ -136,6 +136,7 @@ Parslet is small, but it's packed with neat features for real-world use.
 -   **Works Offline:** Your automated recipes run even without an internet connection.
 -   **Saves Battery:** Use the special `--battery-mode` to tell Parslet to take it easy and conserve power.
 -   **Smart About Resources:** It automatically checks your device's CPU and memory to run smoothly without crashing.
+-   **DEFCON:** A multi-layered defense system in Parslet that proactively blocks zero-day exploits and malicious DAG behavior using offline rules.
 -   **Plays Well with Others:** If you ever move to a big server, Parslet has tools to convert your recipes to run on powerful systems like Parsl or Dask.
 -   **Made for Termux:** We use it and test it on Android phones, so you know it'll work.
 
@@ -147,9 +148,9 @@ Want to see more? Check out the `use_cases/` and `examples/` folders for more ad
 
 We've written down everything you need to know in a simple, friendly way.
 
--   [**See All Features (Full Documentation)**](https://kanegraffiti.github.io/Parslet/)
--   [**How It Really Works (Architecture)**](https://kanegraffiti.github.io/Parslet/architecture.html)
--   [**The Remote Control (CLI Commands)**](https://kanegraffiti.github.io/Parslet/usage.html)
+-   [**See All Features (Full Documentation)**](https://parslet.readthedocs.io/en/latest/)
+-   [**How It Really Works (Architecture)**](https://parslet.readthedocs.io/en/latest/architecture.html)
+-   [**The Remote Control (CLI Commands)**](https://parslet.readthedocs.io/en/latest/usage.html)
 
 ---
 
