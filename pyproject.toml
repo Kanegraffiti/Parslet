@@ -36,6 +36,7 @@ Source = "https://github.com/Kanegraffiti/Parslet"
 [project.optional-dependencies]
 dask = ["dask"]
 parsl = ["parsl"]
+dev = ["flake8", "pytest", "black"]
 
 [tool.setuptools]
 packages = {find = {include = ["parslet*"], exclude = ["termux", "use_cases", "tests"]}}
@@ -45,6 +46,7 @@ line-length = 88
 [tool.flake8]
 max-line-length = 88
 exclude = ["__pycache__", ".git", ".pytest_cache", "build", "dist"]
+ignore = ["E501", "W503", "E226", "E203"]
 
 [tool.isort]
 profile = "black"
