@@ -1,5 +1,0 @@
-DAG Diagram Placeholder
-----------------------
-
-[ start ] -> [ task_a ] -> [ task_b ]
-                  \-> [ task_c ]

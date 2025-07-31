@@ -1,64 +1,64 @@
-Usage
-=====
+Usage: Your First Parslet Workflow
+===================================
 
-This section gives a quick overview of how to write and run a Parslet
-workflow.  For a hands on example consult ``examples/hello.py`` in the
-repository.  The bigger picture of how the pieces fit together is covered in
-:doc:`architecture`.
+This guide will walk you through writing and running your first Parslet workflow. For a hands-on example, you can also check out the ``examples/hello.py`` file in this project.
 
-Defining tasks
---------------
+If you want the bigger picture of how all the pieces fit together, see our :doc:`architecture` guide.
 
-Tasks are ordinary Python functions decorated with ``@parslet_task``.  Calling
-a decorated function does not immediately execute it.  Instead it returns a
-``ParsletFuture`` that represents the eventual result and is used to create the
-Directed Acyclic Graph (DAG).
+Defining Your Tasks
+-------------------
 
-Every workflow script must expose a ``main()`` function which returns the list
-of terminal ``ParsletFuture`` objects.  A minimal workflow looks like the
-following:
+Think of tasks as the individual steps in a recipe. In Parslet, a task is just a normal Python function with a special ``@parslet_task`` decorator on top.
+
+When you call a decorated function, it doesn't run right away. Instead, it gives you back a ``ParsletFuture`` object—think of it as an IOU or a ticket for a result that will be ready later. You then create your workflow by passing these IOUs from one task to another.
+
+Every workflow script needs a ``main()`` function that tells Parslet where the workflow ends. It should return a list of the final IOUs you care about.
+
+Here’s what a super simple workflow looks like:
 
 .. code-block:: python
 
    from typing import List
    from parslet import parslet_task, ParsletFuture
 
+   # Here's our first task. It just adds two numbers.
    @parslet_task
    def add(a: int, b: int) -> int:
        return a + b
 
+   # This is the main entry point for Parslet.
    def main() -> List[ParsletFuture]:
+       # We call our task, and it returns an IOU for the result.
        future = add(1, 2)
+       # We return a list containing our final IOU.
        return [future]
 
-Running a workflow
-------------------
+Running Your Workflow
+---------------------
 
-Use the ``parslet run`` command to execute a workflow script:
+To bring your workflow to life, you use the ``parslet run`` command from your terminal:
 
 .. code-block:: bash
 
-   parslet run path/to/workflow.py
+   parslet run path/to/your/workflow.py
 
-Parslet loads the module, builds the DAG from ``main()``, chooses a sensible
-number of worker threads based on CPU count and available RAM, and then runs the
-tasks.  The results of the entry futures are printed when execution finishes.
+When you run this, Parslet:
+1.  Reads your Python file.
+2.  Calls your ``main()`` function to understand the workflow.
+3.  Figures out the right order to run the tasks.
+4.  Runs the tasks and prints the final result for you.
 
-You can resume interrupted runs by specifying ``--checkpoint-file`` which stores
-completed tasks in a JSON file.
+**Did your workflow get interrupted?** No worries. If you run it with the ``--checkpoint-file`` option, Parslet remembers which tasks finished, so you can resume right where you left off.
 
-Resource awareness
-------------------
+Being Smart with Resources
+--------------------------
 
-By default the runner selects a worker count that balances CPU cores and
-available memory.  If ``--battery-mode`` is used, concurrency is reduced (often
-to a single worker) unless ``--max-workers`` overrides the value.  This is
-useful on laptops or mobile devices where conserving power is important.
+Parslet is designed for devices that might not be very powerful.
 
-The ``--monitor`` option starts a small web server to view task status while the
-workflow runs. Use ``--failsafe-mode`` if tasks may exceed memory limits; it
-will retry them one by one instead of failing the entire run.
+By default, it looks at your device's CPU cores and available memory to pick a sensible number of tasks to run at once.
 
-For additional options such as exporting the DAG or adjusting logging see
-:doc:`cli`.  Details on how ``--battery-mode`` influences scheduling are in
-:doc:`battery_mode`.
+If you're on a laptop or phone and want to save battery, just add the ``--battery-mode`` flag. This tells Parslet to take it easy and run fewer tasks at the same time. You can always override this with ``--max-workers`` if you know best.
+
+Want to see what's happening in real-time? Use the ``--monitor`` flag to get a live view of your tasks as they run.
+
+For more command-line options, like exporting a picture of your workflow, check out the :doc:`cli` guide. To learn more about how battery mode works, see :doc:`battery_mode`.
