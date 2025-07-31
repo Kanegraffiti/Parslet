@@ -1,22 +1,33 @@
-Battery Mode
-============
+Running on Fumes? Use Battery-Saver Mode!
+==========================================
 
-Parslet supports a battery‑saver mode designed for laptops and mobile devices.
-When the CLI flag ``--battery-mode`` is provided the ``AdaptiveScheduler``
-reduces the default number of worker threads.  The scheduler looks at available
-CPU cores, free RAM and current battery percentage (via ``psutil`` if
-installed) to choose a conservative level of parallelism.
+We've all been there. You're in the middle of something important, and you see that dreaded "Low Battery" warning. Parslet is designed for the real world, so it has a special **battery-saver mode** built right in, perfect for when you're working on a laptop, tablet, or phone.
 
-If you do not specify ``--max-workers`` the runner often defaults to a single
-worker in battery mode.  This helps prolong battery life when running workflows
-on devices such as phones using Termux or lightweight laptops.
+How Does It Work?
+-----------------
 
-You can still override the worker count explicitly:
+When you tell Parslet to run in battery-saver mode, its smart scheduler (the ``AdaptiveScheduler``) gets extra cautious. It looks at your device's CPU, available memory, and most importantly, your current battery percentage.
+
+Based on what it sees, it will reduce the number of tasks it tries to run at the same time. Often, it will slow down to running just one task at a time. This is like putting your phone into "Low Power Mode"—it helps your battery last as long as possible so you can finish your work.
+
+How Do I Turn It On?
+--------------------
+
+It's super easy! Just add the ``--battery-mode`` flag when you run your recipe from the command line:
 
 .. code-block:: bash
 
-   parslet run my_workflow.py --battery-mode --max-workers 2
+   parslet run my_recipe.py --battery-mode
 
-Battery mode does not remove any features; it simply limits concurrency while
-retaining DAG export, checkpointing and logging.  See :doc:`cli` for all
-available command line flags.
+What if I Still Need to Go a Little Faster?
+-------------------------------------------
+
+You're still in control! If you want to use battery-saver mode but still want to run, say, two tasks at a time, you can. Just tell Parslet how many "workers" (assistant chefs) you want it to use.
+
+.. code-block:: bash
+
+   parslet run my_recipe.py --battery-mode --max-workers 2
+
+Battery mode doesn't turn off any of Parslet's other cool features. You can still save your progress with checkpointing, get pictures of your workflow, and see all the logs. It just tells Parslet to be a little more gentle on your device.
+
+To see all the other commands you can use, check out our guide to the :doc:`cli` (the "remote control").

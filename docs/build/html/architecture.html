@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Architecture &mdash; Parslet 0.5.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+  <title>The Parslet Engine: How It All Fits Together &mdash; Parslet 0.5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -42,20 +42,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Use Cases</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Battery Mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Parslet Engine: How It All Fits Together</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="challenge.html">Parslet Showcase Challenge</a></li>
-<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">Benchmark Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
 </ul>
 
         </div>
@@ -72,7 +85,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Architecture</li>
+      <li class="breadcrumb-item active">The Parslet Engine: How It All Fits Together</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/architecture.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -82,32 +95,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="architecture">
-<h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h1>
-<p>The core of Parslet is designed to be compact and easy to understand.  Workflows
-are defined as a graph of tasks and executed locally by a lightweight runner.
-Each element is loosely coupled so you can run small examples on laptops or
-mobile devices while still scaling up on desktops.</p>
-<img alt="Architecture diagram" src="_images/architecture.png" />
+  <section id="the-parslet-engine-how-it-all-fits-together">
+<h1>The Parslet Engine: How It All Fits Together<a class="headerlink" href="#the-parslet-engine-how-it-all-fits-together" title="Link to this heading"></a></h1>
+<p>The heart of Parslet is designed to be small, simple, and easy to understand. Think of it as a small team of workers, each with a very specific job. This design lets you run simple recipes on your phone but also handle bigger jobs on your laptop.</p>
+<img alt="A diagram showing the different parts of the Parslet engine." src="_images/architecture.png" />
+<p>Here’s a look at the main players on the team:</p>
 <ul class="simple">
-<li><p><strong>Tasks</strong> – functions decorated with <code class="docutils literal notranslate"><span class="pre">&#64;parslet_task</span></code> which return
-<code class="docutils literal notranslate"><span class="pre">ParsletFuture</span></code> objects.  Dependencies are created by passing futures to
-other tasks.</p></li>
-<li><p><strong>DAG</strong> – constructed from the futures returned by <code class="docutils literal notranslate"><span class="pre">main()</span></code> and backed by
-<code class="docutils literal notranslate"><span class="pre">networkx</span></code> for cycle detection and topological sorting.</p></li>
-<li><p><strong>DAGRunner</strong> – runs tasks using a <code class="docutils literal notranslate"><span class="pre">ThreadPoolExecutor</span></code>.  It relies on the
-<code class="docutils literal notranslate"><span class="pre">AdaptiveScheduler</span></code> which inspects CPU count, available RAM and battery
-level to decide on a worker count.</p></li>
-<li><p><strong>Exporter</strong> – optional helpers for writing the DAG to DOT or PNG files.</p></li>
-<li><p><strong>Parsl bridge</strong> – utilities that allow the same tasks to be executed with the
-Parsl runtime when needed.</p></li>
+<li><p><strong>The Recipe Steps (`&#64;parslet_task` &amp; `ParsletFuture`)</strong>
+This is where it all starts. You take a normal Python function and add a <code class="docutils literal notranslate"><span class="pre">&#64;parslet_task</span></code> stamp to it. When you call it, you get back an “IOU” note (a <code class="docutils literal notranslate"><span class="pre">ParsletFuture</span></code>). You create the order of your recipe by passing these IOUs from one step to the next.</p></li>
+<li><p><strong>The Flowchart Builder (`DAG`)</strong>
+This worker takes your final IOU and follows all the connections backward to draw a complete flowchart (a DAG) of your recipe. It uses a powerful library called <code class="docutils literal notranslate"><span class="pre">networkx</span></code> to make sure your recipe doesn’t have any impossible loops.</p></li>
+<li><p><strong>The Head Chef (`DAGRunner` &amp; `AdaptiveScheduler`)</strong>
+This is the boss who runs the whole kitchen. The <code class="docutils literal notranslate"><span class="pre">DAGRunner</span></code> takes the flowchart and starts executing the steps. It has a smart helper, the <code class="docutils literal notranslate"><span class="pre">AdaptiveScheduler</span></code>, which checks your phone’s CPU, RAM, and battery to decide how many assistant chefs (worker threads) to use. This keeps everything running smoothly without crashing your device.</p></li>
+<li><p><strong>The Photographer (`Exporter`)</strong>
+This is an optional worker you can call on. Its job is to take a picture of your flowchart, saving it as a DOT or PNG file so you can see a visual map of your recipe.</p></li>
+<li><p><strong>The Translator (`Parsl Bridge`)</strong>
+This worker helps your Parslet recipes speak a different language. It provides tools to let your recipes run on Parslet’s “big brother,” the powerful Parsl system, for when you need to do some really heavy lifting on a big server.</p></li>
 </ul>
-<p>The example workflows under <code class="docutils literal notranslate"><span class="pre">examples/</span></code> show how these pieces fit together in
-practice. <code class="docutils literal notranslate"><span class="pre">hello.py</span></code> demonstrates the basics while <code class="docutils literal notranslate"><span class="pre">image_filter.py</span></code> builds
-a small image processing pipeline. <code class="docutils literal notranslate"><span class="pre">rad_pipeline.py</span></code> showcases the <strong>RAD by
-Parslet</strong> workflow used on resource-constrained devices. You can export any DAG
-using <a class="reference internal" href="exporting.html"><span class="doc">Exporting</span></a>.
-For a step-by-step guide on writing your own workflow see <a class="reference internal" href="usage.html"><span class="doc">Usage</span></a>.</p>
+<p>Want to see how this team works together in practice? The best way is to look at our examples!
+- <code class="docutils literal notranslate"><span class="pre">examples/hello.py</span></code> shows you the absolute basics.
+- <code class="docutils literal notranslate"><span class="pre">examples/image_filter.py</span></code> shows you how to build a simple photo-editing recipe.
+- <code class="docutils literal notranslate"><span class="pre">rad_pipeline.py</span></code> shows off a more advanced recipe for doing AI-powered diagnosis on a phone.</p>
+<p>To learn how to get a picture of your own recipe, see our guide on <a class="reference internal" href="exporting.html"><span class="doc">Exporting</span></a>.
+For a step-by-step guide on writing your first recipe, check out <a class="reference internal" href="usage.html"><span class="doc">Usage: Your First Parslet Workflow</span></a>.</p>
 </section>
 
 

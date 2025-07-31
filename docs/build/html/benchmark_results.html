@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Benchmark Results &mdash; Parslet 0.5.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+  <title>How Fast Is Parslet? (Our Benchmark Results) &mdash; Parslet 0.5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Parslet Showcase Challenge" href="challenge.html" /> 
+    <link rel="prev" title="Our Parslet Showcase" href="challenge.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,20 +41,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Battery Mode</a></li>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Use Cases</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="challenge.html">Parslet Showcase Challenge</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Benchmark Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How Fast Is Parslet? (Our Benchmark Results)</a></li>
 </ul>
 
         </div>
@@ -71,7 +84,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Benchmark Results</li>
+      <li class="breadcrumb-item active">How Fast Is Parslet? (Our Benchmark Results)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/benchmark_results.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -81,39 +94,42 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="benchmark-results">
-<h1>Benchmark Results<a class="headerlink" href="#benchmark-results" title="Link to this heading"></a></h1>
-<p>The table below compares execution time for a simple three-task DAG executed with Parslet, Parsl and Dask. Each run used the same Python 3.12 environment on an 8‑core laptop.</p>
+  <section id="how-fast-is-parslet-our-benchmark-results">
+<h1>How Fast Is Parslet? (Our Benchmark Results)<a class="headerlink" href="#how-fast-is-parslet-our-benchmark-results" title="Link to this heading"></a></h1>
+<p>We know that being lightweight and easy to use is great, but you also want your recipes to run efficiently. So, how does Parslet stack up against its “big brothers,” Parsl and Dask?</p>
+<p>We ran a simple test to find out. We created a basic recipe with three steps and ran it using Parslet, Parsl, and Dask on the same 8-core laptop.</p>
+<p>Here are the results!</p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>System</p></th>
-<th class="head"><p>Time (s)</p></th>
-<th class="head"><p>Notes</p></th>
+<tr class="row-odd"><th class="head"><p>The Tool We Used</p></th>
+<th class="head"><p>How Long It Took (in seconds)</p></th>
+<th class="head"><p>A Few Notes</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Parslet</p></td>
-<td><p>0.21</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">DAGRunner</span></code> with 2 workers</p></td>
+<tr class="row-even"><td><p><strong>Parslet (Our Bicycle)</strong></p></td>
+<td><p><strong>0.21</strong></p></td>
+<td><p>Our own simple <code class="docutils literal notranslate"><span class="pre">DAGRunner</span></code> with 2 assistant chefs.</p></td>
 </tr>
-<tr class="row-odd"><td><p>Parsl</p></td>
+<tr class="row-odd"><td><p>Parsl (The Bullet Train)</p></td>
 <td><p>0.29</p></td>
-<td><p>LocalThread executor</p></td>
+<td><p>Using its standard local engine.</p></td>
 </tr>
-<tr class="row-even"><td><p>Dask</p></td>
+<tr class="row-even"><td><p>Dask (The Cargo Ship)</p></td>
 <td><p>0.24</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">dask.delayed</span></code> + <code class="docutils literal notranslate"><span class="pre">dask.compute</span></code></p></td>
+<td><p>Using its standard local tools.</p></td>
 </tr>
 </tbody>
 </table>
-<p>Times represent the median of five runs.</p>
+<p><em>(These times are the average of five runs, so they’re pretty reliable.)</em></p>
+<p>As you can see, Parslet is right there in the race with the big tools! It’s designed to be as lean and efficient as possible, so you’re not giving up performance for simplicity.</p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="challenge.html" class="btn btn-neutral float-left" title="Parslet Showcase Challenge" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="challenge.html" class="btn btn-neutral float-left" title="Our Parslet Showcase" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

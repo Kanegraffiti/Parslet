@@ -6,8 +6,8 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Parslet’s Docs &mdash; Parslet 0.5.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+  <title>Welcome to Parslet &mdash; Parslet 0.5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Usage" href="usage.html" /> 
+    <link rel="next" title="Parslet Installation Guide" href="install.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,20 +41,33 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Battery Mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Use Cases</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a></li>
-<li class="toctree-l1"><a class="reference internal" href="challenge.html">Parslet Showcase Challenge</a></li>
-<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">Benchmark Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
 </ul>
 
         </div>
@@ -71,7 +84,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to Parslet’s Docs</li>
+      <li class="breadcrumb-item active">Welcome to Parslet</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -81,33 +94,81 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-parslet-s-docs">
-<h1>Welcome to Parslet’s Docs<a class="headerlink" href="#welcome-to-parslet-s-docs" title="Link to this heading"></a></h1>
+  <section id="welcome-to-parslet">
+<h1>Welcome to Parslet<a class="headerlink" href="#welcome-to-parslet" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#defining-tasks">Defining tasks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#running-a-workflow">Running a workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#resource-awareness">Resource awareness</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#android-via-termux">Android (via Termux)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#linux-debian-ubuntu">Linux (Debian/Ubuntu)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#linux-fedora-centos-rhel">Linux (Fedora/CentOS/RHEL)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#windows">Windows</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">CLI</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cli.html#common-options">Common options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cli.html#example">Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#let-s-start-with-a-story">Let’s Start with a Story</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#what-problem-does-parslet-solve">What Problem Does Parslet Solve?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#the-three-big-ideas-in-parslet">The Three Big Ideas in Parslet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#how-is-parslet-different-from-the-big-guys">How is Parslet Different from the Big Guys?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tasks.html">Tasks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tasks.html#basic-usage">Basic usage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tasks.html#error-handling">Error handling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#defining-your-tasks">Defining Your Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#running-your-workflow">Running Your Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#being-smart-with-resources">Being Smart with Resources</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Battery Mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-hello-world-of-parslet">1. The “Hello World” of Parslet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-offline-photo-filter">2. The Offline Photo Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-offline-text-cleaner">3. The Offline Text Cleaner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-video-frame-extractor">4. The Video Frame Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-rad-parslet-medical-imaging-pipeline">5. The RAD-Parslet Medical Imaging Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#edge-mcu-sensor-data-processor">6. Edge MCU Sensor Data Processor</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Use Cases</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="use_cases.html#remote-telecom-tower-monitoring">Remote Telecom Tower Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="use_cases.html#solar-site-optimization">Solar Site Optimization</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Core Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#the-buttons-on-your-remote-control">The Buttons on Your Remote Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#an-example">An Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#a-simple-example">A Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#what-happens-when-things-go-wrong-error-handling">What Happens When Things Go Wrong? (Error Handling)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#how-does-it-work">How Does It Work?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#how-do-i-turn-it-on">How Do I Turn It On?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#what-if-i-still-need-to-go-a-little-faster">What if I Still Need to Go a Little Faster?</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="exporting.html#example">Example</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#style-guide">Style guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="contributing.html#development-workflow">Development workflow</a></li>
@@ -125,8 +186,8 @@
 <li class="toctree-l2"><a class="reference internal" href="compatibility.html#parsl-compatibility">Parsl compatibility</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="challenge.html">Parslet Showcase Challenge</a></li>
-<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">Benchmark Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
 </ul>
 </div>
 </section>
@@ -135,7 +196,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="usage.html" class="btn btn-neutral float-right" title="Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="install.html" class="btn btn-neutral float-right" title="Parslet Installation Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -3,22 +3,25 @@ Welcome to Parslet
 
 .. toctree::
    :maxdepth: 2
-   :caption: Getting Started
+   :caption: User Guide
 
-   install
    introduction
+   install
    usage
    examples
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Core Features
-
+   use_cases
    cli
    tasks
    battery_mode
    exporting
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Architecture
+
    architecture
+   security
+   compatibility
 
 .. toctree::
    :maxdepth: 2
@@ -26,7 +29,5 @@ Welcome to Parslet
 
    contributing
    testing
-   security
-   compatibility
    challenge
    benchmark_results
