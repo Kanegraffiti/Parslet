@@ -1,7 +1,7 @@
 """Demo workflow for the Africa Deep Tech Challenge 2025.
 
-The tasks adjust behavior based on available battery level to show how
-Parslet can thrive in resource-constrained settings.
+This workflow adjusts task behavior based on battery level to show
+how Parslet adapts in resource-constrained environments.
 """
 
 from __future__ import annotations
@@ -9,55 +9,58 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-from parslet.core import DAG, DAGRunner, ParsletFuture, parslet_task
+from parslet import parslet_task, ParsletFuture, DAG, DAGRunner
 from parslet.utils.resource_utils import get_battery_level
 
+# Setup logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
 @parslet_task
 def check_battery() -> int:
-    """Return detected battery level or 100 if unavailable."""
+    """Return detected battery level or assume 100% if unavailable."""
     level = get_battery_level()
     if level is None:
-        logger.info("Battery level not available; assuming 100%.")
+        logger.info("Battery level unavailable; defaulting to 100%%.")
         return 100
-    logger.info("Battery at %s%%", level)
+    logger.info("Battery at %d%%", level)
     return int(level)
 
 
 @parslet_task
-def compute(batt: int) -> str:
-    """Perform a lightweight or full computation based on battery."""
-    if batt < 50:
-        logger.info("Low battery; running quick analysis only.")
+def compute_task(battery: int) -> str:
+    """Simulate computation depending on battery level."""
+    if battery < 50:
+        logger.info("Low battery detected. Running lightweight analysis.")
         result = "quick-result"
     else:
-        logger.info("Sufficient battery; performing full analysis.")
+        logger.info("Sufficient battery. Running full analysis.")
         result = "full-result"
     return result
 
 
 @parslet_task
-def save(result: str) -> str:
-    """Save results to the output directory."""
+def save_result(result: str) -> str:
+    """Save result to file."""
     out_dir = Path("Hackathon/Results")
     out_dir.mkdir(parents=True, exist_ok=True)
-    path = out_dir / "result.txt"
-    path.write_text(result)
-    logger.info("Saved %s", path)
-    return str(path)
+    result_path = out_dir / "result.txt"
+    result_path.write_text(result)
+    logger.info("Result saved to %s", result_path)
+    return str(result_path)
 
 
 def main() -> list[ParsletFuture]:
-    batt_f = check_battery()
-    comp_f = compute(batt_f)
-    save_f = save(comp_f)
-    return [save_f]
+    """Builds DAG task list."""
+    battery_future = check_battery()
+    compute_future = compute_task(battery_future)
+    save_future = save_result(compute_future)
+    return [save_future]
 
 
 if __name__ == "__main__":
-    dag = DAG(main())
-    runner = DAGRunner(battery_mode_active=True)
+    dag = DAG()
+    dag.add_tasks(*main())  # Properly adds list of tasks to DAG
+    runner = DAGRunner(dag, battery_mode_active=True)
     runner.run()
