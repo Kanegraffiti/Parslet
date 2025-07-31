@@ -22,8 +22,8 @@ def load_image(image_path: str) -> Image.Image:
 def convert_grayscale(image: Image.Image) -> Image.Image:
     """Converts a Pillow Image object to grayscale."""
     if image is None:
-        # This handles the case where load_image might have failed and returned None
-        # or if a previous task in a chain failed.
+        # This handles the case where load_image might have failed and
+        # returned None or if a previous task in a chain failed.
         print("Error: Input image to convert_grayscale is None.")
         # Depending on desired behavior, could raise an error or return None
         raise ValueError("Input image to convert_grayscale is None.")
@@ -78,18 +78,21 @@ if __name__ == "__main__":
     print("Parslet Image Filter Example")
     print("----------------------------")
     print(
-        "This script defines a DAG to load an image, convert it to grayscale,"
+        "This script defines a DAG to load an image, convert it to "
+        "grayscale,"
     )
     print("apply a blur, and save the result.")
     print("\nIMPORTANT:")
     print(
-        "To run this example, you need to create a dummy input image named 'input.png'"
+        "To run this example, you need to create a dummy input image named "
+        "'input.png'"
     )
     print("in the same directory as this script. Any PNG image will do.")
     print("For example, you can create a simple 100x100 black PNG.")
     print("----------------------------\n")
 
-    # It's good practice to ensure Pillow is installed if this script is run directly
+    # It's good practice to ensure Pillow is installed if this script is run
+    # directly
     try:
         from PIL import Image
     except ImportError:
@@ -136,9 +139,11 @@ if __name__ == "__main__":
         if future in entry_futures
     ):
         print(
-            "Output image 'output_filtered.png' should be generated if all tasks succeeded."
+            "Output image 'output_filtered.png' should be generated if all "
+            "tasks succeeded."
         )
     else:
         print(
-            "One or more tasks failed. 'output_filtered.png' might not be generated or complete."
+            "One or more tasks failed. 'output_filtered.png' might not be "
+            "generated or complete."
         )

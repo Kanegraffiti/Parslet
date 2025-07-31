@@ -21,7 +21,7 @@ or via the Parslet CLI (`parslet run examples/hello.py`). The direct execution
 mode includes verbose steps for building and running the DAG, which can be
 helpful for understanding Parslet's mechanics.
 
-Expected output of the final task: (5+3)^2 + (2+4)^2 = 8^2 + 6^2 = 64 + 36 = 100.
+Expected output of the final task: (5+3)^2 + (2+4)^2 = 100.
 """
 
 from typing import List
@@ -45,7 +45,8 @@ import sys
 
 # --- Logger Setup for this Example ---
 # It's good practice for examples to have their own logger or use a common one.
-# This allows users to see log messages from within the tasks if they configure logging.
+# This allows users to see log messages from within the tasks if they
+# configure logging.
 logger = logging.getLogger(__name__)  # Use the name of the current module
 if (
     not logger.handlers
@@ -54,10 +55,14 @@ if (
     # When run via Parslet CLI, the CLI's logger settings might override this.
     logging.basicConfig(
         level=logging.INFO,  # Default level for this example
-        format="%(asctime)s - %(name)s - [%(levelname)s] (%(funcName)s) %(message)s",
+        format=(
+            "%(asctime)s - %(name)s - [%(levelname)s] (%(funcName)s) "
+            "%(message)s"
+        ),
         datefmt="%H:%M:%S",
     )
-# To see DEBUG messages from this example's logger, you would change level to logging.DEBUG
+# To see DEBUG messages from this example's logger,
+# you would change level to logging.DEBUG
 # logger.setLevel(logging.DEBUG)
 
 
@@ -81,7 +86,8 @@ def add(a: int, b: int) -> int:
     logger.info(f"Executing add({a}, {b})...")
     time.sleep(0.5)  # Simulate I/O bound or CPU work
     result = a + b
-    logger.info(f"Task 'add({a}, {b})' finished. Result: {result}")
+    logger.info(f"Task 'add({a}, {b})' finished. "
+                f"Result: {result}")
     return result
 
 
@@ -100,7 +106,8 @@ def square(x: int) -> int:
     logger.info(f"Executing square({x})...")
     time.sleep(0.5)  # Simulate work
     result = x * x
-    logger.info(f"Task 'square({x})' finished. Result: {result}")
+    logger.info(f"Task 'square({x})' finished. "
+                f"Result: {result}")
     return result
 
 
@@ -153,9 +160,10 @@ def main() -> List[ParsletFuture]:
     val1_future: ParsletFuture = add(5, 3)  # Expected result: 8
     val2_future: ParsletFuture = add(2, 4)  # Expected result: 6
 
-    # Stage 2: Squaring operations (depend on results from Stage 1, can run in parallel with each other)
-    # `square` is called with ParsletFuture objects. Parslet automatically resolves these
-    # to their actual results before executing `square`.
+    # Stage 2: Squaring operations (depend on results from Stage 1,
+    # can run in parallel with each other)
+    # `square` is called with ParsletFuture objects. Parslet automatically
+    # resolves these to their actual results before executing `square`.
     sq1_future: ParsletFuture = square(
         val1_future
     )  # Depends on val1_future (square(8) = 64)
@@ -169,7 +177,8 @@ def main() -> List[ParsletFuture]:
     )  # Depends on sq1_future and sq2_future (64 + 36 = 100)
 
     logger.info(
-        "Workflow 'main' (hello.py): Task graph constructed. Returning terminal future(s)."
+        "Workflow 'main' (hello.py): "
+        "Task graph constructed. Returning terminal future(s)."
     )
 
     # The CLI runner will execute the DAG to resolve these terminal futures.
@@ -177,10 +186,12 @@ def main() -> List[ParsletFuture]:
 
 
 # --- Direct Execution Block ---
-# This block allows the example to be run directly using `python examples/hello.py`.
+# This block allows the example to be run directly using
+# `python examples/hello.py`.
 # It simulates the core actions of the Parslet CLI for this specific workflow.
 if __name__ == "__main__":
-    # Use a distinct logger for direct execution messages, or use the module logger.
+    # Use a distinct logger for direct execution messages,
+    # or use the module logger.
     # For clarity, using the module logger.
     logger.info("--- Parslet Hello Example (Direct Execution Mode) ---")
 
@@ -200,20 +211,22 @@ if __name__ == "__main__":
         from parslet.core.exporter import (
             save_dag_to_png,
             PydotImportError,
-            GraphvizExecutableNotFoundError,
+            GraphvizExecutableNotFoundError as GvizNotFound,
         )
 
         viz_path = "hello_dag.png"
-        logger.info(f"Attempting to visualize DAG and save to '{viz_path}'...")
+        logger.info(f"Attempting to visualize DAG and "
+                    f"save to '{viz_path}'...")
         save_dag_to_png(workflow_dag, viz_path)
         logger.info(f"DAG visualization saved to '{viz_path}'.")
     except (
         ImportError,
         PydotImportError,
-        GraphvizExecutableNotFoundError,
+        GvizNotFound,
     ) as viz_e:
         logger.warning(
-            f"Could not visualize DAG: {viz_e}. Ensure pydot and Graphviz are installed."
+            f"Could not visualize DAG: {viz_e}. "
+            "Ensure pydot and Graphviz are installed."
         )
     except Exception as e_viz:
         logger.warning(
@@ -226,7 +239,8 @@ if __name__ == "__main__":
         workflow_dag.validate_dag()
         logger.info("DAG is valid (no cycles found).")
     except DAGCycleError as e_cycle:  # Specific exception for cycle errors
-        logger.error(f"DAG validation failed: {e_cycle}", exc_info=True)
+        logger.error(f"DAG validation failed: {e_cycle}",
+                     exc_info=True)
         sys.exit(1)  # Exit if DAG is invalid
 
     # Step 4: Create a DAGRunner and execute the workflow.
@@ -246,13 +260,16 @@ if __name__ == "__main__":
     if entry_futures:
         for i, future_obj in enumerate(entry_futures):
             logger.info(
-                f"\n--- Output for entry future {i+1}: '{future_obj.task_id}' (Function: {future_obj.func.__name__}) ---"
+                f"\n--- Output for entry future {i+1}: "
+                f"'{future_obj.task_id}' "
+                f"(Function: {future_obj.func.__name__}) ---"
             )
             try:
                 # Calling .result() on a ParsletFuture will:
                 # - Return the value if the task succeeded.
                 # - Re-raise the exception if the task failed.
-                # - Re-raise UpstreamTaskFailedError if it was skipped due to a dependency failure.
+                # - Re-raise UpstreamTaskFailedError if it was skipped due to a
+                #   dependency failure.
                 result_val = future_obj.result()
                 logger.info("  Status: SUCCESSFUL")
                 logger.info(f"  Result: {result_val}")
@@ -287,7 +304,8 @@ if __name__ == "__main__":
                     f"{exec_time:.4f}s" if exec_time is not None else "N/A"
                 )
                 logger.info(
-                    f"  Task: {task_id} ({func_name}), Status: {status}, Time: {time_str}"
+                    f"  Task: {task_id} ({func_name}), Status: {status}, "
+                    f"Time: {time_str}"
                 )
 
     logger.info("\n--- Direct execution of hello.py finished ---")
