@@ -19,6 +19,8 @@ The best way to learn Parslet is by seeing it in action. This guide breaks down 
     ```
 -   **Expected Output:** The final result of the calculation, `100`, will be printed to your console.
 
+![Hello Parslet Example](visuals/hello_py.jpg)
+
 ---
 
 ### 2. The Offline Photo Filter
@@ -41,6 +43,8 @@ The best way to learn Parslet is by seeing it in action. This guide breaks down 
     parslet run examples/image_filter.py --export-png pipeline.png
     ```
     This will create a file named `pipeline.png` showing the four steps connected in a line.
+
+![Image Filter Example](visuals/image_filter.jpg)
 
 ---
 

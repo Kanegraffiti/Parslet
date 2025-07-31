@@ -1,3 +1,5 @@
+![Parslet Banner](../docs/visuals/Parslet_Banner.png)
+
 # Parslet: Offline-First Workflow Automation for Low-Resource Devices
 
 ## Problem Definition and Context
@@ -41,6 +43,8 @@ In the end, Parslet has:
 - A **plugin system** so users can add custom tools (e.g., for audio, image, or CSV workflows)
 - A simple **CLI** that runs DAGs and logs everything clearly
 - **DEFCON** — an internal sentinel system that validates the system, the DAG, and any imported files for safety
+
+![Architecture Diagram](../docs/visuals/architecture.png)
 
 ---
 
