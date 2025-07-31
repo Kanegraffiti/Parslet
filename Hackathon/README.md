@@ -36,5 +36,6 @@ A Parslet workflow deployed on a low-power computer (e.g., a Raspberry Pi) at a 
 By deploying Parslet, IHS can transition from reactive to predictive maintenance, significantly reducing downtime, optimizing power consumption, and lowering operational costs across its network of remote towers.
 
 ## Demonstration
-![Battery Aware Demo](docs/visuals/battery_aware_demo.jpg)
-The `battery_aware_demo.py` script in this directory provides a practical demonstration of a power-sensitive workflow, showcasing how tasks adapt their behavior based on the device's battery level.
+![Battery Aware Demo](../docs/visuals/battery_aware_demo.jpg)
+
+The `battery_aware_demo.py` script provides a practical demonstration of a power-sensitive workflow. It shows how Parslet adapts to the device's battery level, running lighter tasks when power is low and full tasks when sufficient power is available.
