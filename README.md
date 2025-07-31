@@ -3,8 +3,8 @@
 # Parslet: Your Pocket-Sized Workflow Assistant
 **A tiny tool for running automated to-do lists (we call them workflows) on your Python projects. It's built to work anywhere, especially on your phone.**
 
-![Parsl-compatible](https://img.shields.io/badge/parsl-compatible-blue.svg)
-![Termux-Ready](https://img.shields.io/badge/termux-ready-brightgreen.svg)
+![Parsl-compatible](https://img.shields.io/badge/parsl-compatible-purple.svg)
+![Termux-Ready](https://img.shields.io/badge/termux-ready-purple.svg)
 ![License](https://img.shields.io/github/license/Kanegraffiti/Parslet)
 
 ### So, What is Parslet?
