@@ -1,6 +1,6 @@
 # Visual Assets Guide
 
-This table lists the image placeholders referenced throughout the
+This table lists the image placeholders that will be referenced throughout the
 documentation. Create your own diagrams with the same filenames so that the
 examples work without modification.  See ``../assets/README.md`` for the actual
 images included in this repository.
