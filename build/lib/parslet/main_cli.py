@@ -29,12 +29,6 @@ def cli() -> None:
         action="store_true",
         help="Show DAG and resources without executing",
     )
-    run_p.add_argument(
-        "--export-png",
-        type=str,
-        metavar="PATH",
-        help="Export a PNG visualization of the DAG to the given path.",
-    )
 
     rad_p = sub.add_parser("rad", help="Run RAD by Parslet example")
     rad_p.add_argument("image", nargs="?")
@@ -75,14 +69,6 @@ def cli() -> None:
         futures = mod.main()
         dag = DAG()
         dag.build_dag(futures)
-
-        if args.export_png:
-            try:
-                dag.save_png(args.export_png)
-                logger.info(f"DAG visualization saved to {args.export_png}")
-            except Exception as e:
-                logger.error(f"Failed to export DAG to PNG: {e}", exc_info=False)
-
         runner = DAGRunner(
             battery_mode_active=args.battery_mode,
             failsafe_mode=args.failsafe_mode,

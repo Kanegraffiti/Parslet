@@ -1,0 +1,16 @@
+networkx
+pillow
+psutil
+pydot
+rich
+
+[dask]
+dask
+
+[dev]
+flake8
+pytest
+black
+
+[parsl]
+parsl

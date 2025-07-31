@@ -1,3 +1,33 @@
+Metadata-Version: 2.4
+Name: parslet
+Version: 0.5.0
+Summary: Simplify Python workflows with a minimal DAG engine.
+Author-email: Parslet Team <team@example.com>
+License-Expression: MIT
+Project-URL: Homepage, https://github.com/Kanegraffiti/Parslet
+Project-URL: Documentation, https://github.com/Kanegraffiti/Parslet/tree/main/docs
+Project-URL: Source, https://github.com/Kanegraffiti/Parslet
+Keywords: workflow,dag,automation
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: networkx
+Requires-Dist: pillow
+Requires-Dist: psutil
+Requires-Dist: pydot
+Requires-Dist: rich
+Provides-Extra: dask
+Requires-Dist: dask; extra == "dask"
+Provides-Extra: parsl
+Requires-Dist: parsl; extra == "parsl"
+Provides-Extra: dev
+Requires-Dist: flake8; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: black; extra == "dev"
+Dynamic: license-file
+
 # Parslet: Your Pocket-Sized Workflow Assistant
 **A tiny tool for running automated to-do lists (we call them workflows) on your Python projects. It's built to work anywhere, especially on your phone.**
 
@@ -50,23 +80,23 @@ Most tools like this are built for powerful servers in a data center. Parslet is
 
 ---
 
-### How Does It Work?
+### How Does It Work? (The "Magic")
 
 It uses something called a **DAG** (Directed Acyclic Graph), which is just a fancy way of saying:
 
 > “Step B only runs after Step A is done.”
 
-You define these steps (we call them **Tasks**) in a simple Python file. Parslet reads your file, understands the order, and handles the rest. It manages failures and runs everything as efficiently as possible.
+You define these steps (we call them **tasks**) in a simple Python file. Parslet reads your file, understands the order, and handles the rest. It manages failures and runs everything as efficiently as possible.
 
 ---
 
-## Get Started
+## Let's Get Started! (Quickstart)
 
 Ready to try it? You can be up and running in less than a minute.
 
 1.  **Get the Code:**
 
-    First, you'll need to copy the project files to your device using a CLI.
+    First, you'll need to copy the project files to your device.
 
     ```bash
     git clone https://github.com/Kanegraffiti/Parslet.git
@@ -75,7 +105,7 @@ Ready to try it? You can be up and running in less than a minute.
 
 2.  **Install It:**
 
-    Now, have Python install Parslet so you can use it from anywhere.
+    Now, tell Python to install Parslet so you can use it from anywhere.
 
     ```bash
     pip install .
@@ -117,7 +147,7 @@ Ready to try it? You can be up and running in less than a minute.
         return [loud_greeting_iou]
     ```
 
-4.  **Run It**
+4.  **Run It!**
 
     Now for the fun part. Tell Parslet to run your new recipe.
 
@@ -129,7 +159,7 @@ You'll see the `print` statements from your tasks as they run, in the correct or
 
 ---
 
-## What Else Can It Do? 
+## What Else Can It Do? (Features)
 
 Parslet is small, but it's packed with neat features for real-world use.
 
@@ -144,29 +174,6 @@ Want to see more? Check out the `use_cases/` and `examples/` folders for more ad
 
 ---
 
-## Visualizing Your Workflows
-
-Parslet can generate a picture of your workflow (a "DAG") to help you see how your tasks are connected. This is great for debugging and documentation.
-
-To use this feature, you need to have **Graphviz** installed on your system.
-
--   **On Linux (Debian/Ubuntu):** `sudo apt install graphviz`
--   **On Linux (Fedora):** `sudo dnf install graphviz`
--   **On Android (Termux):** `pkg install graphviz`
--   **On Windows:** Download and run the installer from the [official Graphviz website](https://graphviz.org/download/) and make sure to add it to your system's PATH.
-
-You will also need the `pydot` Python package, which is included in `requirements.txt`.
-
-Once Graphviz is installed, you can use the `--export-png` flag with the `run` command:
-
-```bash
-parslet run my_first_workflow.py --export-png my_workflow.png
-```
-
-This will create an image file named `my_workflow.png` showing your workflow.
-
----
-
 ## Want to Learn More? (Documentation)
 
 We've written down everything you need to know in a simple, friendly way.
@@ -177,7 +184,7 @@ We've written down everything you need to know in a simple, friendly way.
 
 ---
 
-## Contributing
+## Come Build With Us! (Contributing)
 
 We'd love your help making Parslet even better. It's easy to get started. Check out our [Contributing Guide](./CONTRIBUTING.md).
 

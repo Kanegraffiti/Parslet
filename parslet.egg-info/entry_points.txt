@@ -1,0 +1,2 @@
+[console_scripts]
+parslet = parslet.main_cli:main

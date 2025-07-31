@@ -2,16 +2,8 @@ import networkx as nx
 from typing import List, Dict, Set
 from pathlib import Path
 from collections import deque
-import logging
 
 from .task import ParsletFuture
-from .exporter import (
-    save_dag_to_png,
-    PydotImportError,
-    GraphvizExecutableNotFoundError,
-)
-
-logger = logging.getLogger(__name__)
 
 
 class DAGCycleError(ValueError):
@@ -346,34 +338,6 @@ class DAG:
         if filepath:
             Path(filepath).write_text(dot_str)
         return dot_str
-
-    def save_png(self, filepath: str) -> None:
-        """
-        Saves a PNG visualization of the DAG to the specified filepath.
-
-        This method uses the `save_dag_to_png` utility from the exporter module.
-        It handles potential errors gracefully by logging them without crashing.
-
-        Args:
-            filepath (str): The path where the PNG image will be saved.
-        """
-        try:
-            save_dag_to_png(self, filepath)
-        except (PydotImportError, GraphvizExecutableNotFoundError) as e:
-            # These are expected errors if dependencies are missing.
-            # Log them as warnings and re-raise to be handled by the CLI.
-            logger.warning(f"Could not generate DAG image: {e}")
-            logger.warning(
-                "Please ensure pydot and Graphviz are installed and in your system's PATH."
-            )
-            raise
-        except Exception as e:
-            # Catch any other unexpected errors during image generation.
-            logger.error(
-                f"An unexpected error occurred while saving the DAG image: {e}",
-                exc_info=True,
-            )
-            raise
 
     def all_tasks_and_dependencies_known(
         self, entry_futures: List[ParsletFuture]
