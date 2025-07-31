@@ -50,23 +50,23 @@ Most tools like this are built for powerful servers in a data center. Parslet is
 
 ---
 
-### How Does It Work? (The "Magic")
+### How Does It Work?
 
 It uses something called a **DAG** (Directed Acyclic Graph), which is just a fancy way of saying:
 
 > “Step B only runs after Step A is done.”
 
-You define these steps (we call them **tasks**) in a simple Python file. Parslet reads your file, understands the order, and handles the rest. It manages failures and runs everything as efficiently as possible.
+You define these steps (we call them **Tasks**) in a simple Python file. Parslet reads your file, understands the order, and handles the rest. It manages failures and runs everything as efficiently as possible.
 
 ---
 
-## Let's Get Started! (Quickstart)
+## Get Started
 
 Ready to try it? You can be up and running in less than a minute.
 
 1.  **Get the Code:**
 
-    First, you'll need to copy the project files to your device.
+    First, you'll need to copy the project files to your device using a CLI.
 
     ```bash
     git clone https://github.com/Kanegraffiti/Parslet.git
@@ -75,7 +75,7 @@ Ready to try it? You can be up and running in less than a minute.
 
 2.  **Install It:**
 
-    Now, tell Python to install Parslet so you can use it from anywhere.
+    Now, have Python install Parslet so you can use it from anywhere.
 
     ```bash
     pip install .
@@ -117,7 +117,7 @@ Ready to try it? You can be up and running in less than a minute.
         return [loud_greeting_iou]
     ```
 
-4.  **Run It!**
+4.  **Run It**
 
     Now for the fun part. Tell Parslet to run your new recipe.
 
@@ -129,7 +129,7 @@ You'll see the `print` statements from your tasks as they run, in the correct or
 
 ---
 
-## What Else Can It Do? (Features)
+## What Else Can It Do? 
 
 Parslet is small, but it's packed with neat features for real-world use.
 
@@ -154,7 +154,7 @@ We've written down everything you need to know in a simple, friendly way.
 
 ---
 
-## Come Build With Us! (Contributing)
+## Contributing
 
 We'd love your help making Parslet even better. It's easy to get started. Check out our [Contributing Guide](./CONTRIBUTING.md).
 
