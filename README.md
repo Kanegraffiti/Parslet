@@ -1,5 +1,3 @@
-![Parslet Banner](docs/visuals/Parslet_Banner.png)
-
 # Parslet: Your Pocket-Sized Workflow Assistant
 **A tiny tool for running automated to-do lists (we call them workflows) on your Python projects. It's built to work anywhere, especially on your phone.**
 
