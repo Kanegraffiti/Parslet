@@ -1,8 +1,8 @@
 """Hybrid execution engine for Parslet.
 
-This module provides a minimal helper to execute a Parslet workflow partly on
-Parsl and partly on the local DAGRunner.  It is intended as a starting point for
-more advanced federated orchestration.
+This module provides a minimal helper to execute a Parslet workflow
+partly on Parsl and partly on the local DAGRunner.  It is intended as a
+starting point for more advanced federated orchestration.
 """
 
 from __future__ import annotations

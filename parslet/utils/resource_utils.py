@@ -3,12 +3,13 @@ Parslet Resource Utilities
 --------------------------
 
 This module provides utility functions for querying system resources, such as
-CPU count and available RAM. These utilities help Parslet make informed decisions,
-for example, when determining default concurrency levels for the `DAGRunner`.
+CPU count and available RAM. These utilities help Parslet make informed
+decisions, for example, when determining default concurrency levels for the
+`DAGRunner`.
 
 The module attempts to use `psutil` for detailed information like RAM, but
-gracefully handles its absence by returning `None` or default values, ensuring
-`psutil` is a soft dependency.
+gracefully handles its absence by returning `None` or default values,
+ensuring `psutil` is a soft dependency.
 """
 
 import os
@@ -16,18 +17,19 @@ from typing import Optional
 import logging  # For logging errors in resource queries
 
 # Initialize a logger for this module.
-# This allows for more controlled logging than print statements, especially if used as a library.
+# This allows for more controlled logging than print statements, especially if
+# used as a library.
 logger = logging.getLogger(__name__)
 
-# Attempt to import psutil. If not available, relevant functions will indicate this.
-# PSUTIL_AVAILABLE acts as a flag for conditional logic.
+# Attempt to import psutil. If not available, relevant functions will indicate
+# this. PSUTIL_AVAILABLE acts as a flag for conditional logic.
 try:
     import psutil
 
     PSUTIL_AVAILABLE = True
 except ImportError:
     PSUTIL_AVAILABLE = False
-    psutil = None  # Assign to None so type hints and conditional checks work cleanly.
+    psutil = None  # Assign to None so type hints and checks work cleanly.
 
 BATTERY_AVAILABLE = False
 try:
@@ -54,7 +56,8 @@ def get_cpu_count() -> int:
     except NotImplementedError:
         # Some platforms might not implement os.cpu_count().
         logger.warning(
-            "os.cpu_count() is not implemented on this platform. Defaulting to 1 CPU."
+            "os.cpu_count() is not implemented on this platform. "
+            "Defaulting to 1 CPU."
         )
         return 1
 
@@ -63,7 +66,8 @@ def get_cpu_count() -> int:
     else:
         # This case should be rare with modern Python versions.
         logger.warning(
-            f"os.cpu_count() returned an unexpected value: {cpu_count}. Defaulting to 1 CPU."
+            f"os.cpu_count() returned an unexpected value: {cpu_count}. "
+            "Defaulting to 1 CPU."
         )
         return 1
 
@@ -72,28 +76,30 @@ def get_available_ram_mb() -> Optional[float]:
     """
     Returns the available system RAM in Megabytes (MB).
 
-    This function relies on the `psutil` library. If `psutil` is not installed
-    or if an error occurs during the call (e.g., due to permissions or OS issues),
-    it returns `None`.
+    This function relies on the `psutil` library. If `psutil` is not
+    installed or if an error occurs during the call (e.g., due to
+    permissions or OS issues), it returns `None`.
 
     The "available" memory is defined by `psutil.virtual_memory().available`,
-    which represents the memory that can be given instantly to processes without
-    the system going into swap.
+    which represents the memory that can be given instantly to processes
+    without the system going into swap.
 
     Returns:
-        Optional[float]: The available system RAM in MB, or `None` if `psutil`
-                         is not available or an error occurs.
+        Optional[float]: The available system RAM in MB, or `None` if
+                         `psutil` is not available or an error occurs.
     """
     if not PSUTIL_AVAILABLE or psutil is None:
-        # Log this information once or at a higher debug level if it becomes noisy.
-        # For now, a debug log is appropriate as this is expected if psutil isn't a hard dependency.
+        # Log this information once or at a higher debug level if it becomes
+        # noisy. For now, a debug log is appropriate as this is expected if
+        # psutil isn't a hard dependency.
         logger.debug(
-            "psutil library not found or not imported. Cannot retrieve available RAM."
+            "psutil library not found or not imported. "
+            "Cannot retrieve available RAM."
         )
         return None
 
     try:
-        # psutil.virtual_memory() returns a named tuple with memory statistics.
+        # psutil.virtual_memory() returns a named tuple with memory stats.
         # '.available' gives the memory immediately available for processes.
         available_ram_bytes = psutil.virtual_memory().available
         # Convert bytes to megabytes (1 MB = 1024 * 1024 bytes).
@@ -117,7 +123,8 @@ def get_battery_level() -> Optional[int]:
                 return int(batt.percent)
         except Exception as e:  # pragma: no cover - psutil may fail in CI
             logger.debug(
-                "Battery level via psutil not available: %s", e, exc_info=False
+                "Battery level via psutil not available: %s", e,
+                exc_info=False
             )
 
     # 2) Try Termux command on Android devices
@@ -180,15 +187,19 @@ if __name__ == "__main__":
     else:
         if not PSUTIL_AVAILABLE:
             logger.warning(
-                "Available RAM: Information unavailable because 'psutil' is not installed."
+                "Available RAM: Information unavailable because 'psutil' is "
+                "not installed."
             )
             logger.info(
-                "Consider installing psutil for RAM details: pip install psutil"
+                "Consider installing psutil for RAM details: "
+                "pip install psutil"
             )
         else:
-            # This case implies psutil is imported but the call failed for other reasons.
+            # This case implies psutil is imported but the call failed for
+            # other reasons.
             logger.error(
-                "Available RAM: Could not be determined due to an error during psutil call (see logs above)."
+                "Available RAM: Could not be determined due to an error "
+                "during psutil call (see logs above)."
             )
 
     logger.info("--- End of Test ---")

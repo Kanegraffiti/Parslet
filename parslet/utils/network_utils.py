@@ -15,7 +15,7 @@ except ImportError:
 def is_network_available(
     host: str = "1.1.1.1", port: int = 53, timeout: float = 3.0
 ) -> bool:
-    """Return True if we can reach the given host:port within ``timeout`` seconds."""
+    """Return True if we can reach the given host:port within ``timeout``."""
     try:
         with socket.create_connection((host, port), timeout=timeout):
             return True

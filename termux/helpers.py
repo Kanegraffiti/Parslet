@@ -36,7 +36,8 @@ def is_running_in_termux() -> bool:
         return True
 
     # Check the value of the PREFIX environment variable.
-    # In Termux, PREFIX is consistently set to '/data/data/com.termux/files/usr'.
+    # In Termux, PREFIX is consistently set to
+    # '/data/data/com.termux/files/usr'.
     prefix_path = os.environ.get("PREFIX")
     if prefix_path == "/data/data/com.termux/files/usr":
         logger.debug(f"Termux detected via PREFIX path: {prefix_path}")
@@ -44,16 +45,20 @@ def is_running_in_termux() -> bool:
 
     # Additional checks could be added here if necessary, for example:
     # - Checking for specific files or directories unique to Termux.
-    # - Querying system properties (though this might require platform-specific tools).
-    # However, environment variables are generally the most straightforward and reliable method.
+    # - Querying system properties (though this might require platform-
+    #   specific tools).
+    # However, environment variables are generally the most straightforward
+    # and reliable method.
 
     logger.debug(
-        "Termux environment not detected based on common environment variables."
+        "Termux environment not detected based on common environment "
+        "variables."
     )
     return False
 
 
-# This block allows for direct execution and testing of the functions in this module.
+# This block allows for direct execution and testing of the functions in this
+# module.
 if __name__ == "__main__":
     # Basic logging setup for __main__ to see messages from this module.
     logging.basicConfig(
@@ -66,14 +71,17 @@ if __name__ == "__main__":
 
     if running_in_termux:
         logger.info(
-            "Detection result: This script appears to be running inside Termux."
+            "Detection result: This script appears to be running inside "
+            "Termux."
         )
     else:
         logger.info(
-            "Detection result: This script does NOT appear to be running inside Termux."
+            "Detection result: This script does NOT appear to be running "
+            "inside Termux."
         )
 
-    # Print relevant environment variables for diagnostic purposes during testing.
+    # Print relevant environment variables for diagnostic purposes during
+    # testing.
     logger.info("\nRelevant environment variables for diagnostics:")
     for var in [
         "TERMUX_VERSION",

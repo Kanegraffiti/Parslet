@@ -47,8 +47,10 @@ from .dag_io import export_dag_to_json, import_dag_from_json
 # Placeholder for imports from .visualization module (once implemented)
 # from .visualization import visualize_dag_ascii
 
-# You can define __all__ to specify what gets imported with 'from parslet.core import *'
-# For explicit imports like 'from parslet.core import DAG', __all__ is not strictly necessary
+# You can define __all__ to specify what gets imported with
+# 'from parslet.core import *'
+# For explicit imports like 'from parslet.core import DAG',
+# __all__ is not strictly necessary
 # but can be good practice.
 __all__ = [
     "parslet_task",

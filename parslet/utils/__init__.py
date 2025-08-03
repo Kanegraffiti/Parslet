@@ -19,10 +19,10 @@ def get_parslet_logger(
 ) -> logging.Logger:
     """Return a logger configured for Parslet CLI and library use.
 
-    If ``rich`` is available, logs will be pretty-printed using ``RichHandler``;
-    otherwise a basic ``logging`` configuration is used. Handlers are added only
-    once per logger to avoid duplicate messages when the function is called
-    multiple times.
+    If ``rich`` is available, logs will be pretty-printed using
+    ``RichHandler``; otherwise a basic ``logging`` configuration is used.
+    Handlers are added only once per logger to avoid duplicate messages when
+    the function is called multiple times.
     """
 
     logger = logging.getLogger(name)

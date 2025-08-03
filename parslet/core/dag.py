@@ -16,11 +16,13 @@ logger = logging.getLogger(__name__)
 
 class DAGCycleError(ValueError):
     """
-    Custom exception raised when a cycle is detected in the task dependency graph.
+    Custom exception raised when a cycle is detected in the task
+    dependency graph.
 
-    This error indicates that the defined task dependencies form a circular loop,
-    making it impossible to determine a valid execution order. The error message
-    often includes the tasks involved in the cycle if they can be determined.
+    This error indicates that the defined task dependencies form a circular
+    loop, making it impossible to determine a valid execution order. The
+    error message often includes the tasks involved in the cycle if they
+    can be determined.
     """
 
     pass
@@ -30,20 +32,20 @@ class DAG:
     """
     Represents a Directed Acyclic Graph (DAG) of Parslet tasks.
 
-    This class is responsible for constructing the task graph based on declared
-    dependencies between `ParsletFuture` objects. Dependencies are established
-    when one `ParsletFuture` is passed as an argument to the function call that
-    generates another `ParsletFuture`.
+    This class is responsible for constructing the task graph based on
+    declared dependencies between `ParsletFuture` objects. Dependencies are
+    established when one `ParsletFuture` is passed as an argument to the
+    function call that generates another `ParsletFuture`.
 
     The DAG can be validated to check for structural issues, primarily cycles,
     and can provide a topological sort of tasks for execution by the `DAGRunner`.
 
     Attributes:
-        graph (nx.DiGraph): A NetworkX directed graph representing the task dependencies.
-                            Nodes are task IDs, and edges point from a dependency to the
-                            task that depends on it.
-        tasks (Dict[str, ParsletFuture]): A mapping from task IDs to their corresponding
-                                         `ParsletFuture` objects.
+        graph (nx.DiGraph): A NetworkX directed graph representing the task
+                            dependencies. Nodes are task IDs, and edges point
+                            from a dependency to the task that depends on it.
+        tasks (Dict[str, ParsletFuture]): A mapping from task IDs to their
+                                         corresponding `ParsletFuture` objects.
     """
 
     def __init__(self) -> None:
@@ -59,33 +61,41 @@ class DAG:
 
     def add_task(self, future: ParsletFuture) -> None:
         """
-        (Deprecated or Internal) Adds a single task and its dependencies recursively.
+        (Deprecated or Internal) Adds a single task and its dependencies
+        recursively.
 
         Note: This method was part of an earlier graph construction approach.
-        The current primary method for graph construction is `build_dag`, which
-        uses an iterative approach. This method might be removed or refactored.
+        The current primary method for graph construction is `build_dag`,
+        which uses an iterative approach. This method might be removed or
+        refactored.
 
         If the task (identified by `future.task_id`) is already in the DAG,
         the method returns early. Otherwise, it adds the task as a node and
-        then inspects its `args` and `kwargs` for other `ParsletFuture` instances.
-        If dependencies are found, they are added to the graph first (recursively),
-        and then directed edges are added from each dependency to the current task.
+        then inspects its `args` and `kwargs` for other `ParsletFuture`
+        instances. If dependencies are found, they are added to the graph
+        first (recursively), and then directed edges are added from each
+        dependency to the current task.
 
         Args:
-            future (ParsletFuture): The ParsletFuture object representing the task to add.
+            future (ParsletFuture): The ParsletFuture object representing the
+            task to add.
         """
-        # Check if the task has already been added to avoid redundant processing or cycles
-        # in this recursive addition (though build_dag is preferred now).
+        # Check if the task has already been added to avoid redundant
+        # processing or cycles in this recursive addition (though build_dag
+        # is preferred now).
         if future.task_id in self.tasks:
             return
 
         # Add the current task as a node in the graph.
         # The 'future_obj' attribute stores the actual ParsletFuture.
-        self.graph.add_node(future.task_id, future_obj=future)
+        self.graph.add_node(
+            future.task_id, future_obj=future
+        )
         self.tasks[future.task_id] = future
 
-        # Collect all ParsletFuture instances from the task's arguments and keyword arguments.
-        # These represent the direct dependencies of the current task.
+        # Collect all ParsletFuture instances from the task's arguments and
+        # keyword arguments. These represent the direct dependencies of the
+        # current task.
         dependencies_found: List[ParsletFuture] = []
         for arg in future.args:
             if isinstance(arg, ParsletFuture):
@@ -94,9 +104,11 @@ class DAG:
             if isinstance(kwarg_value, ParsletFuture):
                 dependencies_found.append(kwarg_value)
 
-        # For each dependency found, ensure it's in the graph and then add an edge.
+        # For each dependency found, ensure it's in the graph and then add
+        # an edge.
         for dep_future in dependencies_found:
-            # If a dependency hasn't been added yet, recursively call add_task for it.
+            # If a dependency hasn't been added yet, recursively call add_task
+            # for it.
             if dep_future.task_id not in self.tasks:
                 self.add_task(dep_future)
 
@@ -108,21 +120,22 @@ class DAG:
         """
         Builds the DAG from a list of "entry" ParsletFuture objects.
 
-        Entry futures are typically the terminal tasks of a workflow (tasks whose
-        results are desired directly). This method performs a breadth-first traversal
-        starting from these entry futures, exploring backward along dependencies
-        (as ParsletFuture objects are passed as arguments). All discovered tasks
-        are added as nodes, and edges are created to represent dependencies.
+        Entry futures are typically the terminal tasks of a workflow
+        (tasks whose results are desired directly). This method performs a
+        breadth-first traversal starting from these entry futures, exploring
+        backward along dependencies (as ParsletFuture objects are passed as
+        arguments). All discovered tasks are added as nodes, and edges are
+        created to represent dependencies.
 
         Args:
-            entry_futures (List[ParsletFuture]): A list of ParsletFuture objects that
-                                                 are part of the workflow. These often
-                                                 represent the final outputs or key
-                                                 checkpoints of the DAG.
+            entry_futures (List[ParsletFuture]): A list of ParsletFuture
+            objects that are part of the workflow. These often
+            represent the final outputs or key checkpoints of the DAG.
         """
         # Queue for BFS-like traversal of futures and their dependencies.
         queue = deque(entry_futures)
-        # Set to keep track of futures whose dependencies have been processed or added to queue.
+        # Set to keep track of futures whose dependencies have been processed
+        # or added to queue.
         visited_futures_for_processing: Set[str] = set()
 
         while queue:
@@ -141,8 +154,8 @@ class DAG:
                 self.tasks[current_future.task_id] = current_future
 
             # Discover dependencies from args and kwargs.
-            # If a dependency is a ParsletFuture, ensure it's added to the graph
-            # and to the processing queue if not already visited.
+            # If a dependency is a ParsletFuture, ensure it's added to the
+            # graph and to the processing queue if not already visited.
             # Then, add an edge from the dependency to the current_future.
 
             dependencies_to_explore: List[ParsletFuture] = []
@@ -162,9 +175,11 @@ class DAG:
                     self.tasks[dep_future.task_id] = dep_future
 
                 # Add an edge from the dependency to the current task.
-                self.graph.add_edge(dep_future.task_id, current_future.task_id)
+                self.graph.add_edge(dep_future.task_id,
+                                    current_future.task_id)
 
-                # If this dependency hasn't been processed, add it to the queue.
+                # If this dependency hasn't been processed, add it to the
+                # queue.
                 if dep_future.task_id not in visited_futures_for_processing:
                     queue.append(dep_future)
 
@@ -172,14 +187,14 @@ class DAG:
         """
         Validates the DAG structure, primarily checking for cycles.
 
-        If the graph is empty, validation is considered successful (vacuously true).
-        Uses NetworkX's `is_directed_acyclic_graph` to check for cycles.
-        If a cycle is found, it attempts to find and include the cycle path in
-        the raised `DAGCycleError`.
+        If the graph is empty, validation is considered successful
+        (vacuously true). Uses NetworkX's `is_directed_acyclic_graph` to
+        check for cycles. If a cycle is found, it attempts to find and
+        include the cycle path in the raised `DAGCycleError`.
 
         Raises:
-            DAGCycleError: If a cycle is detected in the graph. The error message
-                           may include the nodes forming the cycle.
+            DAGCycleError: If a cycle is detected in the graph. The error
+            message may include the nodes forming the cycle.
         """
         if not self.graph.nodes:
             # An empty graph is trivially acyclic.
@@ -188,13 +203,15 @@ class DAG:
         if not nx.is_directed_acyclic_graph(self.graph):
             cycle_info = "A cycle was detected."  # Default message
             try:
-                # Attempt to find the specific cycle for a more informative error.
-                # nx.find_cycle returns a list of edges forming a cycle.
-                cycle_edges = nx.find_cycle(self.graph, orientation="original")
+                # Attempt to find the specific cycle for a more informative
+                # error. nx.find_cycle returns a list of edges forming a cycle.
+                cycle_edges = nx.find_cycle(self.graph,
+                                            orientation="original")
 
                 path_str = ""
                 if cycle_edges:
-                    # Extract nodes from the cycle edges to form a path string like "A -> B -> C -> A"
+                    # Extract nodes from the cycle edges to form a path string
+                    # like "A -> B -> C -> A"
                     temp_nodes = [
                         cycle_edges[0][0]
                     ]  # Start with the first node of the first edge
@@ -204,7 +221,7 @@ class DAG:
                         _,
                     ) in (
                         cycle_edges
-                    ):  # u=source, v=target, _=edge_data_dict (not used here)
+                    ):  # u=source, v=target, _=edge_data_dict
                         if v not in temp_nodes:
                             temp_nodes.append(v)
                         else:  # Cycle closes
@@ -215,9 +232,11 @@ class DAG:
                 if path_str:
                     cycle_info = f"Cycle detected involving tasks: {path_str}."
             except nx.NetworkXNoCycle:
-                # This case should ideally not be reached if is_directed_acyclic_graph was false.
-                # It's a defensive measure.
-                cycle_info = "A cycle was detected, but could not determine the specific tasks involved."
+                # This case should ideally not be reached if
+                # is_directed_acyclic_graph was false. It's a defensive
+                # measure.
+                cycle_info = ("A cycle was detected, but could not "
+                              "determine the specific tasks involved.")
 
             raise DAGCycleError(
                 f"Task dependency graph is invalid. {cycle_info}"
@@ -225,21 +244,22 @@ class DAG:
 
     def get_execution_order(self) -> List[str]:
         """
-        Performs a topological sort on the DAG to get a valid execution order of task IDs.
+        Performs a topological sort on the DAG to get a valid execution
+        order of task IDs.
 
         Tasks with no dependencies will appear earlier in the list. The order
-        respects all defined dependencies, meaning a task will only appear after
-        all its prerequisite tasks have appeared.
+        respects all defined dependencies, meaning a task will only appear
+        after all its prerequisite tasks have appeared.
 
         Returns:
             List[str]: A list of task IDs (strings) in a valid execution order.
                        Returns an empty list if the DAG is empty.
 
         Raises:
-            DAGCycleError: If the graph contains cycles (re-raised from `validate_dag`
-                           if `nx.topological_sort` fails due to cycles).
-            RuntimeError: If an unexpected graph state leads to failure in sorting
-                          despite passing cycle validation (highly unlikely).
+            DAGCycleError: If the graph contains cycles (re-raised from
+            `validate_dag` if `nx.topological_sort` fails due to cycles).
+            RuntimeError: If an unexpected graph state leads to failure in
+            sorting despite passing cycle validation (highly unlikely).
         """
         if not self.graph.nodes:
             return []  # No tasks to order in an empty graph.
@@ -256,7 +276,8 @@ class DAG:
             # If validate_dag didn't raise (which it should have),
             # then something is very wrong.
             raise RuntimeError(
-                "Failed to get execution order due to an unexpected graph state that passed cycle validation."
+                "Failed to get execution order due to an unexpected graph "
+                "state that passed cycle validation."
             )
 
     def get_task_future(self, task_id: str) -> ParsletFuture:
@@ -267,10 +288,12 @@ class DAG:
             task_id (str): The unique ID of the task.
 
         Returns:
-            ParsletFuture: The `ParsletFuture` object associated with the task ID.
+            ParsletFuture: The `ParsletFuture` object associated with the
+            task ID.
 
         Raises:
-            KeyError: If the `task_id` is not found in the DAG's registered tasks.
+            KeyError: If the `task_id` is not found in the DAG's registered
+            tasks.
         """
         if task_id not in self.tasks:
             raise KeyError(
@@ -284,7 +307,8 @@ class DAG:
         of the specified task.
 
         Args:
-            task_id (str): The ID of the task whose dependencies are to be retrieved.
+            task_id (str): The ID of the task whose dependencies are to be
+            retrieved.
 
         Returns:
             List[str]: A list of task IDs of direct dependencies.
@@ -302,7 +326,8 @@ class DAG:
         the specified task.
 
         Args:
-            task_id (str): The ID of the task whose dependents are to be retrieved.
+            task_id (str): The ID of the task whose dependents are to be
+            retrieved.
 
         Returns:
             List[str]: A list of task IDs of direct dependents.
@@ -364,7 +389,8 @@ class DAG:
             # Log them as warnings and re-raise to be handled by the CLI.
             logger.warning(f"Could not generate DAG image: {e}")
             logger.warning(
-                "Please ensure pydot and Graphviz are installed and in your system's PATH."
+                "Please ensure pydot and Graphviz are installed and in your "
+                "system's PATH."
             )
             raise
         except Exception as e:
@@ -380,18 +406,20 @@ class DAG:
     ) -> bool:
         """
         (Utility/Debug) Checks if all futures reachable from `entry_futures`
-        (including transitive dependencies found in their args/kwargs) are known
+        (including transitive dependencies in their args/kwargs) are known
         to this DAG instance (i.e., present in `self.tasks`).
 
-        This method is primarily for internal checks or debugging to ensure that
-        the graph construction process has successfully registered all relevant tasks.
+        This method is for internal checks or debugging to ensure that
+        the graph construction process has successfully registered all
+        relevant tasks.
 
         Args:
-            entry_futures (List[ParsletFuture]): A list of `ParsletFuture` objects
-                                                 to start the reachability check from.
+            entry_futures (List[ParsletFuture]): A list of `ParsletFuture`
+            objects to start the reachability check from.
 
         Returns:
-            bool: True if all reachable futures are known to the DAG, False otherwise.
+            bool: True if all reachable futures are known to the DAG,
+            False otherwise.
         """
         queue = deque(entry_futures)
         visited_ids: Set[str] = (
@@ -406,7 +434,6 @@ class DAG:
 
             # Check if the current future is registered in the DAG's task map.
             if current_future.task_id not in self.tasks:
-                # self.logger.debug(f"Task {current_future.task_id} not found in self.tasks during check.") # If logger available
                 return False  # Found an unknown future
 
             # Add its ParsletFuture dependencies to the queue for checking.
