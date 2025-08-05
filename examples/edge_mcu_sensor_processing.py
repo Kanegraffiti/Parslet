@@ -121,6 +121,7 @@ def main() -> List[ParsletFuture]:
 
 
 if __name__ == "__main__":
-    dag = DAG(main())
-    runner = DAGRunner(dag)
-    runner.run()
+    dag = DAG()
+    dag.build_dag(main())
+    runner = DAGRunner()
+    runner.run(dag)

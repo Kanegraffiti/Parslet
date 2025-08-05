@@ -1,4 +1,5 @@
-"""Demo workflow for the Africa Deep Tech Challenge 2025.
+"""
+Demo workflow for the Africa Deep Tech Challenge 2025.
 
 This workflow adjusts task behavior based on battery level to show
 how Parslet adapts in resource-constrained environments.
@@ -52,7 +53,7 @@ def save_result(result: str) -> str:
 
 
 def main() -> list[ParsletFuture]:
-    """Builds DAG task list."""
+    """Build the DAG task list."""
     battery_future = check_battery()
     compute_future = compute_task(battery_future)
     save_future = save_result(compute_future)
@@ -61,6 +62,6 @@ def main() -> list[ParsletFuture]:
 
 if __name__ == "__main__":
     dag = DAG()
-    dag.add_tasks(*main())  # Properly adds list of tasks to DAG
+    dag.add_tasks(*main())  # Add task list to DAG
     runner = DAGRunner(dag, battery_mode_active=True)
     runner.run()
