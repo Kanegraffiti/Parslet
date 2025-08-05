@@ -331,10 +331,10 @@ if __name__ == "__main__":
                     logger.error(
                         f"PNG EXPORT FAILED: Pydot library not found. {pie}"
                     )
-                except Exception as e:
+                except Exception as e_viz:
                     logger.error(
                         "Error in save_dag_to_png test: "
-                        f"{type(e).__name__} - {e}",
+                        f"{type(e_viz).__name__} - {e_viz}",
                         exc_info=True,
                     )
 

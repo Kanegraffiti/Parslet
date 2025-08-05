@@ -396,7 +396,7 @@ class DAG:
         except Exception as e:
             # Catch any other unexpected errors during image generation.
             logger.error(
-                f"An unexpected error occurred while saving the DAG image: {e}",
+                "An unexpected error occurred while saving the DAG image: {e}",
                 exc_info=True,
             )
             raise
