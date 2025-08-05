@@ -46,10 +46,18 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Parslet Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#android-via-termux">Android (via Termux)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#linux-debian-ubuntu">Linux (Debian/Ubuntu)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#linux-fedora-centos-rhel">Linux (Fedora/CentOS/RHEL)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#windows">Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#recommended-installation-from-pypi">Recommended Installation (from PyPI)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#on-linux-windows-or-macos">On Linux, Windows, or macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#on-android-via-termux">On Android (via Termux)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-for-developers-from-source">Installation for Developers (from Source)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#android-via-termux">Android (via Termux)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linux-debian-ubuntu">Linux (Debian/Ubuntu)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linux-fedora-centos-rhel">Linux (Fedora/CentOS/RHEL)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a></li>
@@ -100,19 +108,49 @@
              
   <section id="parslet-installation-guide">
 <h1>Parslet Installation Guide<a class="headerlink" href="#parslet-installation-guide" title="Link to this heading"></a></h1>
-<p>Parslet is designed to be set up from its source code, giving you full control over the environment. This guide provides detailed, platform-specific instructions for getting Parslet running on your device using Git.</p>
+<p>This guide provides instructions for installing Parslet. The recommended method for most users is to install the package directly from PyPI using <code class="docutils literal notranslate"><span class="pre">pip</span></code>. For developers who wish to contribute or use the very latest version, instructions for installing from source are also provided.</p>
+<hr class="docutils" />
+<section id="recommended-installation-from-pypi">
+<h2>Recommended Installation (from PyPI)<a class="headerlink" href="#recommended-installation-from-pypi" title="Link to this heading"></a></h2>
+<p>This is the simplest and fastest way to get Parslet.</p>
+<section id="on-linux-windows-or-macos">
+<h3>On Linux, Windows, or macOS<a class="headerlink" href="#on-linux-windows-or-macos" title="Link to this heading"></a></h3>
+<p>Open your terminal and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>parslet
+</pre></div>
+</div>
+</section>
+<section id="on-android-via-termux">
+<h3>On Android (via Termux)<a class="headerlink" href="#on-android-via-termux" title="Link to this heading"></a></h3>
+<p>Open Termux and run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>parslet
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>Note:</strong> Some features, like generating PNG images of workflows (<code class="docutils literal notranslate"><span class="pre">--export-png</span></code>), may require you to install Graphviz separately. In Termux, you can do this with <code class="docutils literal notranslate"><span class="pre">pkg</span> <span class="pre">install</span> <span class="pre">graphviz</span></code>.</p>
+</div></blockquote>
+<p>After installation, you can verify it by running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parslet<span class="w"> </span>--help
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="installation-for-developers-from-source">
+<h2>Installation for Developers (from Source)<a class="headerlink" href="#installation-for-developers-from-source" title="Link to this heading"></a></h2>
+<p>If you want to modify the code or contribute to Parslet, you should install it from the source code.</p>
 <p>The general process for all platforms is:</p>
 <ol class="arabic simple">
 <li><p>Install prerequisite system tools (like Git and Python).</p></li>
 <li><p>Clone the Parslet repository from GitHub.</p></li>
 <li><p>Set up a Python virtual environment (highly recommended).</p></li>
-<li><p>Install the required Python packages.</p></li>
+<li><p>Install the required Python packages for development.</p></li>
 <li><p>Install Parslet itself in “editable” mode.</p></li>
 </ol>
 <hr class="docutils" />
 <section id="android-via-termux">
-<h2>Android (via Termux)<a class="headerlink" href="#android-via-termux" title="Link to this heading"></a></h2>
-<p>Termux is a powerful terminal emulator for Android that provides a Linux-like environment, making it a perfect home for Parslet.</p>
+<h3>Android (via Termux)<a class="headerlink" href="#android-via-termux" title="Link to this heading"></a></h3>
+<p>Termux is a powerful terminal emulator for Android that provides a Linux-like environment, making it a perfect home for Parslet development.</p>
 <p><strong>Step 1: Install and Update Termux</strong></p>
 <p>If you haven’t already, install Termux from F-Droid for the most up-to-date version. After installing, open Termux and update the package lists:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkg<span class="w"> </span>update<span class="w"> </span>-y<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pkg<span class="w"> </span>upgrade<span class="w"> </span>-y
@@ -156,11 +194,11 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parslet<span class="w"> </span>--help
 </pre></div>
 </div>
-<p>You are now ready to run Parslet on Android!</p>
+<p>You are now ready to develop Parslet on Android!</p>
 </section>
 <hr class="docutils" />
 <section id="linux-debian-ubuntu">
-<h2>Linux (Debian/Ubuntu)<a class="headerlink" href="#linux-debian-ubuntu" title="Link to this heading"></a></h2>
+<h3>Linux (Debian/Ubuntu)<a class="headerlink" href="#linux-debian-ubuntu" title="Link to this heading"></a></h3>
 <p><strong>Step 1: Install Core Tools</strong></p>
 <p>Open your terminal and install Python, Git, and the necessary build tools using <code class="docutils literal notranslate"><span class="pre">apt</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt<span class="w"> </span>update
@@ -193,7 +231,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <hr class="docutils" />
 <section id="linux-fedora-centos-rhel">
-<h2>Linux (Fedora/CentOS/RHEL)<a class="headerlink" href="#linux-fedora-centos-rhel" title="Link to this heading"></a></h2>
+<h3>Linux (Fedora/CentOS/RHEL)<a class="headerlink" href="#linux-fedora-centos-rhel" title="Link to this heading"></a></h3>
 <p><strong>Step 1: Install Core Tools</strong></p>
 <p>Open your terminal and install Python, Git, and build tools using <code class="docutils literal notranslate"><span class="pre">dnf</span></code> or <code class="docutils literal notranslate"><span class="pre">yum</span></code>.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For Fedora</span>
@@ -229,7 +267,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 </section>
 <hr class="docutils" />
 <section id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h2>
+<h3>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h3>
 <p>For Windows, we recommend using <strong>Git Bash</strong>, which is included with Git for Windows, as it provides a Unix-like shell environment.</p>
 <p><strong>Step 1: Install Git for Windows</strong></p>
 <p>Download and install <a class="reference external" href="https://git-scm.com/download/win">Git for Windows</a>. This will also provide you with the <strong>Git Bash</strong> terminal.</p>
@@ -260,6 +298,7 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parslet<span class="w"> </span>--help
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 
