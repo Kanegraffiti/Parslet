@@ -36,7 +36,8 @@ class ParslToParsletTranslator(ast.NodeTransformer):
             and node.func.id == "DataFlowKernel"
         ):
             warnings.warn(
-                "Parsl DataFlowKernel is not supported; Parslet manages scheduling internally.",
+                "Parsl DataFlowKernel is not supported; Parslet manages "
+                "scheduling internally.",
                 stacklevel=2,
             )
         return self.generic_visit(node)
@@ -119,7 +120,8 @@ class DataFlowKernel:  # pragma: no cover - simple shim
 
     def __init__(self, *args, **kwargs) -> None:
         warnings.warn(
-            "Parsl DataFlowKernel is not supported; Parslet manages scheduling internally.",
+            "Parsl DataFlowKernel is not supported; Parslet manages "
+            "scheduling internally.",
             stacklevel=2,
         )
 

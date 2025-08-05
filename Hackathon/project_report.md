@@ -14,6 +14,7 @@ That’s where Parslet comes in. I built it because I wanted something that coul
 - Still give people **powerful tools** like DAGs and resource-aware scheduling
 
 Parslet is my answer — a mini framework inspired by Parsl and Dask, but stripped down and rebuilt to be usable *anywhere*.
+**[View Docs](https://parslet.readthedocs.io/en/latest/index.html)**
 
 ---
 

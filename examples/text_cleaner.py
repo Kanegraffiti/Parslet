@@ -26,7 +26,7 @@ def remove_punctuation(text: str) -> str:
         print("Error: Input text to remove_punctuation is None.")
         raise ValueError("Input text to remove_punctuation is None.")
     try:
-        # Using string.punctuation to get a comprehensive list of punctuation marks
+        # Using string.punctuation for a comprehensive list of punctuation
         translator = str.maketrans("", "", string.punctuation)
         return text.translate(translator)
     except Exception as e:
@@ -103,19 +103,24 @@ if __name__ == "__main__":
     print("Parslet Text Cleaner Example")
     print("----------------------------")
     print(
-        "This script defines a DAG to load a text file, clean it (lowercase, remove punctuation),"
+        "This script defines a DAG to load a text file, clean it "
+        "(lowercase, remove punctuation),"
     )
-    print("count word frequencies, and save the results to 'word_counts.txt'.")
+    print(
+        "count word frequencies, and save the results to 'word_counts.txt'."
+    )
     print("\nIMPORTANT:")
     print(
         "To run this example, you need to create a dummy input file named 'input.txt'"
     )
     print(
-        "in the same directory as this script. Populate it with some sample text."
+        "in the same directory as this script. "
+        "Populate it with some sample text."
     )
     print("For example:")
     print(
-        "  Hello world! This is a test. This is, indeed, a test file for Parslet."
+        "  Hello world! This is a test. This is a test file for Parslet."
+        "Parslet."
     )
     print("----------------------------\n")
 
@@ -153,9 +158,11 @@ if __name__ == "__main__":
         if future in entry_futures
     ):
         print(
-            "Output 'word_counts.txt' should be generated if all tasks succeeded."
+            "Output 'word_counts.txt' should be generated if all tasks "
+            "succeeded."
         )
     else:
         print(
-            "One or more tasks failed. 'word_counts.txt' might not be generated or complete."
+            "One or more tasks failed. 'word_counts.txt' might not be "
+            "generated or complete."
         )

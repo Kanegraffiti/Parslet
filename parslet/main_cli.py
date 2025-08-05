@@ -1,8 +1,8 @@
 """Command line interface entry point for Parslet.
 
 This module exposes the ``cli`` and ``main`` functions which provide a small
-command line tool to run workflows and perform a few convenience actions.  It is
-intended to be simple to keep the barrier to entry low for new users.
+command line tool to run workflows and perform a few convenience actions.
+It is intended to be simple to keep the barrier to entry low for new users.
 """
 
 import argparse
@@ -81,7 +81,9 @@ def cli() -> None:
                 dag.save_png(args.export_png)
                 logger.info(f"DAG visualization saved to {args.export_png}")
             except Exception as e:
-                logger.error(f"Failed to export DAG to PNG: {e}", exc_info=False)
+                logger.error(
+                    f"Failed to export DAG to PNG: {e}", exc_info=False
+                )
 
         runner = DAGRunner(
             battery_mode_active=args.battery_mode,

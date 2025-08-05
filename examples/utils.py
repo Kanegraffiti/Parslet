@@ -3,7 +3,10 @@ from __future__ import annotations
 import base64
 from pathlib import Path
 
-_SAMPLE_B64 = "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP8z4AATAxEcQAz0QEHOoQ+uAAAAABJRU5ErkJggg=="
+_SAMPLE_B64 = (
+    "iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAIAAAAmkwkpAAAAEElEQVR4nGP8"
+    "z4AATAxEcQAz0QEHOoQ+uAAAAABJRU5ErkJggg=="
+)
 
 
 def ensure_sample_image() -> Path:
