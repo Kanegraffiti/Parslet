@@ -66,21 +66,22 @@ You define these steps (we call them **Tasks**) in a simple Python file. Parslet
 
 Ready to try it? You can be up and running in less than a minute.
 
-1.  **Get the Code:**
+1.  **Install It:**
 
-    First, you'll need to copy the project files to your device using a CLI.
+    The easiest way to install Parslet is directly from PyPI.
+
+    ```bash
+    pip install parslet
+    ```
+
+2.  **For Developers (or to get the latest changes):**
+
+    If you want to contribute or get the very latest code, you can install it from the source.
 
     ```bash
     git clone https://github.com/Kanegraffiti/Parslet.git
     cd Parslet
-    ```
-
-2.  **Install It:**
-
-    Now, have Python install Parslet so you can use it from anywhere.
-
-    ```bash
-    pip install .
+    pip install -e .
     ```
 
 3.  **Create Your First "Recipe"**

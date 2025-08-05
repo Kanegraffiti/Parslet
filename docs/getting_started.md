@@ -6,11 +6,7 @@ This guide will walk you through creating your very first automated recipe (we c
 
 ### Step 1: Installing Parslet
 
-Before you can write a recipe, you need to install Parslet. We have created detailed, step-by-step instructions for Android (Termux), Linux, and Windows.
-
-**➡️ Please follow our complete [Installation Guide](./install.html) to get set up.**
-
-The guide will walk you through cloning the project with Git and installing it in a way that lets you easily edit and run the code.
+Before you can write a recipe, you need to install Parslet. The recommended way is using `pip`. For detailed, platform-specific instructions, please see our complete [Installation Guide](./install.html).
 
 ### Step 2: Writing Your First Recipe
 

@@ -1,19 +1,51 @@
 # Parslet Installation Guide
 
-Parslet is designed to be set up from its source code, giving you full control over the environment. This guide provides detailed, platform-specific instructions for getting Parslet running on your device using Git.
+This guide provides instructions for installing Parslet. The recommended method for most users is to install the package directly from PyPI using `pip`. For developers who wish to contribute or use the very latest version, instructions for installing from source are also provided.
+
+---
+
+## Recommended Installation (from PyPI)
+
+This is the simplest and fastest way to get Parslet.
+
+### On Linux, Windows, or macOS
+
+Open your terminal and run:
+```bash
+pip install parslet
+```
+
+### On Android (via Termux)
+
+Open Termux and run:
+```bash
+pip install parslet
+```
+> **Note:** Some features, like generating PNG images of workflows (`--export-png`), may require you to install Graphviz separately. In Termux, you can do this with `pkg install graphviz`.
+
+After installation, you can verify it by running:
+```bash
+parslet --help
+```
+
+---
+
+## Installation for Developers (from Source)
+
+If you want to modify the code or contribute to Parslet, you should install it from the source code.
 
 The general process for all platforms is:
 1. Install prerequisite system tools (like Git and Python).
 2. Clone the Parslet repository from GitHub.
 3. Set up a Python virtual environment (highly recommended).
-4. Install the required Python packages.
+4. Install the required Python packages for development.
 5. Install Parslet itself in "editable" mode.
 
 ---
 
-## Android (via Termux)
+### Android (via Termux)
 
-Termux is a powerful terminal emulator for Android that provides a Linux-like environment, making it a perfect home for Parslet.
+Termux is a powerful terminal emulator for Android that provides a Linux-like environment, making it a perfect home for Parslet development.
 
 **Step 1: Install and Update Termux**
 
@@ -76,11 +108,11 @@ Check that the `parslet` command is available:
 parslet --help
 ```
 
-You are now ready to run Parslet on Android!
+You are now ready to develop Parslet on Android!
 
 ---
 
-## Linux (Debian/Ubuntu)
+### Linux (Debian/Ubuntu)
 
 **Step 1: Install Core Tools**
 
@@ -122,7 +154,7 @@ parslet --help
 
 ---
 
-## Linux (Fedora/CentOS/RHEL)
+### Linux (Fedora/CentOS/RHEL)
 
 **Step 1: Install Core Tools**
 
@@ -167,7 +199,7 @@ parslet --help
 
 ---
 
-## Windows
+### Windows
 
 For Windows, we recommend using **Git Bash**, which is included with Git for Windows, as it provides a Unix-like shell environment.
 
