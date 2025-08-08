@@ -289,10 +289,11 @@ if __name__ == "__main__":
                     logger.info(
                         "Full DOT string saved to test_dag_output.dot"
                     )
-                except Exception as e:
+                except Exception as e_dot:
                     logger.error(
-                        f"Error in dag_to_dot_string test: {e}",
-                        exc_info=True
+                        "Error in dag_to_dot_string test: %s",
+                        e_dot,
+                        exc_info=True,
                     )
 
                 # Test save_dag_to_png
@@ -338,7 +339,7 @@ if __name__ == "__main__":
                         exc_info=True,
                     )
 
-            except Exception as e:
+            except Exception:
                 logger.error(
                     "Error during dummy DAG creation or export tests: {e}",
                     exc_info=True,

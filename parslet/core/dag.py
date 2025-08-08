@@ -45,7 +45,8 @@ class DAG:
                             dependencies. Nodes are task IDs, and edges point
                             from a dependency to the task that depends on it.
         tasks (Dict[str, ParsletFuture]): A mapping from task IDs to their
-                                         corresponding `ParsletFuture` objects.
+                                         corresponding `ParsletFuture`
+                                         objects.
     """
 
     def __init__(self) -> None:
@@ -393,10 +394,11 @@ class DAG:
                 "system's PATH."
             )
             raise
-        except Exception as e:
+        except Exception as e_generic:
             # Catch any other unexpected errors during image generation.
             logger.error(
-                "An unexpected error occurred while saving the DAG image: {e}",
+                "An unexpected error occurred while saving the DAG image: %s",
+                e_generic,
                 exc_info=True,
             )
             raise

@@ -47,9 +47,10 @@ class UpstreamTaskFailedError(RuntimeError):
         self.original_failure_task_id = original_failure_task_id
         self.original_exception = original_exception
         message = (
-            f"Task '{skipped_task_id}' ({skipped_task_name}) was skipped "
-            f"because an upstream task ({original_failure_task_id or 'unknown'}) "
-            f"failed. Original error: {type(original_exception).__name__}: "
+            f"Task '{skipped_task_id}' ({skipped_task_name}) was "
+            f"skipped because an upstream task "
+            f"({original_failure_task_id or 'unknown'}) failed. "
+            f"Original error: {type(original_exception).__name__}: "
             f"{original_exception}"
         )
         super().__init__(message)
@@ -346,7 +347,6 @@ class DAGRunner:
         """
         task_id = parslet_future.task_id
         try:
-            # This can re-raise the exception if the task function failed.
             result = executor_future.result()
             parslet_future.set_result(result)
             self.task_statuses[task_id] = "SUCCESS"
@@ -385,13 +385,16 @@ class DAGRunner:
             # Provide a generic diagnostic hint to the user.
             diagnostic_msg = (
                 f"Task '{task_id}' ({parslet_future.func.__name__}) failed. "
-                "Some things to check:\n"
-                "           - Are input files/data correct and accessible for "
-                "this task?\n"
-                "           - Are there issues with external services or "
-                "resources it depends on?\n"
-                "           - Review the task's own logs or the error message "
-                "above for specific details."
+                "Some things to check:
+"
+                "            - Are input files/data correct and accessible "
+                "for this task?
+"
+                "            - Are there issues with external services or "
+                "resources it depends on?
+"
+                "            - Review the task's own logs or the error "
+                "message above for specific details."
             )
             self.logger.info(diagnostic_msg)
         finally:

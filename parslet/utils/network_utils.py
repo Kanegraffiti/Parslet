@@ -35,5 +35,5 @@ def is_vpn_active() -> bool:
             for name in interfaces
         )
     except Exception as e:
-        logger.debug(f"Unable to determine VPN status: {e}")
+        logger.debug("Unable to determine VPN status: %s", e)
         return False
