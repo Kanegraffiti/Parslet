@@ -38,7 +38,8 @@ class DAG:
     function call that generates another `ParsletFuture`.
 
     The DAG can be validated to check for structural issues, primarily cycles,
-    and can provide a topological sort of tasks for execution by the `DAGRunner`.
+    and can provide a topological sort of tasks for execution by the
+    `DAGRunner`.
 
     Attributes:
         graph (nx.DiGraph): A NetworkX directed graph representing the task

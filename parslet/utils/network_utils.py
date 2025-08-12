@@ -24,7 +24,7 @@ def is_network_available(
 
 
 def is_vpn_active() -> bool:
-    """Return True if a network interface typically used by VPNs is detected."""
+    """Return True if a VPN-like network interface is detected."""
     if not PSUTIL_AVAILABLE or psutil is None:
         logger.debug("psutil not available; cannot detect VPN interfaces.")
         return False
