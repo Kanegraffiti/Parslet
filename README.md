@@ -190,6 +190,5 @@ This project is licensed under the MIT License. See [LICENSE](./LICENSE) for the
 
 ## Acknowledgements
 
-Built by [Kelechi Nwankwo](https://github.com/Kanegraffiti) for the **Africa Deep Tech Challenge 2025**.  
 Inspired by the powerful [Parsl](https://github.com/Parsl/parsl) project.  
 A big thank you to the Outreachy community and the Parsl maintainers.
