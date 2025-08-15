@@ -10,21 +10,40 @@ from __future__ import annotations
 
 import ast
 
-from ..core import parslet_task, ParsletFuture
+from ..core.task import parslet_task, ParsletFuture
 
 
 class DaskToParsletTranslator(ast.NodeTransformer):
     """Replace Dask delayed constructs with Parslet equivalents."""
 
+    def __init__(self) -> None:
+        super().__init__()
+        # Track aliases for ``delayed`` so we can recognise them later.
+        self.delayed_aliases: set[str] = {"delayed"}
+
+    # ------------------------------------------------------------------
+    # Import handling
+    # ------------------------------------------------------------------
+    def visit_ImportFrom(self, node: ast.ImportFrom) -> ast.AST:  # noqa: D401
+        """Record any aliases of ``dask.delayed``."""
+        if node.module == "dask":
+            for alias in node.names:
+                if alias.name == "delayed":
+                    self.delayed_aliases.add(alias.asname or alias.name)
+        return self.generic_visit(node)
+
+    # ------------------------------------------------------------------
+    # Function definitions and calls
+    # ------------------------------------------------------------------
     def visit_FunctionDef(self, node: ast.FunctionDef) -> ast.AST:
         """Convert ``@delayed`` decorators to ``@parslet_task``."""
         for idx, decorator in enumerate(node.decorator_list):
-            # ``@delayed`` imported directly
-            if isinstance(decorator, ast.Name) and decorator.id == "delayed":
+            # ``@delayed`` or aliased import
+            if isinstance(decorator, ast.Name) and decorator.id in self.delayed_aliases:
                 node.decorator_list[idx] = ast.Name(
                     id="parslet_task", ctx=ast.Load()
                 )
-            # ``@dask.delayed`` style
+            # ``@dask.delayed`` style (with optional module alias)
             elif (
                 isinstance(decorator, ast.Attribute)
                 and decorator.attr == "delayed"
@@ -42,13 +61,14 @@ class DaskToParsletTranslator(ast.NodeTransformer):
         ):
             # Convert obj.compute() -> obj
             return self.visit(node.func.value)
-        if isinstance(node.func, ast.Name) and node.func.id == "delayed":
-            node.func.id = "parslet_task"
-        if (
+        if isinstance(node.func, ast.Name) and node.func.id in self.delayed_aliases:
+            node.func = ast.Name(id="parslet_task", ctx=ast.Load())
+        elif (
             isinstance(node.func, ast.Attribute)
             and node.func.attr == "delayed"
         ):
-            node.func.attr = "parslet_task"
+            # Collapse ``dask.delayed`` or ``<alias>.delayed`` to ``parslet_task``
+            node.func = ast.Name(id="parslet_task", ctx=ast.Load())
         return self.generic_visit(node)
 
 
