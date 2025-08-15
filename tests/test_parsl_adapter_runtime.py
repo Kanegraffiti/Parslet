@@ -61,8 +61,7 @@ def test_bash_app_decorator_executes_with_parslet():
 
     fut = echo_message("hi")
     assert isinstance(fut, ParsletFuture)
-    result = fut.func(*fut.args, **fut.kwargs)
-    fut.set_result(result)
+    # Command executes immediately; result() returns stdout
     assert fut.result().strip() == "hi"
 
 
@@ -73,8 +72,9 @@ def test_bash_app_decorator_handles_errors():
 
     fut = fail()
     assert isinstance(fut, ParsletFuture)
+    # result() should raise the underlying CalledProcessError
     with pytest.raises(subprocess.CalledProcessError):
-        fut.func(*fut.args, **fut.kwargs)
+        fut.result()
 
 
 def test_dfk_stub_warns():

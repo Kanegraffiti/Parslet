@@ -12,6 +12,7 @@ import ast
 import warnings
 import subprocess
 import functools
+import uuid
 
 from ..core.task import parslet_task, ParsletFuture
 
@@ -103,32 +104,39 @@ def python_app(_func=None, **kwargs):
 
 
 def bash_app(_func=None, **kwargs):
-    """Parsl ``bash_app`` decorator that executes shell commands.
+    """Parsl ``bash_app`` decorator executed via :mod:`subprocess`.
 
-    The decorated function should return a string representing the shell
-    command to execute. The command is run using :func:`subprocess.run`
-    with ``shell=True`` and both stdout and stderr captured. The resulting
-    ``stdout`` is stored in the returned :class:`ParsletFuture`. If the command
-    exits with a non-zero return code, a ``subprocess.CalledProcessError`` is
-    raised, mirroring Parsl's behaviour where task failures propagate.
+    The decorated function must return a string representing the shell
+    command to execute. When the decorated function is called, the command is
+    run immediately using :func:`subprocess.run` with ``shell=True`` and both
+    stdout and stderr captured. The resulting stdout is stored in a
+    :class:`ParsletFuture`. If the command exits with a non-zero return code,
+    a :class:`subprocess.CalledProcessError` is recorded as the future's
+    exception. This mirrors Parsl's ``bash_app`` which returns a future whose
+    ``result()`` yields the command's output.
     """
 
     def decorator(func):
-        @parslet_task(**kwargs)
         @functools.wraps(func)
         def wrapped(*args, **kw):
             cmd = func(*args, **kw)
-            completed = subprocess.run(
-                cmd, shell=True, capture_output=True, text=True
-            )
-            if completed.returncode != 0:
-                raise subprocess.CalledProcessError(
-                    completed.returncode,
-                    cmd,
-                    completed.stdout,
-                    completed.stderr,
+            task_id = uuid.uuid4().hex
+            future = ParsletFuture(task_id, wrapped, args, kw)
+            try:
+                completed = subprocess.run(
+                    cmd, shell=True, capture_output=True, text=True
                 )
-            return completed.stdout
+                if completed.returncode != 0:
+                    raise subprocess.CalledProcessError(
+                        completed.returncode,
+                        cmd,
+                        completed.stdout,
+                        completed.stderr,
+                    )
+                future.set_result(completed.stdout)
+            except Exception as exc:  # pragma: no cover - exception path
+                future.set_exception(exc)
+            return future
 
         return wrapped
 
