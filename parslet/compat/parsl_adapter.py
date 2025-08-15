@@ -10,8 +10,10 @@ from __future__ import annotations
 
 import ast
 import warnings
+import subprocess
+import functools
 
-from ..core import parslet_task, ParsletFuture
+from ..core.task import parslet_task, ParsletFuture
 
 
 class ParslToParsletTranslator(ast.NodeTransformer):
@@ -101,14 +103,38 @@ def python_app(_func=None, **kwargs):
 
 
 def bash_app(_func=None, **kwargs):
-    """Parsl ``bash_app`` decorator mapped to :func:`parslet_task`.
+    """Parsl ``bash_app`` decorator that executes shell commands.
 
-    The current implementation executes the decorated Python function as a
-    regular Parslet task.  Shell execution semantics of Parsl's ``bash_app``
-    are not replicated.
+    The decorated function should return a string representing the shell
+    command to execute. The command is run using :func:`subprocess.run`
+    with ``shell=True`` and both stdout and stderr captured. The resulting
+    ``stdout`` is stored in the returned :class:`ParsletFuture`. If the command
+    exits with a non-zero return code, a ``subprocess.CalledProcessError`` is
+    raised, mirroring Parsl's behaviour where task failures propagate.
     """
 
-    return python_app(_func, **kwargs)
+    def decorator(func):
+        @parslet_task(**kwargs)
+        @functools.wraps(func)
+        def wrapped(*args, **kw):
+            cmd = func(*args, **kw)
+            completed = subprocess.run(
+                cmd, shell=True, capture_output=True, text=True
+            )
+            if completed.returncode != 0:
+                raise subprocess.CalledProcessError(
+                    completed.returncode,
+                    cmd,
+                    completed.stdout,
+                    completed.stderr,
+                )
+            return completed.stdout
+
+        return wrapped
+
+    if _func is None:
+        return decorator
+    return decorator(_func)
 
 
 class DataFlowKernel:  # pragma: no cover - simple shim
