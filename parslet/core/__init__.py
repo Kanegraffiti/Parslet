@@ -39,6 +39,7 @@ except Exception:
     __version__ = "0.0.0"
 from .scheduler import AdaptiveScheduler
 from .parsl_bridge import convert_task_to_parsl, execute_with_parsl
+from .dask_bridge import execute_with_dask
 from .dag_io import export_dag_to_json, import_dag_from_json
 
 # Placeholder for imports from .exporter module (once implemented)
@@ -63,6 +64,7 @@ __all__ = [
     "AdaptiveScheduler",
     "convert_task_to_parsl",
     "execute_with_parsl",
+    "execute_with_dask",
     "set_allow_redefine",
     "export_dag_to_json",
     "import_dag_from_json",
