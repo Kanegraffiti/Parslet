@@ -68,9 +68,9 @@ result = inc(1).compute()
 
 def test_dask_translator_handles_aliased_decorator():
     src = """
-from dask import delayed as ddel
+from dask import delayed as ddelayed
 
-@ddel
+@ddelayed
 def inc(x):
     return x + 1
 """
@@ -93,3 +93,18 @@ result = dask.delayed(inc)(2)
     DaskToParsletTranslator().visit(tree)
     result = ast.unparse(tree)
     assert "parslet_task(inc)(2)" in result
+
+
+def test_dask_translator_handles_aliased_delayed_function_call():
+    src = """
+from dask import delayed as ddelayed
+
+def inc(x):
+    return x + 1
+
+result = ddelayed(inc)(3)
+"""
+    tree = ast.parse(src)
+    DaskToParsletTranslator().visit(tree)
+    result = ast.unparse(tree)
+    assert "parslet_task(inc)(3)" in result
