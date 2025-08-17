@@ -93,6 +93,18 @@
              
   <section id="welcome-to-parslet">
 <h1>Welcome to Parslet<a class="headerlink" href="#welcome-to-parslet" title="Link to this heading"></a></h1>
+<p>Parslet is a lightweight, battery‑aware workflow engine designed for offline and edge computing. Install it from PyPI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install parslet
+</pre></div></div>
+<p>Key features at a glance:</p>
+<ul class="simple">
+<li><p><strong>Offline-first DAG runner</strong> with minimal dependencies.</p></li>
+<li><p><strong>Automatic parallelism</strong> for independent tasks.</p></li>
+<li><p><strong>Battery-saver mode</strong> to extend runtime on low-power devices.</p></li>
+<li><p><strong>Dask compatibility</strong> via <code class="docutils literal notranslate"><span class="pre">parslet.compat.delayed</span></code>/<code class="docutils literal notranslate"><span class="pre">compute</span></code> and script conversion helpers.</p></li>
+<li><p><strong>Parsl compatibility</strong> through <code class="docutils literal notranslate"><span class="pre">parslet.compat.python_app</span></code>/<code class="docutils literal notranslate"><span class="pre">bash_app</span></code> and migration utilities for scaling to HPC.</p></li>
+<li><p><strong>Export tools</strong> to visualize workflows or hand them off to other systems.</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
 <ul>
