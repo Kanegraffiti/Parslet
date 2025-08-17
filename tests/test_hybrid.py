@@ -1,9 +1,9 @@
-import types
 import sys
+import types
 
 import pytest
 
-from parslet.core import parslet_task
+from parslet.core.task import parslet_task
 from parslet.hybrid.executor import execute_hybrid
 
 
@@ -90,10 +90,10 @@ def test_execute_hybrid_mixes_local_and_remote(stub_parsl):
     def one():
         return 1
 
-    @parslet_task
+    @parslet_task(remote=True)
     def add_one(x):
         return x + 1
 
-    results = execute_hybrid([add_one(one())], remote_tasks=["add_one"])
+    results = execute_hybrid([add_one(one())])
     parsl.dfk().cleanup()
     assert results == [2]

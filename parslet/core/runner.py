@@ -1,23 +1,23 @@
-import time
 import hashlib
-from concurrent.futures import ThreadPoolExecutor, Future as ExecutorFuture
-from typing import Optional, Dict, List, Any, Tuple
 import logging
 import socket
+import time
+from concurrent.futures import Future as ExecutorFuture
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-
-from .dag import DAG, DAGCycleError
-from .task import ParsletFuture
-from .scheduler import AdaptiveScheduler
-from ..utils.resource_utils import get_available_ram_mb
-from ..utils.diagnostics import find_free_port
-from ..utils.network_utils import is_network_available, is_vpn_active
-from ..utils.checkpointing import CheckpointManager
-from ..utils.resource_utils import get_battery_level
+from typing import Any, Dict, List, Optional, Tuple
 
 # Absolute import avoids issues when ``parslet`` is imported under
 # an alternative package name (e.g. ``Parslet`` during pytest collection).
 from parslet.security.defcon import Defcon
+
+from ..utils.checkpointing import CheckpointManager
+from ..utils.diagnostics import find_free_port
+from ..utils.network_utils import is_network_available, is_vpn_active
+from ..utils.resource_utils import get_available_ram_mb, get_battery_level
+from .dag import DAG, DAGCycleError
+from .scheduler import AdaptiveScheduler
+from .task import ParsletFuture
 
 
 class UpstreamTaskFailedError(RuntimeError):
@@ -163,9 +163,7 @@ class DAGRunner:
         self.failsafe_mode = failsafe_mode
         self.fallback_active = False
         user_specified_max_workers = max_workers
-        self.signature_file = (
-            Path(signature_file) if signature_file else None
-        )
+        self.signature_file = Path(signature_file) if signature_file else None
         self._tamper_check = (
             Defcon.tamper_guard(Path(p) for p in watch_files)
             if watch_files
@@ -296,7 +294,7 @@ class DAGRunner:
                     resolved_args.append(
                         None
                     )  # Append a placeholder; task won't run if
-                       # first_exception is set
+                    # first_exception is set
             else:
                 resolved_args.append(arg)
 
@@ -382,17 +380,13 @@ class DAGRunner:
                 f"during execution: {type(e).__name__}: {e}",
                 exc_info=True,
             )
-            # Provide a generic diagnostic hint to the user.
             diagnostic_msg = (
                 f"Task '{task_id}' ({parslet_future.func.__name__}) failed. "
-                "Some things to check:
-"
+                "Some things to check:\n"
                 "            - Are input files/data correct and accessible "
-                "for this task?
-"
+                "for this task?\n"
                 "            - Are there issues with external services or "
-                "resources it depends on?
-"
+                "resources it depends on?\n"
                 "            - Review the task's own logs or the error "
                 "message above for specific details."
             )
