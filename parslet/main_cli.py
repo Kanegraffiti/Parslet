@@ -47,6 +47,16 @@ def cli() -> None:
     grp.add_argument("--from-dask", dest="from_dask", action="store_true")
     grp.add_argument("--to-parsl", dest="to_parsl", action="store_true")
     conv_p.add_argument("script")
+    conv_p.add_argument(
+        "--stdout",
+        action="store_true",
+        help="Print converted code without writing to a file",
+    )
+    conv_p.add_argument(
+        "--recursive",
+        action="store_true",
+        help="Process all .py files in a directory tree",
+    )
 
     sub.add_parser("test", help="Run tests")
     sub.add_parser("diagnose", help="Show system info")
@@ -164,11 +174,22 @@ def cli() -> None:
 
             suffix = "_parslet.py"
 
-        code = Path(args.script).read_text()
-        new_code = conv(code)
-        out = Path(args.script).with_name(Path(args.script).stem + suffix)
-        out.write_text(new_code)
-        print(f"Converted file saved as {out}")
+        def handle_file(p: Path) -> None:
+            code = p.read_text()
+            new_code = conv(code)
+            if args.stdout:
+                print(new_code)
+            else:
+                out = p.with_name(p.stem + suffix)
+                out.write_text(new_code)
+                print(f"Converted file saved as {out}")
+
+        target = Path(args.script)
+        if args.recursive and target.is_dir():
+            for f in target.rglob("*.py"):
+                handle_file(f)
+        else:
+            handle_file(target)
     elif args.cmd == "test":
         import pytest
 
