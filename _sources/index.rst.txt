@@ -1,21 +1,6 @@
 Welcome to Parslet
 ==================
 
-Parslet is a lightweight, battery‑aware workflow engine designed for offline and edge computing. You can install it directly from PyPI:
-
-.. code-block:: bash
-
-   pip install parslet
-
-Key features at a glance:
-
-* **Offline-first DAG runner** with minimal dependencies.
-* **Automatic parallelism** for independent tasks.
-* **Battery-saver mode** to extend runtime on low-power devices.
-* **Dask compatibility** via ``parslet.compat.delayed``/``compute`` and script conversion helpers.
-* **Parsl compatibility** through ``parslet.compat.python_app``/``bash_app`` and migration utilities for scaling to HPC.
-* **Export tools** to visualize workflows or hand them off to other systems.
-
 .. toctree::
    :maxdepth: 2
    :caption: User Guide

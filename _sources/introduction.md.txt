@@ -84,16 +84,6 @@ You might have heard of other workflow tools like **Parsl** or **Dask**. They ar
 | **Main Goal**  | Reliability and simplicity, anywhere        | Maximum power on high-performance systems        |
 | **Complexity** | Very few dependencies, easy to install      | More complex, designed for distributed computing |
 
-## Key Features
-
-* Install quickly from PyPI with `pip install parslet`.
-* Offline-first DAG runner with minimal dependencies.
-* Automatic parallelism for independent tasks.
-* Battery-saver mode for low-power environments.
-* Dask compatibility via `parslet.compat.delayed`/`compute` and code conversion helpers.
-* Parsl compatibility through `parslet.compat.python_app`/`bash_app` and workflow migration utilities for scaling to HPC resources.
-* Export workflows to Graphviz or JSON for visualization and hand-off to other systems.
-
 Parslet is your go-to tool for automation on the edge. And when your project gets big enough for the supercomputers, Parslet gives you tools to "graduate" your workflow to run on Parsl.
 
 Ready to build your first workflow? Let's get started!
