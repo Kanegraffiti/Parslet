@@ -1,4 +1,6 @@
+import hashlib
 from pathlib import Path
+
 from parslet.security.defcon import Defcon
 
 
@@ -18,3 +20,18 @@ def test_tamper_guard_detection(tmp_path):
     assert guard()
     file.write_text("changed")
     assert not guard()
+
+
+def test_verify_chain(tmp_path):
+    sig = tmp_path / "sig.txt"
+    payload = "payload"
+    dag_hash = hashlib.sha256(payload.encode()).hexdigest()
+
+    sig.write_text(payload)
+    assert Defcon.verify_chain(dag_hash, sig)
+
+    sig.write_text("tampered")
+    assert not Defcon.verify_chain(dag_hash, sig)
+
+    sig.unlink()
+    assert Defcon.verify_chain(dag_hash, sig)

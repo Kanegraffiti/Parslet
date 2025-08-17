@@ -1,7 +1,12 @@
-"""Parslet DEFCON security checks."""
+"""Parslet DEFCON security checks.
+
+These lightweight guards are intentionally self‑contained so they operate
+reliably in offline environments.
+"""
 
 import ast
 import hashlib
+import hmac
 import logging
 from pathlib import Path
 from typing import Callable, Iterable
@@ -12,10 +17,12 @@ logger = logging.getLogger(__name__)
 class Defcon:
     """Security layer with multiple levels."""
 
+    #: Calls that are considered unsafe for :meth:`scan_code`.
+    BAD_CALLS = frozenset({"eval", "exec"})
+
     @staticmethod
     def scan_code(paths: Iterable[Path]) -> bool:
         """DEFCON1: scan for dangerous calls."""
-        bad = {"eval", "exec"}
         for path in paths:
             try:
                 tree = ast.parse(path.read_text())
@@ -26,7 +33,7 @@ class Defcon:
                 if isinstance(node, ast.Call) and isinstance(
                     node.func, ast.Name
                 ):
-                    if node.func.id in bad:
+                    if node.func.id in Defcon.BAD_CALLS:
                         logger.error(
                             "Forbidden call %s in %s", node.func.id, path
                         )
@@ -39,7 +46,8 @@ class Defcon:
         if not signature_file.exists():
             return True
         sig = signature_file.read_text().strip()
-        return hashlib.sha256(sig.encode()).hexdigest() == dag_hash
+        calc = hashlib.sha256(sig.encode()).hexdigest()
+        return hmac.compare_digest(calc, dag_hash)
 
     @staticmethod
     def tamper_guard(watched: Iterable[Path]) -> Callable[[], bool]:
