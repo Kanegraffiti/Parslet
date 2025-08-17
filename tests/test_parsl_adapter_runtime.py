@@ -34,7 +34,8 @@ ParsletFuture = task_module.ParsletFuture
 
 # Load parsl_adapter module
 spec_adapter = importlib.util.spec_from_file_location(
-    "parslet.compat.parsl_adapter", ROOT / "parslet" / "compat" / "parsl_adapter.py"
+    "parslet.compat.parsl_adapter",
+    ROOT / "parslet" / "compat" / "parsl_adapter.py",
 )
 parsl = importlib.util.module_from_spec(spec_adapter)
 sys.modules["parslet.compat.parsl_adapter"] = parsl

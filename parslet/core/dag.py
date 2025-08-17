@@ -148,7 +148,8 @@ class DAG:
 
             visited_futures_for_processing.add(current_future.task_id)
 
-            # Ensure the current future is registered as a task and a graph node.
+            # Ensure the current future is registered as a task
+            # and a graph node.
             if current_future.task_id not in self.tasks:
                 self.graph.add_node(
                     current_future.task_id, future_obj=current_future
@@ -378,8 +379,10 @@ class DAG:
         """
         Saves a PNG visualization of the DAG to the specified filepath.
 
-        This method uses the `save_dag_to_png` utility from the exporter module.
-        It handles potential errors gracefully by logging them without crashing.
+        This method uses the `save_dag_to_png` utility from the exporter
+        module.
+        It handles potential errors gracefully by logging them without
+        crashing.
 
         Args:
             filepath (str): The path where the PNG image will be saved.

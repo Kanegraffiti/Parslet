@@ -6,7 +6,8 @@ from pathlib import Path
 
 project_root = Path(__file__).resolve().parents[1]
 
-# Create minimal 'parslet' and 'parslet.core' packages to satisfy relative imports
+# Create minimal 'parslet' and 'parslet.core' packages
+# to satisfy relative imports
 parslet_pkg = types.ModuleType("parslet")
 parslet_pkg.__path__ = [str(project_root / "parslet")]
 sys.modules.setdefault("parslet", parslet_pkg)

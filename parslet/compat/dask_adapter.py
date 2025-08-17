@@ -67,7 +67,9 @@ class DaskToParsletTranslator(ast.NodeTransformer):
             return self.visit(node.func.value)
 
         # ``dask.delayed(func)(...)`` pattern
-        if isinstance(node.func, ast.Call) and self._is_delayed(node.func.func):
+        if isinstance(node.func, ast.Call) and self._is_delayed(
+            node.func.func
+        ):
             inner = node.func
             node.func = ast.Call(
                 func=ast.Name(id="parslet_task", ctx=ast.Load()),
