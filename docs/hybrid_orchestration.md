@@ -10,7 +10,9 @@ Parslet lets you create a single recipe where some tasks run locally on your dev
 
 ### How Does It Work?
 
-We have a special helper tool called `execute_hybrid`. You just give it your list of tasks and tell it the names of the ones you want to send to the "fast oven" (Parsl).
+We have a special helper tool called `execute_hybrid`. You just mark which
+tasks should use the "fast oven" (Parsl) by decorating them with
+`remote=True` and then run your workflow.
 
 Here’s what that looks like:
 
@@ -24,7 +26,7 @@ def chop_veggies():
     return 1
 
 # This is a bigger task we want to send to the powerful computer.
-@parslet_task
+@parslet_task(remote=True)
 def bake_pizza(ingredient):
     # This part of the code will actually run on the remote machine!
     print("Baking the pizza in the super-fast oven!")
@@ -35,11 +37,9 @@ if __name__ == "__main__":
     veggies_iou = chop_veggies()
     pizza_iou = bake_pizza(veggies_iou)
 
-    # ...but when we run it, we tell execute_hybrid which task is the "remote" one.
-    results = execute_hybrid(
-        [pizza_iou],
-        remote_tasks=["bake_pizza"] # <-- The magic instruction!
-    )
+    # ...and when we run it, `execute_hybrid` automatically sends
+    # the remote task to Parsl.
+    results = execute_hybrid([pizza_iou])
 
     print(f"The final result is: {results}")
 ```

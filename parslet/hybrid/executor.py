@@ -7,7 +7,7 @@ starting point for more advanced federated orchestration.
 
 from __future__ import annotations
 
-from typing import Iterable, List, Dict, Any
+from typing import Any, Dict, List
 
 from ..core import DAG, ParsletFuture
 from ..core.parsl_bridge import convert_task_to_parsl
@@ -15,17 +15,17 @@ from ..core.parsl_bridge import convert_task_to_parsl
 
 def execute_hybrid(
     entry_futures: List[ParsletFuture],
-    remote_tasks: Iterable[str],
     parsl_config: Any | None = None,
 ) -> List[Any]:
     """Execute a workflow mixing local and Parsl-backed tasks.
+
+    Tasks are automatically routed to the remote Parsl backend when they
+    are defined with ``@parslet_task(remote=True)``.
 
     Parameters
     ----------
     entry_futures:
         List of terminal futures defining the workflow.
-    remote_tasks:
-        Iterable of function names that should run via Parsl.
     parsl_config:
         Optional Parsl ``Config`` object for remote execution.
 
@@ -66,7 +66,7 @@ def execute_hybrid(
             for k, v in pf.kwargs.items()
         }
 
-        if pf.func.__name__ in remote_tasks:
+        if getattr(pf.func, "_parslet_remote", False):
             parsl_app = convert_task_to_parsl(pf.func)
             results[task_id] = parsl_app(
                 *resolved_args, **resolved_kwargs

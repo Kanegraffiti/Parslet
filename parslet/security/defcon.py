@@ -4,7 +4,7 @@ import ast
 import hashlib
 import logging
 from pathlib import Path
-from typing import Iterable
+from typing import Callable, Iterable
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class Defcon:
         return hashlib.sha256(sig.encode()).hexdigest() == dag_hash
 
     @staticmethod
-    def tamper_guard(watched: Iterable[Path]) -> bool:
+    def tamper_guard(watched: Iterable[Path]) -> Callable[[], bool]:
         """DEFCON3: ensure files unchanged."""
         hashes = {
             p: hashlib.sha256(p.read_bytes()).hexdigest() for p in watched

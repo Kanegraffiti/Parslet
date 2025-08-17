@@ -1,10 +1,10 @@
 """Task utilities and decorators for building Parslet DAGs."""
 
-import uuid
 import functools
 import logging
-from typing import Callable, Any, List, Dict, Optional
+import uuid
 from threading import Event
+from typing import Any, Callable, Dict, List, Optional
 
 # Global registry for Parslet tasks.
 # This dictionary maps a task's registered name (str) to the actual callable
@@ -199,6 +199,7 @@ def parslet_task(
     name: Optional[str] = None,
     protected: bool = False,
     battery_sensitive: bool = False,
+    remote: bool = False,
 ):
     """
     Decorator to define a Python function as a Parslet task.
@@ -230,6 +231,8 @@ def parslet_task(
         battery_sensitive (bool): If True, the task may be skipped when the
             system battery level is below 20% unless the user overrides this
             behaviour in the CLI.
+        remote (bool): If True, marks this task for execution on a remote
+            backend when using hybrid execution helpers.
 
     Returns:
         Callable: A wrapped function that, when called, returns a
@@ -270,12 +273,15 @@ def parslet_task(
         # Attach metadata to the original function object for potential
         # inspection, though this is not heavily used by the current core
         # logic.
-        func_to_wrap._parslet_task_name = task_name
-        func_to_wrap._parslet_dependencies = (
-            dependencies if dependencies is not None else []
+        setattr(func_to_wrap, "_parslet_task_name", task_name)
+        setattr(
+            func_to_wrap,
+            "_parslet_dependencies",
+            dependencies if dependencies is not None else [],
         )
-        func_to_wrap._parslet_protected = protected
-        func_to_wrap._parslet_battery_sensitive = battery_sensitive
+        setattr(func_to_wrap, "_parslet_protected", protected)
+        setattr(func_to_wrap, "_parslet_battery_sensitive", battery_sensitive)
+        setattr(func_to_wrap, "_parslet_remote", remote)
 
         @functools.wraps(func_to_wrap)
         def wrapper(*args: Any, **kwargs: Any) -> ParsletFuture:
@@ -305,11 +311,16 @@ def parslet_task(
         # on the wrapper itself. This can be useful for introspection or if
         # the DAG builder needs to access the original function or its
         # defined task name.
-        wrapper._parslet_original_func = func_to_wrap
-        wrapper._parslet_task_name = task_name
-        wrapper._parslet_dependencies = func_to_wrap._parslet_dependencies
-        wrapper._parslet_protected = protected
-        wrapper._parslet_battery_sensitive = battery_sensitive
+        setattr(wrapper, "_parslet_original_func", func_to_wrap)
+        setattr(wrapper, "_parslet_task_name", task_name)
+        setattr(
+            wrapper,
+            "_parslet_dependencies",
+            getattr(func_to_wrap, "_parslet_dependencies"),
+        )
+        setattr(wrapper, "_parslet_protected", protected)
+        setattr(wrapper, "_parslet_battery_sensitive", battery_sensitive)
+        setattr(wrapper, "_parslet_remote", remote)
 
         return wrapper
 
