@@ -1,4 +1,8 @@
+include LICENSE
 include README.md
-include CHANGELOG.md
-include CONTRIBUTING.md
-recursive-include use_cases *.py *.md
+recursive-include parslet *
+recursive-include docs *
+recursive-include examples *
+prune dist
+prune *.egg-info
+global-exclude *.png *.jpg *.pdf

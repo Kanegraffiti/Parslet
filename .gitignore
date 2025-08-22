@@ -8,3 +8,8 @@ __pycache__/
 Parslet_Results/
 checkpoint.json
 examples/assets/
+dist/
+*.egg-info/
+*.png
+*.jpg
+*.pdf

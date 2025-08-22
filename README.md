@@ -182,6 +182,19 @@ We've written down everything you need to know in a simple, friendly way.
 
 We'd love your help making Parslet even better. It's easy to get started. Check out our [Contributing Guide](./CONTRIBUTING.md).
 
+## Development
+
+Install dependencies and run the checks:
+
+```
+pip install -e .[dev]
+pip install -r requirements-dev.txt
+ruff parslet/core/__init__.py tests/test_imports.py
+black --check parslet/core/__init__.py tests/test_imports.py
+mypy
+pytest -q
+```
+
 ---
 
 ## License
