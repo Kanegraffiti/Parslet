@@ -7,12 +7,13 @@ Public API: ``DAGRunner``, ``UpstreamTaskFailedError``,
 
 import hashlib
 import logging
+import os
 import socket
 import time
 from concurrent.futures import Future as ExecutorFuture
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 # Absolute import avoids issues when ``parslet`` is imported under
 # an alternative package name (e.g. ``Parslet`` during pytest collection).
@@ -22,10 +23,10 @@ from ..utils.checkpointing import CheckpointManager
 from ..utils.diagnostics import find_free_port
 from ..utils.network_utils import is_network_available, is_vpn_active
 from ..utils.resource_utils import get_available_ram_mb, get_battery_level
+from .cache import compute_cache_key, load_from_cache, save_to_cache
 from .dag import DAG, DAGCycleError
 from .scheduler import AdaptiveScheduler
 from .task import ParsletFuture
-
 
 __all__ = [
     "DAGRunner",
@@ -54,9 +55,9 @@ class UpstreamTaskFailedError(RuntimeError):
         self,
         skipped_task_id: str,
         skipped_task_name: str,
-        original_failure_task_id: Optional[str],
+        original_failure_task_id: str | None,
         original_exception: Exception,
-    ):
+    ) -> None:
         self.skipped_task_id = skipped_task_id
         self.skipped_task_name = skipped_task_name
         self.original_failure_task_id = original_failure_task_id
@@ -107,16 +108,17 @@ class DAGRunner:
 
     def __init__(
         self,
-        max_workers: Optional[int] = None,
-        runner_logger: Optional[logging.Logger] = None,
+        max_workers: int | None = None,
+        runner_logger: logging.Logger | None = None,
         battery_mode_active: bool = False,
         ignore_battery: bool = False,
         monitor_port: int = 6300,
-        checkpoint_file: Optional[str] = None,
+        checkpoint_file: str | None = None,
         failsafe_mode: bool = False,
-        signature_file: Optional[str] = None,
-        watch_files: Optional[List[str]] = None,
-    ):
+        signature_file: str | None = None,
+        watch_files: list[str] | None = None,
+        disable_cache: bool = False,
+    ) -> None:
         """
         Initializes the DAGRunner.
 
@@ -141,6 +143,9 @@ class DAGRunner:
             failsafe_mode (bool): If True, tasks that fail due to resource
                 exhaustion will be retried sequentially using a basic
                 executor.
+            disable_cache (bool): If True, disables task caching even for tasks
+                that request it. Can also be set via the ``PARSLET_NO_CACHE``
+                environment variable.
         """
         if runner_logger:
             self.logger = runner_logger
@@ -175,6 +180,8 @@ class DAGRunner:
             Defcon.tamper_guard(Path(p) for p in watch_files) if watch_files else None
         )
 
+        self.disable_cache = disable_cache or bool(os.getenv("PARSLET_NO_CACHE"))
+
         self.scheduler = AdaptiveScheduler(battery_mode_active)
         calculated_max_workers = self.scheduler.calculate_worker_count(
             user_specified_max_workers
@@ -203,15 +210,15 @@ class DAGRunner:
 
         # --- Benchmark Data Collection ---
         # Stores the monotonic start time of each task.
-        self.task_start_times: Dict[str, float] = {}
+        self.task_start_times: dict[str, float] = {}
         # Stores the execution duration (in seconds) of each completed or
         # failed task.
-        self.task_execution_times: Dict[str, float] = {}
+        self.task_execution_times: dict[str, float] = {}
         # Stores the final status of each task: "SUCCESS", "FAILED",
         # "SKIPPED", or "RUNNING" (transient).
-        self.task_statuses: Dict[str, str] = {}
+        self.task_statuses: dict[str, str] = {}
 
-    def get_task_benchmarks(self) -> Dict[str, Dict[str, Any]]:
+    def get_task_benchmarks(self) -> dict[str, dict[str, Any]]:
         """
         Retrieves benchmark data for all tasks processed or known by the
         runner.
@@ -252,7 +259,7 @@ class DAGRunner:
 
     def _resolve_task_arguments(
         self, dag: DAG, parslet_future_to_resolve: ParsletFuture
-    ) -> Tuple[List[Any], Dict[str, Any], Optional[Exception]]:
+    ) -> tuple[list[object], dict[str, object], Exception | None]:
         """
         Resolves the arguments for a given ParsletFuture by obtaining results
         from its dependency ParsletFutures.
@@ -271,18 +278,18 @@ class DAGRunner:
                 arguments are to be resolved.
 
         Returns:
-            Tuple[List[Any], Dict[str, Any], Optional[Exception]]:
+            tuple[list[object], dict[str, object], Exception | None]:
                 A tuple containing:
-                - resolved_args (List[Any]): Positional arguments with
+                - resolved_args (list[object]): Positional arguments with
                   ParsletFutures replaced by their results.
-                - resolved_kwargs (Dict[str, Any]): Keyword arguments with
+                - resolved_kwargs (dict[str, object]): Keyword arguments with
                   ParsletFutures replaced by their results.
-                - first_exception (Optional[Exception]): The first exception
+                - first_exception (Exception | None): The first exception
                   encountered from a failed dependency. If all dependencies
                   succeed, this is None.
         """
-        resolved_args: List[Any] = []
-        first_exception: Optional[Exception] = None
+        resolved_args: list[object] = []
+        first_exception: Exception | None = None
 
         for arg in parslet_future_to_resolve.args:
             if isinstance(arg, ParsletFuture):
@@ -301,7 +308,7 @@ class DAGRunner:
             else:
                 resolved_args.append(arg)
 
-        resolved_kwargs: Dict[str, Any] = {}
+        resolved_kwargs: dict[str, object] = {}
         for key, kwarg_val in parslet_future_to_resolve.kwargs.items():
             if isinstance(kwarg_val, ParsletFuture):
                 try:
@@ -319,9 +326,9 @@ class DAGRunner:
     @staticmethod
     def _wrapped_task_execution(
         parslet_future: ParsletFuture,
-        args: List[Any],
-        kwargs: Dict[str, Any],
-    ) -> Any:
+        args: list[object],
+        kwargs: dict[str, object],
+    ) -> object:
         """Execute a task function and translate resource errors."""
         try:
             return parslet_future.func(*args, **kwargs)
@@ -355,6 +362,18 @@ class DAGRunner:
                 f"Task '{task_id}' ({parslet_future.func.__name__}) "
                 "completed successfully."
             )
+            if (
+                getattr(parslet_future.func, "_parslet_cache", False)
+                and not self.disable_cache
+            ):
+                cache_key = getattr(parslet_future, "_cache_key", None)
+                if cache_key:
+                    try:
+                        save_to_cache(cache_key, result)
+                    except Exception as e:  # pragma: no cover - cache errors non-fatal
+                        self.logger.warning(
+                            f"Failed to write cache for task '{task_id}': {e}"
+                        )
             if self.checkpoint:
                 self.checkpoint.mark_complete(task_id, "SUCCESS")
         except ResourceLimitError as e:
@@ -409,8 +428,8 @@ class DAGRunner:
     def _run_task_serially(
         self,
         parslet_future: ParsletFuture,
-        args: List[Any],
-        kwargs: Dict[str, Any],
+        args: list[object],
+        kwargs: dict[str, object],
     ) -> None:
         """Execute a task synchronously in fallback mode."""
         if not self.fallback_active:
@@ -428,6 +447,18 @@ class DAGRunner:
             result = parslet_future.func(*args, **kwargs)
             parslet_future.set_result(result)
             self.task_statuses[task_id] = "SUCCESS"
+            if (
+                getattr(parslet_future.func, "_parslet_cache", False)
+                and not self.disable_cache
+            ):
+                cache_key = getattr(parslet_future, "_cache_key", None)
+                if cache_key:
+                    try:
+                        save_to_cache(cache_key, result)
+                    except Exception as e:  # pragma: no cover
+                        self.logger.warning(
+                            f"Failed to write cache for task '{task_id}': {e}"
+                        )
             if self.checkpoint:
                 self.checkpoint.mark_complete(task_id, "SUCCESS")
         except Exception as e:
@@ -549,7 +580,7 @@ class DAGRunner:
                 if dependency_exception is not None:
                     # An upstream dependency failed. Mark this task as SKIPPED
                     # and set its exception.
-                    original_failing_task_id: Optional[str] = None
+                    original_failing_task_id: str | None = None
                     true_original_exception = dependency_exception
                     if isinstance(dependency_exception, UpstreamTaskFailedError):
                         # If the dependency itself was skipped, trace back to
@@ -581,6 +612,37 @@ class DAGRunner:
                         )
                     )
                     continue  # Move to the next task in the execution order.
+
+                cache_enabled = (
+                    getattr(current_parslet_future.func, "_parslet_cache", False)
+                    and not self.disable_cache
+                )
+                if cache_enabled:
+                    version = getattr(
+                        current_parslet_future.func, "_parslet_cache_version", "1"
+                    )
+                    task_name = getattr(
+                        current_parslet_future.func,
+                        "_parslet_task_name",
+                        current_parslet_future.func.__name__,
+                    )
+                    cache_key = compute_cache_key(
+                        task_name, tuple(resolved_args), resolved_kwargs, version
+                    )
+                    try:
+                        cached = load_from_cache(cache_key)
+                    except FileNotFoundError:
+                        current_parslet_future._cache_key = cache_key
+                    else:
+                        self.logger.info(
+                            f"Cache hit for task '{task_id}' ({task_name})."
+                        )
+                        current_parslet_future.set_result(cached)
+                        self.task_statuses[task_id] = "SUCCESS"
+                        self.task_execution_times[task_id] = 0.0
+                        if self.checkpoint:
+                            self.checkpoint.mark_complete(task_id, "SUCCESS")
+                        continue
 
                 # Check battery level for battery-sensitive tasks.
                 batt_level = get_battery_level()
@@ -623,16 +685,8 @@ class DAGRunner:
                     self.task_statuses[task_id] = "RUNNING"
 
                     # store resolved args for potential failsafe re-run
-                    setattr(
-                        current_parslet_future,
-                        "_resolved_args",
-                        resolved_args,
-                    )
-                    setattr(
-                        current_parslet_future,
-                        "_resolved_kwargs",
-                        resolved_kwargs,
-                    )
+                    current_parslet_future._resolved_args = resolved_args
+                    current_parslet_future._resolved_kwargs = resolved_kwargs
 
                     exec_future = executor.submit(
                         self._wrapped_task_execution,
@@ -643,7 +697,10 @@ class DAGRunner:
 
                     # Add a callback to handle task completion/failure and
                     # update ParsletFuture.
-                    def _cb(executor_fut, parslet_fut=current_parslet_future) -> None:
+                    def _cb(
+                        executor_fut: ExecutorFuture,
+                        parslet_fut: ParsletFuture = current_parslet_future,
+                    ) -> None:
                         self._task_done_callback(parslet_fut, executor_fut)
 
                     exec_future.add_done_callback(_cb)
