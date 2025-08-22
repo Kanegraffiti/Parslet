@@ -1,4 +1,7 @@
-"""Parsl compatibility helpers for Parslet."""
+"""Parsl compatibility helpers for Parslet.
+
+Public API: :func:`convert_task_to_parsl` and :func:`execute_with_parsl`.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +11,9 @@ import tempfile
 
 from .dag import DAG
 from .task import ParsletFuture
+
+
+__all__ = ["convert_task_to_parsl", "execute_with_parsl"]
 
 
 def convert_task_to_parsl(parslet_func):

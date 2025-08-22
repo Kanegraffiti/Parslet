@@ -1,8 +1,22 @@
+"""Visualization and export utilities for Parslet DAGs.
+
+Public API: :func:`dag_to_pydot`, :func:`dag_to_dot_string`,
+``save_dag_to_png`` and related exceptions.
+"""
+
 import logging
 import networkx as nx
 from typing import TYPE_CHECKING, Optional
 
 logger = logging.getLogger(__name__)
+
+__all__ = [
+    "dag_to_pydot",
+    "dag_to_dot_string",
+    "save_dag_to_png",
+    "PydotImportError",
+    "GraphvizExecutableNotFoundError",
+]
 
 if TYPE_CHECKING:
     from .dag import (
@@ -128,12 +142,8 @@ def dag_to_dot_string(dag: "DAG") -> str:
         RuntimeError: If conversion to the `pydot.Dot` object fails
                       (propagated).
     """
-    pydot_graph = dag_to_pydot(
-        dag
-    )  # This will raise if pydot is not available.
-    if (
-        pydot_graph is None
-    ):  # Should not happen if PydotImportError is raised correctly
+    pydot_graph = dag_to_pydot(dag)  # This will raise if pydot is not available.
+    if pydot_graph is None:  # Should not happen if PydotImportError is raised correctly
         raise RuntimeError(
             "pydot graph generation failed unexpectedly, returning None."
         )
@@ -162,9 +172,7 @@ def save_dag_to_png(dag: "DAG", output_path: str) -> None:
                       such as file permission issues or unexpected `pydot`
                       errors.
     """
-    pydot_graph = dag_to_pydot(
-        dag
-    )  # Handles pydot import and initial conversion.
+    pydot_graph = dag_to_pydot(dag)  # Handles pydot import and initial conversion.
     if pydot_graph is None:  # Defensive check
         raise RuntimeError(
             "pydot graph generation failed unexpectedly, returning None, "
@@ -230,8 +238,7 @@ if __name__ == "__main__":
     logger.info("-----------------------------------------")
     if not PYDOT_AVAILABLE:
         logger.warning(
-            "pydot library not found. Export functions will raise "
-            "PydotImportError."
+            "pydot library not found. Export functions will raise " "PydotImportError."
         )
         logger.warning("Please install it: pip install pydot")
     else:
@@ -267,9 +274,7 @@ if __name__ == "__main__":
 
                 # Build DAG
                 test_dag = DAG()
-                test_dag.build_dag(
-                    [future_c]
-                )  # Build with the terminal future
+                test_dag.build_dag([future_c])  # Build with the terminal future
                 test_dag.validate_dag()  # Ensure it's valid
                 logger.info("Dummy DAG created successfully for testing.")
 
@@ -278,17 +283,12 @@ if __name__ == "__main__":
                 try:
                     dot_str = dag_to_dot_string(test_dag)
                     logger.info(
-                        "DOT String generated (first 100 chars): "
-                        f"{dot_str[:100]}..."
+                        "DOT String generated (first 100 chars): " f"{dot_str[:100]}..."
                     )
                     # Example: save to a file
-                    with open(
-                        "test_dag_output.dot", "w", encoding="utf-8"
-                    ) as f:
+                    with open("test_dag_output.dot", "w", encoding="utf-8") as f:
                         f.write(dot_str)
-                    logger.info(
-                        "Full DOT string saved to test_dag_output.dot"
-                    )
+                    logger.info("Full DOT string saved to test_dag_output.dot")
                 except Exception as e_dot:
                     logger.error(
                         "Error in dag_to_dot_string test: %s",
@@ -307,8 +307,7 @@ if __name__ == "__main__":
                     # save_dag_to_png now uses the module logger, so it works
                     # correctly when called outside of a class.
                     logger.info(
-                        "DAG visualization attempt to save to "
-                        f"{png_output_path}."
+                        "DAG visualization attempt to save to " f"{png_output_path}."
                     )
                     logger.info(
                         "If Graphviz 'dot' is installed and in PATH, "
@@ -329,9 +328,7 @@ if __name__ == "__main__":
                 except (
                     PydotImportError
                 ) as pie:  # Should be caught earlier by PYDOT_AVAILABLE
-                    logger.error(
-                        f"PNG EXPORT FAILED: Pydot library not found. {pie}"
-                    )
+                    logger.error(f"PNG EXPORT FAILED: Pydot library not found. {pie}")
                 except Exception as e_viz:
                     logger.error(
                         "Error in save_dag_to_png test: "
@@ -345,9 +342,7 @@ if __name__ == "__main__":
                     exc_info=True,
                 )
         else:
-            logger.warning(
-                "\nSkipping DAG export tests as pydot is not available."
-            )
+            logger.warning("\nSkipping DAG export tests as pydot is not available.")
 
     except ImportError:
         logger.error(

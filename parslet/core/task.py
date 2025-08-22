@@ -1,4 +1,8 @@
-"""Task utilities and decorators for building Parslet DAGs."""
+"""Task utilities and decorators for building Parslet DAGs.
+
+Public API: :func:`parslet_task`, :class:`ParsletFuture` and
+``set_allow_redefine``.
+"""
 
 import functools
 import logging
@@ -23,6 +27,8 @@ _RESULT_NOT_SET = object()
 
 # Module-level logger for task utilities
 logger = logging.getLogger(__name__)
+
+__all__ = ["parslet_task", "ParsletFuture", "set_allow_redefine"]
 
 
 class ParsletFuture:
@@ -91,8 +97,7 @@ class ParsletFuture:
             str: A string like "<ParsletFuture task_id='...' func='...'>".
         """
         return (
-            f"<ParsletFuture task_id='{self.task_id}' "
-            f"func='{self.func.__name__}'>"
+            f"<ParsletFuture task_id='{self.task_id}' " f"func='{self.func.__name__}'>"
         )
 
     def set_result(self, value: Any) -> None:
@@ -249,9 +254,7 @@ def parslet_task(
         # primarily uses direct function references stored in ParsletFutures.
         if task_name in _TASK_REGISTRY:
             existing_func = _TASK_REGISTRY[task_name]
-            existing_protected = getattr(
-                existing_func, "_parslet_protected", False
-            )
+            existing_protected = getattr(existing_func, "_parslet_protected", False)
             if existing_protected and not _ALLOW_REDEFINE:
                 raise ValueError(
                     f"Task '{task_name}' is protected and already defined. "
@@ -264,8 +267,7 @@ def parslet_task(
                 )
             else:
                 logger.warning(
-                    "Parslet task '%s' is being redefined. Ensure this is "
-                    "intended.",
+                    "Parslet task '%s' is being redefined. Ensure this is " "intended.",
                     task_name,
                 )
         _TASK_REGISTRY[task_name] = func_to_wrap

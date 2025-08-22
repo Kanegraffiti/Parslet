@@ -1,21 +1,11 @@
-"""Parslet subpackage."""
+"""Public Parslet API surface.
 
-from .core import (
-    parslet_task,
-    ParsletFuture,
-    DAG,
-    DAGCycleError,
-    DAGRunner,
-    UpstreamTaskFailedError,
-    BatteryLevelLowError,
-    AdaptiveScheduler,
-    convert_task_to_parsl,
-    execute_with_parsl,
-    set_allow_redefine,
-    export_dag_to_json,
-    import_dag_from_json,
-)
-from .hybrid import execute_hybrid, FileRelay
+Only a small set of names is re-exported here to keep the package's public
+interface compact and easy to learn.  Everything else remains available under
+``parslet.core`` or other subpackages.
+"""
+
+from .core import DAG, DAGRunner, ParsletFuture, parslet_task
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -27,20 +17,4 @@ try:
 except Exception:
     __version__ = "0.0.0"
 
-__all__ = [
-    "parslet_task",
-    "ParsletFuture",
-    "DAG",
-    "DAGCycleError",
-    "DAGRunner",
-    "UpstreamTaskFailedError",
-    "BatteryLevelLowError",
-    "AdaptiveScheduler",
-    "convert_task_to_parsl",
-    "execute_with_parsl",
-    "set_allow_redefine",
-    "export_dag_to_json",
-    "import_dag_from_json",
-    "execute_hybrid",
-    "FileRelay",
-]
+__all__ = ["parslet_task", "ParsletFuture", "DAG", "DAGRunner"]

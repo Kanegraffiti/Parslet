@@ -1,3 +1,9 @@
+"""Graph construction and validation for Parslet workflows.
+
+Public API: :class:`DAG` for representing task graphs and
+``DAGCycleError`` when a cycle is detected.
+"""
+
 import networkx as nx
 from typing import List, Dict, Set
 from pathlib import Path
@@ -10,6 +16,8 @@ from .exporter import (
     PydotImportError,
     GraphvizExecutableNotFoundError,
 )
+
+__all__ = ["DAG", "DAGCycleError"]
 
 logger = logging.getLogger(__name__)
 
@@ -90,9 +98,7 @@ class DAG:
 
         # Add the current task as a node in the graph.
         # The 'future_obj' attribute stores the actual ParsletFuture.
-        self.graph.add_node(
-            future.task_id, future_obj=future
-        )
+        self.graph.add_node(future.task_id, future_obj=future)
         self.tasks[future.task_id] = future
 
         # Collect all ParsletFuture instances from the task's arguments and
@@ -151,9 +157,7 @@ class DAG:
             # Ensure the current future is registered as a task
             # and a graph node.
             if current_future.task_id not in self.tasks:
-                self.graph.add_node(
-                    current_future.task_id, future_obj=current_future
-                )
+                self.graph.add_node(current_future.task_id, future_obj=current_future)
                 self.tasks[current_future.task_id] = current_future
 
             # Discover dependencies from args and kwargs.
@@ -172,14 +176,11 @@ class DAG:
             for dep_future in dependencies_to_explore:
                 # Add dependency as a task and graph node if it's new.
                 if dep_future.task_id not in self.tasks:
-                    self.graph.add_node(
-                        dep_future.task_id, future_obj=dep_future
-                    )
+                    self.graph.add_node(dep_future.task_id, future_obj=dep_future)
                     self.tasks[dep_future.task_id] = dep_future
 
                 # Add an edge from the dependency to the current task.
-                self.graph.add_edge(dep_future.task_id,
-                                    current_future.task_id)
+                self.graph.add_edge(dep_future.task_id, current_future.task_id)
 
                 # If this dependency hasn't been processed, add it to the
                 # queue.
@@ -208,8 +209,7 @@ class DAG:
             try:
                 # Attempt to find the specific cycle for a more informative
                 # error. nx.find_cycle returns a list of edges forming a cycle.
-                cycle_edges = nx.find_cycle(self.graph,
-                                            orientation="original")
+                cycle_edges = nx.find_cycle(self.graph, orientation="original")
 
                 path_str = ""
                 if cycle_edges:
@@ -222,9 +222,7 @@ class DAG:
                         u,
                         v,
                         _,
-                    ) in (
-                        cycle_edges
-                    ):  # u=source, v=target, _=edge_data_dict
+                    ) in cycle_edges:  # u=source, v=target, _=edge_data_dict
                         if v not in temp_nodes:
                             temp_nodes.append(v)
                         else:  # Cycle closes
@@ -238,12 +236,12 @@ class DAG:
                 # This case should ideally not be reached if
                 # is_directed_acyclic_graph was false. It's a defensive
                 # measure.
-                cycle_info = ("A cycle was detected, but could not "
-                              "determine the specific tasks involved.")
+                cycle_info = (
+                    "A cycle was detected, but could not "
+                    "determine the specific tasks involved."
+                )
 
-            raise DAGCycleError(
-                f"Task dependency graph is invalid. {cycle_info}"
-            )
+            raise DAGCycleError(f"Task dependency graph is invalid. {cycle_info}")
 
     def get_execution_order(self) -> List[str]:
         """
@@ -299,9 +297,7 @@ class DAG:
             tasks.
         """
         if task_id not in self.tasks:
-            raise KeyError(
-                f"Task ID '{task_id}' not found in the DAG's task registry."
-            )
+            raise KeyError(f"Task ID '{task_id}' not found in the DAG's task registry.")
         return self.tasks[task_id]
 
     def get_dependencies(self, task_id: str) -> List[str]:
@@ -342,9 +338,7 @@ class DAG:
             raise KeyError(f"Task ID '{task_id}' not found in the DAG graph.")
         return list(self.graph.successors(task_id))
 
-    def draw_dag(
-        self, ascii_only: bool = True, filepath: str | None = None
-    ) -> str:
+    def draw_dag(self, ascii_only: bool = True, filepath: str | None = None) -> str:
         """Return a simple visualisation of the DAG.
 
         If ``ascii_only`` is True or Graphviz is not available, an ASCII
@@ -428,9 +422,7 @@ class DAG:
             False otherwise.
         """
         queue = deque(entry_futures)
-        visited_ids: Set[str] = (
-            set()
-        )  # Tracks futures visited during this check
+        visited_ids: Set[str] = set()  # Tracks futures visited during this check
 
         while queue:
             current_future = queue.popleft()

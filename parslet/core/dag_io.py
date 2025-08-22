@@ -1,9 +1,17 @@
+"""JSON serialization helpers for Parslet DAGs.
+
+Public API: :func:`export_dag_to_json` and :func:`import_dag_from_json`.
+"""
+
 import json
 import importlib
 from typing import Any, Dict, List
 
 from .dag import DAG
 from .task import ParsletFuture
+
+
+__all__ = ["export_dag_to_json", "import_dag_from_json"]
 
 
 def _serialize_arg(arg: Any) -> Any:
@@ -53,24 +61,17 @@ def import_dag_from_json(path: str) -> DAG:
         func = getattr(module, t["func_name"])
         if hasattr(func, "_parslet_original_func"):
             func = getattr(func, "_parslet_original_func")
-        future = ParsletFuture(
-            task_id=t["task_id"], func=func, args=(), kwargs={}
-        )
+        future = ParsletFuture(task_id=t["task_id"], func=func, args=(), kwargs={})
         task_map[t["task_id"]] = future
     # Second pass: assign args
     for t in tasks_data:
         future = task_map[t["task_id"]]
-        future.args = tuple(
-            _deserialize_arg(a, task_map) for a in t.get("args", [])
-        )
+        future.args = tuple(_deserialize_arg(a, task_map) for a in t.get("args", []))
         future.kwargs = {
-            k: _deserialize_arg(v, task_map)
-            for k, v in t.get("kwargs", {}).items()
+            k: _deserialize_arg(v, task_map) for k, v in t.get("kwargs", {}).items()
         }
     dag = DAG()
-    dag.graph.add_nodes_from(
-        (tid, {"future_obj": f}) for tid, f in task_map.items()
-    )
+    dag.graph.add_nodes_from((tid, {"future_obj": f}) for tid, f in task_map.items())
     dag.tasks = task_map
     for t in tasks_data:
         for dep in t.get("dependencies", []):
