@@ -7,14 +7,15 @@ Public API: :func:`parslet_task`, :class:`ParsletFuture` and
 import functools
 import logging
 import uuid
+from collections.abc import Callable
 from threading import Event
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 # Global registry for Parslet tasks.
 # This dictionary maps a task's registered name (str) to the actual callable
 # function. It's used to look up task functions, though direct function
 # references are common in ParsletFutures.
-_TASK_REGISTRY: Dict[str, Callable[..., Any]] = {}
+_TASK_REGISTRY: dict[str, Callable[..., Any]] = {}
 # Global flag controlling whether protected tasks can be redefined.  This is
 # toggled via the CLI using the ``--force-redefine`` option or directly in
 # tests.
@@ -65,8 +66,8 @@ class ParsletFuture:
         task_id: str,
         func: Callable[..., Any],
         args: tuple,
-        kwargs: Dict[str, Any],
-    ):
+        kwargs: dict[str, Any],
+    ) -> None:
         """
         Initializes a new ParsletFuture.
 
@@ -80,11 +81,11 @@ class ParsletFuture:
         self.task_id: str = task_id
         self.func: Callable[..., Any] = func
         self.args: tuple = args
-        self.kwargs: Dict[str, Any] = kwargs
+        self.kwargs: dict[str, Any] = kwargs
 
         # Internal attributes to store the outcome of the task execution.
         self._result: Any = _RESULT_NOT_SET
-        self._exception: Optional[Exception] = None
+        self._exception: Exception | None = None
         # Event used to signal completion of this task (success or failure)
         self._done: Event = Event()
 
@@ -100,7 +101,7 @@ class ParsletFuture:
             f"<ParsletFuture task_id='{self.task_id}' " f"func='{self.func.__name__}'>"
         )
 
-    def set_result(self, value: Any) -> None:
+    def set_result(self, value: object) -> None:
         """
         Sets the successful result of the task.
 
@@ -142,7 +143,7 @@ class ParsletFuture:
         self._result = _RESULT_NOT_SET
         self._done.set()
 
-    def result(self, timeout: Optional[float] = None) -> Any:
+    def result(self, timeout: float | None = None) -> object:
         """
         Retrieves the result of the task.
 
@@ -193,19 +194,21 @@ class ParsletFuture:
 
 
 def parslet_task(
-    _func: Optional[Callable[..., Any]] = None,
+    _func: Callable[..., Any] | None = None,
     *,
     # The 'dependencies' argument here refers to explicit naming of
     # dependencies, which is a potential feature but not the primary
     # mechanism used in Parslet's current DAG construction (which relies on
     # ParsletFuture objects passed as arguments). It's kept as a placeholder
     # for future extensibility.
-    dependencies: Optional[List[str]] = None,
-    name: Optional[str] = None,
+    dependencies: list[str] | None = None,
+    name: str | None = None,
     protected: bool = False,
     battery_sensitive: bool = False,
     remote: bool = False,
-):
+    cache: bool = False,
+    version: str = "1",
+) -> Callable[..., ParsletFuture]:
     """
     Decorator to define a Python function as a Parslet task.
 
@@ -238,13 +241,19 @@ def parslet_task(
             behaviour in the CLI.
         remote (bool): If True, marks this task for execution on a remote
             backend when using hybrid execution helpers.
+        cache (bool): Enable result caching for this task. Disabled by
+            default.
+        version (str): Manual version tag included in the cache key. Bump to
+            invalidate previous cached results when task logic changes.
 
     Returns:
         Callable: A wrapped function that, when called, returns a
                   `ParsletFuture`.
     """
 
-    def decorator_parslet_task(func_to_wrap: Callable[..., Any]):
+    def decorator_parslet_task(
+        func_to_wrap: Callable[..., Any],
+    ) -> Callable[..., ParsletFuture]:
         # Determine the task's base name: use custom 'name' if provided,
         # else function's own name.
         task_name = name if name is not None else func_to_wrap.__name__
@@ -275,18 +284,18 @@ def parslet_task(
         # Attach metadata to the original function object for potential
         # inspection, though this is not heavily used by the current core
         # logic.
-        setattr(func_to_wrap, "_parslet_task_name", task_name)
-        setattr(
-            func_to_wrap,
-            "_parslet_dependencies",
-            dependencies if dependencies is not None else [],
+        func_to_wrap._parslet_task_name = task_name
+        func_to_wrap._parslet_dependencies = (
+            dependencies if dependencies is not None else []
         )
-        setattr(func_to_wrap, "_parslet_protected", protected)
-        setattr(func_to_wrap, "_parslet_battery_sensitive", battery_sensitive)
-        setattr(func_to_wrap, "_parslet_remote", remote)
+        func_to_wrap._parslet_protected = protected
+        func_to_wrap._parslet_battery_sensitive = battery_sensitive
+        func_to_wrap._parslet_remote = remote
+        func_to_wrap._parslet_cache = cache
+        func_to_wrap._parslet_cache_version = version
 
         @functools.wraps(func_to_wrap)
-        def wrapper(*args: Any, **kwargs: Any) -> ParsletFuture:
+        def wrapper(*args: object, **kwargs: object) -> ParsletFuture:
             """
             This wrapper is what's actually called when a @parslet_task-
             decorated function is invoked. It constructs and returns a
@@ -313,16 +322,14 @@ def parslet_task(
         # on the wrapper itself. This can be useful for introspection or if
         # the DAG builder needs to access the original function or its
         # defined task name.
-        setattr(wrapper, "_parslet_original_func", func_to_wrap)
-        setattr(wrapper, "_parslet_task_name", task_name)
-        setattr(
-            wrapper,
-            "_parslet_dependencies",
-            getattr(func_to_wrap, "_parslet_dependencies"),
-        )
-        setattr(wrapper, "_parslet_protected", protected)
-        setattr(wrapper, "_parslet_battery_sensitive", battery_sensitive)
-        setattr(wrapper, "_parslet_remote", remote)
+        wrapper._parslet_original_func = func_to_wrap
+        wrapper._parslet_task_name = task_name
+        wrapper._parslet_dependencies = func_to_wrap._parslet_dependencies
+        wrapper._parslet_protected = protected
+        wrapper._parslet_battery_sensitive = battery_sensitive
+        wrapper._parslet_remote = remote
+        wrapper._parslet_cache = cache
+        wrapper._parslet_cache_version = version
 
         return wrapper
 
@@ -339,7 +346,7 @@ def parslet_task(
         return decorator_parslet_task(_func)
 
 
-def get_task_from_registry(task_name: str) -> Optional[Callable[..., Any]]:
+def get_task_from_registry(task_name: str) -> Callable[..., Any] | None:
     """
     Retrieves a task function from the global task registry by its name.
 
@@ -363,7 +370,7 @@ def set_allow_redefine(flag: bool) -> None:
     _ALLOW_REDEFINE = flag
 
 
-def get_all_registered_tasks() -> Dict[str, Callable[..., Any]]:
+def get_all_registered_tasks() -> dict[str, Callable[..., Any]]:
     """
     Returns a copy of the global task registry.
 

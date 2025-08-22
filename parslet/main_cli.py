@@ -7,6 +7,7 @@ It is intended to be simple to keep the barrier to entry low for new users.
 
 import argparse
 import sys
+
 from .plugins.loader import load_plugins
 from .utils import get_parslet_logger
 
@@ -29,6 +30,7 @@ def cli() -> None:
         action="store_true",
         help="Show DAG and resources without executing",
     )
+    run_p.add_argument("--no-cache", action="store_true", help="Disable task caching")
     run_p.add_argument(
         "--export-png",
         type=str,
@@ -68,14 +70,16 @@ def cli() -> None:
     logger.info("Plugins loaded")
 
     if args.cmd == "run":
-        from pathlib import Path
-        from parslet.security.defcon import Defcon
-        from parslet.cli import load_workflow_module
-        from parslet.core import DAG, DAGRunner
-        from rich.table import Table
-        from rich.live import Live
         import threading
         import time
+        from pathlib import Path
+
+        from rich.live import Live
+        from rich.table import Table
+
+        from parslet.cli import load_workflow_module
+        from parslet.core import DAG, DAGRunner
+        from parslet.security.defcon import Defcon
 
         wf = Path(args.workflow)
         if not Defcon.scan_code([wf]):
@@ -91,14 +95,13 @@ def cli() -> None:
                 dag.save_png(args.export_png)
                 logger.info(f"DAG visualization saved to {args.export_png}")
             except Exception as e:
-                logger.error(
-                    f"Failed to export DAG to PNG: {e}", exc_info=False
-                )
+                logger.error(f"Failed to export DAG to PNG: {e}", exc_info=False)
 
         runner = DAGRunner(
             battery_mode_active=args.battery_mode,
             failsafe_mode=args.failsafe_mode,
             watch_files=[str(wf)],
+            disable_cache=args.no_cache,
         )
 
         if args.simulate:
@@ -119,7 +122,7 @@ def cli() -> None:
 
         if args.monitor:
 
-            def _run():
+            def _run() -> None:
                 runner.run(dag)
 
             t = threading.Thread(target=_run)
@@ -143,8 +146,8 @@ def cli() -> None:
         else:
             runner.run(dag)
     elif args.cmd == "rad":
-        from parslet.core import DAG, DAGRunner
         from examples.rad_parslet.rad_dag import main as rad_main
+        from parslet.core import DAG, DAGRunner
 
         futures = rad_main(args.image, args.out_dir)
         dag = DAG()
