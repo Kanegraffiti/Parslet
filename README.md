@@ -1,17 +1,17 @@
 # Parslet: Your Pocket-Sized Workflow Assistant
-**A tiny tool for running automated to-do lists (we call them workflows) on your Python projects. It's built to work anywhere, especially on your phone.**
+**A tool for running automated to-do lists (workflows) on your Python projects. It's built to work anywhere, especially on your android phone.**
 
 ![Parsl-compatible](https://img.shields.io/badge/parsl-compatible-purple.svg)
 ![Termux-Ready](https://img.shields.io/badge/termux-ready-purple.svg)
 ![License](https://img.shields.io/github/license/Kanegraffiti/Parslet)
 
-### So, What is Parslet?
+### What is Parslet?
 
-Parslet is a tiny workflow engine built in Python. That means it's a tool that helps you automate a bunch of tasks in a specific order, especially on phones and devices that can’t run heavy-duty software. Think of it like a smart to-do list for your computer or phone, but instead of reminding you to do things, **it actually does them for you in the right order, automatically.**
+Parslet is a tiny workflow engine built in Python. That means it's a tool that helps you automate tasks in a specific order, especially on phones and devices that can’t run heavy-duty software. Think of it like a smart to-do list for your computer or phone, but instead of reminding you to do things, **it actually does them for you in the right order, automatically.**
 
 Imagine this real-world example:
 
-You run a small juice business with your besty. Every morning you:
+You run a small juice business with your best friend. Every morning you:
 
 1.  Wash the fruits
 2.  Peel them
@@ -19,7 +19,7 @@ You run a small juice business with your besty. Every morning you:
 4.  Pour into bottles
 5.  Label and store
 
-Now imagine you could automate this entire process using a small robot. You just tell it the steps once, and it does them every morning, in order. You get to spend quality time with your besty.
+Now imagine you could automate this entire process using a small robot. You just tell it the steps once, and it does them every morning, in order. You get to spend quality time with your best friend.
 
 **That’s what Parslet does, but for software tasks.**
 
@@ -35,7 +35,7 @@ In a real-world tech setting, you could use Parslet to:
 4.  Then, **back up** that file to a server.
 5.  Finally, **send you an email** confirming the job is done.
 
-All of this, in the right order, without you needing to babysit it.
+All of this, in the right order, without you needing to supervise it.
 
 ---
 
@@ -46,13 +46,13 @@ Most tools like this are built for powerful servers in a data center. Parslet is
 -   **Be Super Lightweight:** It works on a Raspberry Pi or even an Android phone.
 -   **Run in Termux:** It’s built and tested to work perfectly inside [Termux](https://termux.dev/en/), the command-line tool for Android.
 -   **Work Offline:** No internet? No problem. Your workflows will still run.
--   **Empower Everyone:** It’s for students, creators, and developers in Africa and beyond who might not have a laptop but have a brilliant idea.
+-   **Empower Everyone:** It’s for students, creators, and developers who might not have a laptop but have a brilliant idea.
 
 ---
 
 ### How Does It Work?
 
-It uses something called a **DAG** (Directed Acyclic Graph), which is just a fancy way of saying:
+It uses something called a **DAG** (Directed Acyclic Graph), which is just a technical way of saying:
 
 > “Step B only runs after Step A is done.”
 
@@ -82,7 +82,7 @@ Ready to try it? You can be up and running in less than a minute.
     pip install -e .
     ```
 
-3.  **Create Your First "Recipe"**
+3.  **Create Your First Workflow**
 
     Create a new file called `my_first_workflow.py` and paste this in. This is your recipe, telling Parslet what to do.
 
@@ -120,13 +120,13 @@ Ready to try it? You can be up and running in less than a minute.
 
 4.  **Run It**
 
-    Now for the fun part. Tell Parslet to run your new recipe.
+    Now for the fun part. Tell Parslet to run your new workflow.
 
     ```bash
     parslet run my_first_workflow.py
     ```
 
-You'll see the `print` statements from your tasks as they run, in the correct order!
+You'll see the `print` statements from your tasks as they run, in the correct order 🎉
 
 ---
 
@@ -134,7 +134,7 @@ You'll see the `print` statements from your tasks as they run, in the correct or
 
 Parslet is small, but it's packed with neat features for real-world use.
 
--   **Works Offline:** Your automated recipes run even without an internet connection.
+-   **Works Offline:** Your automated workflows run even without an internet connection.
 -   **Saves Battery:** Use the special `--battery-mode` to tell Parslet to take it easy and conserve power.
 -   **Smart About Resources:** It automatically checks your device's CPU and memory to run smoothly without crashing.
 -   **DEFCON:** A multi-layered defense system in Parslet that proactively blocks zero-day exploits and malicious DAG behavior using offline rules.
