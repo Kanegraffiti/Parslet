@@ -1,14 +1,23 @@
-"""Public exports for Parslet core primitives."""
+"""Public exports for Parslet core primitives.
+
+This module defines the long-term stable API surface of ``parslet.core``.
+"""
 
 from importlib import metadata
 
 from .dag import DAG, DAGCycleError  # noqa: F401
-from .dag_io import export_dag_to_json, import_dag_from_json  # noqa: F401
-from .parsl_bridge import convert_task_to_parsl, execute_with_parsl  # noqa: F401
-from .runner import (
-    BatteryLevelLowError,  # noqa: F401
+from .dag_io import (  # noqa: F401
+    export_dag_to_json,
+    import_dag_from_json,
+)
+from .parsl_bridge import (  # noqa: F401
+    convert_task_to_parsl,
+    execute_with_parsl,
+)
+from .runner import (  # noqa: F401
+    BatteryLevelLowError,
     DAGRunner,
-    UpstreamTaskFailedError,  # noqa: F401
+    UpstreamTaskFailedError,
 )
 from .scheduler import AdaptiveScheduler  # noqa: F401
 from .task import ParsletFuture, parslet_task, set_allow_redefine  # noqa: F401

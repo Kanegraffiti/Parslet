@@ -1,4 +1,7 @@
-"""Adaptive scheduling utilities for Parslet."""
+"""Adaptive scheduling utilities for Parslet.
+
+Public API: :class:`AdaptiveScheduler` used by :class:`~parslet.core.runner.DAGRunner`.
+"""
 
 from __future__ import annotations
 
@@ -10,6 +13,8 @@ from ..utils.resource_utils import (
     get_available_ram_mb,
     get_battery_level,
 )
+
+__all__ = ["AdaptiveScheduler"]
 
 
 class AdaptiveScheduler:

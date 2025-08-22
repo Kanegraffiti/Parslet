@@ -1,4 +1,7 @@
-"""Dask compatibility helpers for Parslet."""
+"""Dask compatibility helpers for Parslet.
+
+Public API: :func:`execute_with_dask` to run a workflow via Dask.
+"""
 
 from __future__ import annotations
 
@@ -6,6 +9,9 @@ from typing import List, Dict, Any, Optional, Union
 
 from .dag import DAG
 from .task import ParsletFuture
+
+
+__all__ = ["execute_with_dask"]
 
 
 def execute_with_dask(
@@ -74,11 +80,7 @@ def execute_with_dask(
     if scheduler is None:
         scheduler = "threads"
 
-    if (
-        "Client" in locals()
-        and Client is not None
-        and isinstance(scheduler, Client)
-    ):
+    if "Client" in locals() and Client is not None and isinstance(scheduler, Client):
         futures = [scheduler.compute(t) for t in entry_tasks]
         results = scheduler.gather(futures)
     else:

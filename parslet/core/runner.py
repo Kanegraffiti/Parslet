@@ -1,3 +1,10 @@
+"""Execution utilities for Parslet DAGs.
+
+Defines :class:`DAGRunner` and related runtime exceptions.
+Public API: ``DAGRunner``, ``UpstreamTaskFailedError``,
+``BatteryLevelLowError`` and ``ResourceLimitError``.
+"""
+
 import hashlib
 import logging
 import socket
@@ -18,6 +25,14 @@ from ..utils.resource_utils import get_available_ram_mb, get_battery_level
 from .dag import DAG, DAGCycleError
 from .scheduler import AdaptiveScheduler
 from .task import ParsletFuture
+
+
+__all__ = [
+    "DAGRunner",
+    "UpstreamTaskFailedError",
+    "BatteryLevelLowError",
+    "ResourceLimitError",
+]
 
 
 class UpstreamTaskFailedError(RuntimeError):
@@ -63,9 +78,7 @@ class UpstreamTaskFailedError(RuntimeError):
 class BatteryLevelLowError(RuntimeError):
     """Task skipped because system battery level is too low."""
 
-    def __init__(
-        self, task_id: str, task_name: str, battery_level: int
-    ) -> None:
+    def __init__(self, task_id: str, task_name: str, battery_level: int) -> None:
         self.task_id = task_id
         self.task_name = task_name
         self.battery_level = battery_level
@@ -135,17 +148,11 @@ class DAGRunner:
             # Attempt to get a logger that might have been configured by the
             # CLI
             self.logger = logging.getLogger("parslet-runner")
-            if (
-                not self.logger.handlers
-            ):  # Check if it has handlers (i.e., configured)
+            if not self.logger.handlers:  # Check if it has handlers (i.e., configured)
                 # Fallback to a basic configuration if no handlers are found.
-                base_logger = logging.getLogger(
-                    "parslet"
-                )  # Check base logger too
+                base_logger = logging.getLogger("parslet")  # Check base logger too
                 if base_logger.handlers:
-                    self.logger = (
-                        base_logger  # Use base logger if it's configured
-                    )
+                    self.logger = base_logger  # Use base logger if it's configured
                 else:  # Last resort: basicConfig
                     logging.basicConfig(
                         level=logging.INFO,
@@ -165,9 +172,7 @@ class DAGRunner:
         user_specified_max_workers = max_workers
         self.signature_file = Path(signature_file) if signature_file else None
         self._tamper_check = (
-            Defcon.tamper_guard(Path(p) for p in watch_files)
-            if watch_files
-            else None
+            Defcon.tamper_guard(Path(p) for p in watch_files) if watch_files else None
         )
 
         self.scheduler = AdaptiveScheduler(battery_mode_active)
@@ -176,9 +181,7 @@ class DAGRunner:
         )
 
         self.max_workers = calculated_max_workers
-        self.logger.info(
-            f"DAGRunner initialized with max_workers={self.max_workers}"
-        )
+        self.logger.info(f"DAGRunner initialized with max_workers={self.max_workers}")
 
         # Determine monitoring port, fallback if busy
         self.monitor_port = monitor_port
@@ -412,8 +415,7 @@ class DAGRunner:
         """Execute a task synchronously in fallback mode."""
         if not self.fallback_active:
             self.logger.warning(
-                "Failsafe executor activated. Tasks will run serially where "
-                "needed."
+                "Failsafe executor activated. Tasks will run serially where " "needed."
             )
             self.fallback_active = True
         task_id = parslet_future.task_id
@@ -458,8 +460,7 @@ class DAGRunner:
             dag (DAG): The Parslet DAG object containing tasks to be executed.
         """
         self.logger.info(
-            f"DAGRunner starting execution with {self.max_workers} worker "
-            "thread(s)."
+            f"DAGRunner starting execution with {self.max_workers} worker " "thread(s)."
         )
 
         if not is_network_available():
@@ -476,9 +477,7 @@ class DAGRunner:
         # Log available system RAM at the start of the run.
         available_ram = get_available_ram_mb()
         if available_ram is not None:
-            self.logger.info(
-                f"Available RAM at runner start: {available_ram:.2f} MB."
-            )
+            self.logger.info(f"Available RAM at runner start: {available_ram:.2f} MB.")
         else:
             self.logger.info(
                 "Available RAM information: Not available (psutil might not "
@@ -489,9 +488,7 @@ class DAGRunner:
             # Ensure DAG is valid (e.g., no cycles) before starting.
             dag.validate_dag()
             execution_order = dag.get_execution_order()  # List of task_ids
-            files = {
-                Path(f.func.__code__.co_filename) for f in dag.tasks.values()
-            }
+            files = {Path(f.func.__code__.co_filename) for f in dag.tasks.values()}
             if not Defcon.scan_code(files):
                 self.logger.error("DEFCON1 scan failed")
                 return
@@ -524,9 +521,7 @@ class DAGRunner:
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             for task_id in execution_order:
                 if self._tamper_check and not self._tamper_check():
-                    self.logger.critical(
-                        "DEFCON3 tamper detected; aborting run"
-                    )
+                    self.logger.critical("DEFCON3 tamper detected; aborting run")
                     return
                 current_parslet_future = dag.get_task_future(task_id)
                 if self.checkpoint and task_id in self.checkpoint.completed:
@@ -556,9 +551,7 @@ class DAGRunner:
                     # and set its exception.
                     original_failing_task_id: Optional[str] = None
                     true_original_exception = dependency_exception
-                    if isinstance(
-                        dependency_exception, UpstreamTaskFailedError
-                    ):
+                    if isinstance(dependency_exception, UpstreamTaskFailedError):
                         # If the dependency itself was skipped, trace back to
                         # the root cause.
                         true_original_exception = (
@@ -582,9 +575,7 @@ class DAGRunner:
                     current_parslet_future.set_exception(
                         UpstreamTaskFailedError(
                             skipped_task_id=task_id,
-                            skipped_task_name=(
-                                current_parslet_future.func.__name__
-                            ),
+                            skipped_task_name=(current_parslet_future.func.__name__),
                             original_failure_task_id=original_failing_task_id,
                             original_exception=true_original_exception,
                         )
@@ -652,9 +643,7 @@ class DAGRunner:
 
                     # Add a callback to handle task completion/failure and
                     # update ParsletFuture.
-                    def _cb(
-                        executor_fut, parslet_fut=current_parslet_future
-                    ) -> None:
+                    def _cb(executor_fut, parslet_fut=current_parslet_future) -> None:
                         self._task_done_callback(parslet_fut, executor_fut)
 
                     exec_future.add_done_callback(_cb)
@@ -671,24 +660,17 @@ class DAGRunner:
                         )
                     else:
                         err_msg = (
-                            "Failed to submit task "
-                            f"'{task_id}' to executor: {e}"
+                            "Failed to submit task " f"'{task_id}' to executor: {e}"
                         )
                         self.logger.critical(err_msg, exc_info=True)
-                        current_parslet_future.set_exception(
-                            RuntimeError(err_msg)
-                        )
+                        current_parslet_future.set_exception(RuntimeError(err_msg))
                         self.task_statuses[task_id] = "FAILED"
                         if task_id in self.task_start_times:
                             end_time = time.monotonic()
-                            duration = (
-                                end_time - self.task_start_times[task_id]
-                            )
+                            duration = end_time - self.task_start_times[task_id]
                             self.task_execution_times[task_id] = duration
                 except Exception as e:
-                    err_msg = (
-                        f"Failed to submit task '{task_id}' to executor: {e}"
-                    )
+                    err_msg = f"Failed to submit task '{task_id}' to executor: {e}"
                     self.logger.critical(err_msg, exc_info=True)
                     current_parslet_future.set_exception(RuntimeError(err_msg))
                     self.task_statuses[task_id] = "FAILED"
