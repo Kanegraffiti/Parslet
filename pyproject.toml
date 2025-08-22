@@ -36,17 +36,34 @@ Source = "https://github.com/Kanegraffiti/Parslet"
 [project.optional-dependencies]
 dask = ["dask"]
 parsl = ["parsl"]
-dev = ["flake8", "pytest", "black"]
+dev = [
+    "black",
+    "ruff",
+    "mypy",
+    "pytest",
+    "build",
+    "twine",
+]
 
 [tool.setuptools]
 packages = {find = {include = ["parslet*"], exclude = ["termux", "use_cases", "tests"]}}
 [tool.black]
-line-length = 79
+line-length = 88
 
-[tool.isort]
-profile = "black"
-line_length = 79
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "ANN"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.11"
+strict = true
+follow_imports = "silent"
+allow_redefinition = false
+warn_unused_ignores = true
+files = ["parslet/core/__init__.py"]
+
+[[tool.mypy.overrides]]
+module = ["networkx", "PIL", "psutil", "pydot", "rich", "dask", "parsl"]
 ignore_missing_imports = true

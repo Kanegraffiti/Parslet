@@ -1,0 +1,6 @@
+black==25.1.0
+ruff==0.12.7
+mypy==1.17.1
+pytest==8.4.1
+build==1.3.0
+twine==6.1.0
