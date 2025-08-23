@@ -102,8 +102,8 @@
 <p>We’ve all been there. You’re in the middle of something important, and you see that dreaded “Low Battery” warning. Parslet is designed for the real world, so it has a special <strong>battery-saver mode</strong> built right in, perfect for when you’re working on a laptop, tablet, or phone.</p>
 <section id="how-does-it-work">
 <h2>How Does It Work?<a class="headerlink" href="#how-does-it-work" title="Link to this heading"></a></h2>
-<p>When you tell Parslet to run in battery-saver mode, its smart scheduler (the <code class="docutils literal notranslate"><span class="pre">AdaptiveScheduler</span></code>) gets extra cautious. It looks at your device’s CPU, available memory, and most importantly, your current battery percentage.</p>
-<p>Based on what it sees, it will reduce the number of tasks it tries to run at the same time. Often, it will slow down to running just one task at a time. This is like putting your phone into “Low Power Mode”—it helps your battery last as long as possible so you can finish your work.</p>
+<p>When you tell Parslet to run in battery-saver mode, an <code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptivePolicy</span></code> kicks in. It looks at your device’s CPU, available memory, and most importantly, your current battery percentage.</p>
+<p>Based on what it sees, the policy decides how many worker threads to keep alive. If the battery drops below about 40%, the pool is automatically cut in half; when the battery recovers, it can grow again up to its cap. Often, it will slow down to running just one task at a time. This is like putting your phone into “Low Power Mode”—it helps your battery last as long as possible so you can finish your work.</p>
 </section>
 <section id="how-do-i-turn-it-on">
 <h2>How Do I Turn It On?<a class="headerlink" href="#how-do-i-turn-it-on" title="Link to this heading"></a></h2>
