@@ -2,16 +2,21 @@
 
 import logging
 
-try:
-    from rich.logging import RichHandler
-except Exception:  # pragma: no cover - rich is optional
-    RichHandler = None
-
 from .resource_utils import (
-    get_cpu_count,
+    ResourceSnapshot,
     get_available_ram_mb,
     get_battery_level,
+    get_cpu_count,
+    probe_resources,
 )
+
+RichHandler: type | None
+try:
+    from rich.logging import RichHandler as _RichHandler
+
+    RichHandler = _RichHandler
+except Exception:  # pragma: no cover - rich is optional
+    RichHandler = None
 
 
 def get_parslet_logger(
@@ -48,5 +53,7 @@ __all__ = [
     "get_cpu_count",
     "get_available_ram_mb",
     "get_battery_level",
+    "probe_resources",
+    "ResourceSnapshot",
     "get_parslet_logger",
 ]

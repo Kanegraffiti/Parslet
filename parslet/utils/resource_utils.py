@@ -12,9 +12,9 @@ gracefully handles its absence by returning `None` or default values,
 ensuring `psutil` is a soft dependency.
 """
 
-import os
-from typing import Optional
 import logging  # For logging errors in resource queries
+import os
+from typing import NamedTuple
 
 # Initialize a logger for this module.
 # This allows for more controlled logging than print statements, especially if
@@ -37,6 +37,14 @@ try:
         BATTERY_AVAILABLE = True
 except Exception:
     BATTERY_AVAILABLE = False
+
+
+class ResourceSnapshot(NamedTuple):
+    """Lightweight container for system resource metrics."""
+
+    cpu_count: int
+    available_ram_mb: float | None
+    battery_level: int | None
 
 
 def get_cpu_count() -> int:
@@ -72,7 +80,7 @@ def get_cpu_count() -> int:
         return 1
 
 
-def get_available_ram_mb() -> Optional[float]:
+def get_available_ram_mb() -> float | None:
     """
     Returns the available system RAM in Megabytes (MB).
 
@@ -101,19 +109,17 @@ def get_available_ram_mb() -> Optional[float]:
     try:
         # psutil.virtual_memory() returns a named tuple with memory stats.
         # '.available' gives the memory immediately available for processes.
-        available_ram_bytes = psutil.virtual_memory().available
+        available_ram_bytes: int = psutil.virtual_memory().available
         # Convert bytes to megabytes (1 MB = 1024 * 1024 bytes).
         available_ram_mb = available_ram_bytes / (1024 * 1024)
-        return available_ram_mb
+        return float(available_ram_mb)
     except Exception as e:
         # Catch any exception that might occur during the psutil call.
-        logger.error(
-            f"Error retrieving available RAM using psutil: {e}", exc_info=True
-        )
+        logger.error(f"Error retrieving available RAM using psutil: {e}", exc_info=True)
         return None
 
 
-def get_battery_level() -> Optional[int]:
+def get_battery_level() -> int | None:
     """Return the current battery percentage if available."""
     # 1) Try psutil if it is available
     if BATTERY_AVAILABLE and psutil is not None:
@@ -123,14 +129,13 @@ def get_battery_level() -> Optional[int]:
                 return int(batt.percent)
         except Exception as e:  # pragma: no cover - psutil may fail in CI
             logger.debug(
-                "Battery level via psutil not available: %s", e,
-                exc_info=False
+                "Battery level via psutil not available: %s", e, exc_info=False
             )
 
     # 2) Try Termux command on Android devices
     try:
-        import shutil
         import json
+        import shutil
         import subprocess
 
         termux_cmd = shutil.which("termux-battery-status")
@@ -153,7 +158,7 @@ def get_battery_level() -> Optional[int]:
 
         for path in glob.glob("/sys/class/power_supply/BAT*/capacity"):
             try:
-                with open(path, "r", encoding="utf-8") as f:
+                with open(path, encoding="utf-8") as f:
                     val = f.read().strip()
                     return int(val)
             except Exception:
@@ -165,10 +170,18 @@ def get_battery_level() -> Optional[int]:
             exc_info=False,
         )
 
-    logger.debug(
-        "Battery level could not be determined with available methods."
-    )
+    logger.debug("Battery level could not be determined with available methods.")
     return None
+
+
+def probe_resources() -> ResourceSnapshot:
+    """Collect a snapshot of current CPU, RAM and battery metrics."""
+
+    return ResourceSnapshot(
+        cpu_count=get_cpu_count(),
+        available_ram_mb=get_available_ram_mb(),
+        battery_level=get_battery_level(),
+    )
 
 
 # This block allows testing the functions when the script is run directly.
@@ -191,8 +204,7 @@ if __name__ == "__main__":
                 "not installed."
             )
             logger.info(
-                "Consider installing psutil for RAM details: "
-                "pip install psutil"
+                "Consider installing psutil for RAM details: " "pip install psutil"
             )
         else:
             # This case implies psutil is imported but the call failed for

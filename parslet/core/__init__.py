@@ -20,6 +20,7 @@ from .runner import (  # noqa: F401
     UpstreamTaskFailedError,
 )
 from .scheduler import AdaptiveScheduler  # noqa: F401
+from .policy import AdaptivePolicy  # noqa: F401
 from .task import ParsletFuture, parslet_task, set_allow_redefine  # noqa: F401
 
 try:
@@ -27,4 +28,11 @@ try:
 except metadata.PackageNotFoundError:  # pragma: no cover
     __version__ = "0.0.0"
 
-__all__ = ["parslet_task", "ParsletFuture", "DAG", "DAGRunner"]
+__all__ = [
+    "parslet_task",
+    "ParsletFuture",
+    "DAG",
+    "DAGRunner",
+    "AdaptivePolicy",
+    "AdaptiveScheduler",
+]
