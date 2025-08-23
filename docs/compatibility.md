@@ -30,3 +30,20 @@ edges.
   ignored.
 * The generated code is intended for local execution and does not configure
   providers.
+
+# Dask Compatibility
+
+Parslet can also import basic Dask `delayed` workflows and export Parslet DAGs
+back to Dask. This is **experimental** and mirrors the Parsl caveats above.
+
+## Import from Dask
+
+```
+parslet convert --from-dask in.py --to-parslet out.py
+```
+
+## Export to Dask
+
+```
+parslet convert --from-parslet in.py --to-dask out.py
+```
