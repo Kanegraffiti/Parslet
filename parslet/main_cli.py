@@ -44,22 +44,11 @@ def cli() -> None:
     rad_p.add_argument("--out-dir", default="rad_results")
     rad_p.add_argument("--simulate", action="store_true")
 
-    conv_p = sub.add_parser("convert", help="Convert Dask or Parsl scripts")
-    grp = conv_p.add_mutually_exclusive_group(required=True)
-    grp.add_argument("--from-parsl", dest="from_parsl", action="store_true")
-    grp.add_argument("--from-dask", dest="from_dask", action="store_true")
-    grp.add_argument("--to-parsl", dest="to_parsl", action="store_true")
-    conv_p.add_argument("script")
-    conv_p.add_argument(
-        "--stdout",
-        action="store_true",
-        help="Print converted code without writing to a file",
-    )
-    conv_p.add_argument(
-        "--recursive",
-        action="store_true",
-        help="Process all .py files in a directory tree",
-    )
+    conv_p = sub.add_parser("convert", help="Convert Parsl <-> Parslet scripts")
+    conv_p.add_argument("--from-parsl", metavar="PATH")
+    conv_p.add_argument("--to-parslet", metavar="PATH")
+    conv_p.add_argument("--from-parslet", metavar="PATH")
+    conv_p.add_argument("--to-parsl", metavar="PATH")
 
     sub.add_parser("test", help="Run tests")
     sub.add_parser("diagnose", help="Show system info")
@@ -168,37 +157,31 @@ def cli() -> None:
         runner.run(dag)
 
     elif args.cmd == "convert":
-        from pathlib import Path
+        from parslet.cli import load_workflow_module
+        from parslet.compat.parsl_adapter import (
+            export_parsl_dag,
+            import_parsl_script,
+        )
 
-        if args.to_parsl:
-            from parslet.compat import convert_parslet_to_parsl as conv
-
-            suffix = "_parsl.py"
-        elif args.from_parsl:
-            from parslet.compat import convert_parsl_to_parslet as conv
-
-            suffix = "_parslet.py"
+        if args.from_parsl and args.to_parslet:
+            import_parsl_script(args.from_parsl, args.to_parslet)
+            print(
+                "Warning: experimental conversion; no staging, pure-Python bodies only",
+                flush=True,
+            )
+        elif args.from_parslet and args.to_parsl:
+            mod = load_workflow_module(args.from_parslet)
+            futures = mod.main()
+            export_parsl_dag(futures, args.to_parsl)
+            print(
+                "Warning: experimental conversion; no staging, pure-Python bodies only",
+                flush=True,
+            )
         else:
-            from parslet.compat import convert_dask_to_parslet as conv
-
-            suffix = "_parslet.py"
-
-        def handle_file(p: Path) -> None:
-            code = p.read_text()
-            new_code = conv(code)
-            if args.stdout:
-                print(new_code)
-            else:
-                out = p.with_name(p.stem + suffix)
-                out.write_text(new_code)
-                print(f"Converted file saved as {out}")
-
-        target = Path(args.script)
-        if args.recursive and target.is_dir():
-            for f in target.rglob("*.py"):
-                handle_file(f)
-        else:
-            handle_file(target)
+            print(
+                "Specify --from-parsl/--to-parslet or --from-parslet/--to-parsl",
+                flush=True,
+            )
     elif args.cmd == "test":
         import pytest
 

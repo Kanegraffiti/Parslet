@@ -1,59 +1,64 @@
-from parslet import main_cli
 import sys
+from pathlib import Path
+
+from pytest import MonkeyPatch
+
+from parslet import main_cli
 
 
-def test_cli_convert_to_parsl(tmp_path, monkeypatch):
+def test_cli_convert_to_parsl(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
     wf = tmp_path / "workflow.py"
     wf.write_text(
         "from parslet import parslet_task\n"
         "@parslet_task\n"
         "def foo():\n"
         "    return 1\n"
+        "def main():\n"
+        "    f = foo()\n"
+        "    return [f]\n"
     )
-    monkeypatch.setattr(
-        sys, "argv", ["parslet", "convert", "--to-parsl", str(wf)]
-    )
-    main_cli.main()
-    out = wf.with_name("workflow_parsl.py")
-    assert out.exists()
-    text = out.read_text()
-    assert "@python_app" in text
-
-
-def test_cli_convert_stdout(tmp_path, monkeypatch, capsys):
-    wf = tmp_path / "workflow.py"
-    wf.write_text(
-        "from parslet import parslet_task\n"
-        "@parslet_task\n"
-        "def foo():\n"
-        "    return 1\n"
-    )
-    monkeypatch.setattr(
-        sys, "argv", ["parslet", "convert", "--to-parsl", str(wf), "--stdout"]
-    )
-    main_cli.main()
-    out = wf.with_name("workflow_parsl.py")
-    assert not out.exists()
-    captured = capsys.readouterr()
-    assert "@python_app" in captured.out
-
-
-def test_cli_convert_recursive(tmp_path, monkeypatch):
-    root = tmp_path / "root"
-    root.mkdir()
-    (root / "a.py").write_text("@python_app\n" "def foo():\n" "    return 1\n")
-    sub = root / "sub"
-    sub.mkdir()
-    (sub / "b.py").write_text("@python_app\n" "def bar():\n" "    return 2\n")
+    out = tmp_path / "out.py"
     monkeypatch.setattr(
         sys,
         "argv",
-        ["parslet", "convert", "--from-parsl", str(root), "--recursive"],
+        [
+            "parslet",
+            "convert",
+            "--from-parslet",
+            str(wf),
+            "--to-parsl",
+            str(out),
+        ],
     )
     main_cli.main()
-    out_a = root / "a_parslet.py"
-    out_b = sub / "b_parslet.py"
-    assert out_a.exists()
-    assert out_b.exists()
-    assert "@parslet_task" in out_a.read_text()
-    assert "@parslet_task" in out_b.read_text()
+    assert out.exists()
+    assert "@python_app" in out.read_text()
+
+
+def test_cli_convert_from_parsl(tmp_path: Path, monkeypatch: MonkeyPatch) -> None:
+    wf = tmp_path / "workflow_parsl.py"
+    wf.write_text(
+        "from parsl import python_app\n"
+        "@python_app\n"
+        "def foo():\n"
+        "    return 1\n"
+        "x = foo()\n"
+    )
+    out = tmp_path / "out_parslet.py"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "parslet",
+            "convert",
+            "--from-parsl",
+            str(wf),
+            "--to-parslet",
+            str(out),
+        ],
+    )
+    main_cli.main()
+    assert out.exists()
+    text = out.read_text()
+    assert "@parslet_task" in text
+    assert "def main" in text
