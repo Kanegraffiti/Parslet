@@ -8,6 +8,8 @@ It is intended to be simple to keep the barrier to entry low for new users.
 import argparse
 import sys
 
+from parslet.security import offline_guard
+
 from .plugins.loader import load_plugins
 from .utils import get_parslet_logger
 
@@ -26,6 +28,7 @@ def cli() -> None:
     run_p.add_argument("--battery-mode", action="store_true")
     run_p.add_argument("--json-logs", action="store_true")
     run_p.add_argument("--failsafe-mode", action="store_true")
+    run_p.add_argument("--offline", action="store_true", help="Disable network access")
     run_p.add_argument(
         "--simulate",
         action="store_true",
@@ -120,7 +123,8 @@ def cli() -> None:
         if args.monitor:
 
             def _run() -> None:
-                runner.run(dag)
+                with offline_guard(args.offline):
+                    runner.run(dag)
 
             t = threading.Thread(target=_run)
             t.start()
@@ -141,7 +145,8 @@ def cli() -> None:
                     table.add_row(tid, status)
                 live.update(table)
         else:
-            runner.run(dag)
+            with offline_guard(args.offline):
+                runner.run(dag)
     elif args.cmd == "rad":
         from examples.rad_parslet.rad_dag import main as rad_main
         from parslet.core import DAG, DAGRunner

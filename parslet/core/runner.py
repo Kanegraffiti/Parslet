@@ -18,6 +18,7 @@ from typing import Any
 
 # Absolute import avoids issues when ``parslet`` is imported under
 # an alternative package name (e.g. ``Parslet`` during pytest collection).
+from parslet.security import shell_guard
 from parslet.security.defcon import Defcon
 
 from ..utils.checkpointing import CheckpointManager
@@ -340,8 +341,10 @@ class DAGRunner:
         kwargs: dict[str, object],
     ) -> object:
         """Execute a task function and translate resource errors."""
+        allow_shell = getattr(parslet_future.func, "_parslet_allow_shell", False)
         try:
-            return parslet_future.func(*args, **kwargs)
+            with shell_guard(allow_shell):
+                return parslet_future.func(*args, **kwargs)
         except (MemoryError, OSError) as e:
             raise ResourceLimitError(str(e)) from e
 

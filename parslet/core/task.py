@@ -16,9 +16,8 @@ from typing import Any
 # function. It's used to look up task functions, though direct function
 # references are common in ParsletFutures.
 _TASK_REGISTRY: dict[str, Callable[..., Any]] = {}
-# Global flag controlling whether protected tasks can be redefined.  This is
-# toggled via the CLI using the ``--force-redefine`` option or directly in
-# tests.
+# Global flag to force allow redefinition of tasks.  Mainly used in tests or
+# via the CLI for emergency overrides.
 _ALLOW_REDEFINE: bool = False
 
 # Sentinel object used to indicate that a ParsletFuture's result has not yet
@@ -208,6 +207,8 @@ def parslet_task(
     remote: bool = False,
     cache: bool = False,
     version: str = "1",
+    allow_shell: bool = False,
+    allow_redefine: bool = False,
 ) -> Callable[..., ParsletFuture]:
     """
     Decorator to define a Python function as a Parslet task.
@@ -234,8 +235,8 @@ def parslet_task(
         name (Optional[str]): An optional custom name for the task. If not
             provided, the function's `__name__` attribute (its original name)
             is used as the base for the task name and task ID.
-        protected (bool): If True, attempts to register another task with the
-            same name will raise an error unless ``_ALLOW_REDEFINE`` is True.
+        protected (bool): **Deprecated.** Previously used to prevent accidental
+            redefinition of tasks. Duplicate task names now raise by default.
         battery_sensitive (bool): If True, the task may be skipped when the
             system battery level is below 20% unless the user overrides this
             behaviour in the CLI.
@@ -245,6 +246,11 @@ def parslet_task(
             default.
         version (str): Manual version tag included in the cache key. Bump to
             invalidate previous cached results when task logic changes.
+        allow_shell (bool): Allow the task to invoke ``os.system`` or
+            ``subprocess`` helpers. Disabled by default and enforced by
+            :func:`parslet.security.shell_guard`.
+        allow_redefine (bool): Permit replacing an existing task with the same
+            name without raising an error.
 
     Returns:
         Callable: A wrapped function that, when called, returns a
@@ -262,23 +268,12 @@ def parslet_task(
         # This could be used for looking up tasks by name, though Parslet
         # primarily uses direct function references stored in ParsletFutures.
         if task_name in _TASK_REGISTRY:
-            existing_func = _TASK_REGISTRY[task_name]
-            existing_protected = getattr(existing_func, "_parslet_protected", False)
-            if existing_protected and not _ALLOW_REDEFINE:
+            if not (allow_redefine or _ALLOW_REDEFINE):
                 raise ValueError(
-                    f"Task '{task_name}' is protected and already defined. "
-                    "Use --force-redefine to override."
+                    f"Task '{task_name}' is already registered. "
+                    "Use @parslet_task(allow_redefine=True) to override."
                 )
-            if existing_protected and _ALLOW_REDEFINE:
-                logger.warning(
-                    "Force redefining protected Parslet task '%s'.",
-                    task_name,
-                )
-            else:
-                logger.warning(
-                    "Parslet task '%s' is being redefined. Ensure this is " "intended.",
-                    task_name,
-                )
+            logger.warning("Redefining Parslet task '%s'.", task_name)
         _TASK_REGISTRY[task_name] = func_to_wrap
 
         # Attach metadata to the original function object for potential
@@ -289,6 +284,7 @@ def parslet_task(
             dependencies if dependencies is not None else []
         )
         func_to_wrap._parslet_protected = protected
+        func_to_wrap._parslet_allow_shell = allow_shell
         func_to_wrap._parslet_battery_sensitive = battery_sensitive
         func_to_wrap._parslet_remote = remote
         func_to_wrap._parslet_cache = cache
@@ -326,6 +322,7 @@ def parslet_task(
         wrapper._parslet_task_name = task_name
         wrapper._parslet_dependencies = func_to_wrap._parslet_dependencies
         wrapper._parslet_protected = protected
+        wrapper._parslet_allow_shell = allow_shell
         wrapper._parslet_battery_sensitive = battery_sensitive
         wrapper._parslet_remote = remote
         wrapper._parslet_cache = cache
@@ -365,7 +362,7 @@ def get_task_from_registry(task_name: str) -> Callable[..., Any] | None:
 
 
 def set_allow_redefine(flag: bool) -> None:
-    """Enable or disable overriding of protected tasks."""
+    """Globally allow redefining tasks regardless of decorator flags."""
     global _ALLOW_REDEFINE
     _ALLOW_REDEFINE = flag
 
