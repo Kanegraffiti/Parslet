@@ -44,11 +44,13 @@ def cli() -> None:
     rad_p.add_argument("--out-dir", default="rad_results")
     rad_p.add_argument("--simulate", action="store_true")
 
-    conv_p = sub.add_parser("convert", help="Convert Parsl <-> Parslet scripts")
+    conv_p = sub.add_parser("convert", help="Convert Parsl/Dask <-> Parslet scripts")
     conv_p.add_argument("--from-parsl", metavar="PATH")
     conv_p.add_argument("--to-parslet", metavar="PATH")
     conv_p.add_argument("--from-parslet", metavar="PATH")
     conv_p.add_argument("--to-parsl", metavar="PATH")
+    conv_p.add_argument("--from-dask", metavar="PATH")
+    conv_p.add_argument("--to-dask", metavar="PATH")
 
     sub.add_parser("test", help="Run tests")
     sub.add_parser("diagnose", help="Show system info")
@@ -158,6 +160,10 @@ def cli() -> None:
 
     elif args.cmd == "convert":
         from parslet.cli import load_workflow_module
+        from parslet.compat.dask_adapter import (
+            export_dask_dag,
+            import_dask_script,
+        )
         from parslet.compat.parsl_adapter import (
             export_parsl_dag,
             import_parsl_script,
@@ -177,9 +183,24 @@ def cli() -> None:
                 "Warning: experimental conversion; no staging, pure-Python bodies only",
                 flush=True,
             )
+        elif args.from_dask and args.to_parslet:
+            import_dask_script(args.from_dask, args.to_parslet)
+            print(
+                "Warning: experimental conversion; no staging, pure-Python bodies only",
+                flush=True,
+            )
+        elif args.from_parslet and args.to_dask:
+            mod = load_workflow_module(args.from_parslet)
+            futures = mod.main()
+            export_dask_dag(futures, args.to_dask)
+            print(
+                "Warning: experimental conversion; no staging, pure-Python bodies only",
+                flush=True,
+            )
         else:
             print(
-                "Specify --from-parsl/--to-parslet or --from-parslet/--to-parsl",
+                "Specify --from-parsl/--to-parslet, --from-parslet/--to-parsl,"
+                " --from-dask/--to-parslet or --from-parslet/--to-dask",
                 flush=True,
             )
     elif args.cmd == "test":
