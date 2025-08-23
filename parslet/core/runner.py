@@ -6,6 +6,7 @@ Public API: ``DAGRunner``, ``UpstreamTaskFailedError``,
 """
 
 import hashlib
+import json
 import logging
 import os
 import socket
@@ -22,9 +23,14 @@ from parslet.security.defcon import Defcon
 from ..utils.checkpointing import CheckpointManager
 from ..utils.diagnostics import find_free_port
 from ..utils.network_utils import is_network_available, is_vpn_active
-from ..utils.resource_utils import get_available_ram_mb, get_battery_level
+from ..utils.resource_utils import (
+    get_available_ram_mb,
+    get_battery_level,
+    probe_resources,
+)
 from .cache import compute_cache_key, load_from_cache, save_to_cache
 from .dag import DAG, DAGCycleError
+from .policy import AdaptivePolicy
 from .scheduler import AdaptiveScheduler
 from .task import ParsletFuture
 
@@ -73,7 +79,7 @@ class UpstreamTaskFailedError(RuntimeError):
 
     def __str__(self) -> str:
         """Returns the detailed error message."""
-        return self.args[0]
+        return str(self.args[0])
 
 
 class BatteryLevelLowError(RuntimeError):
@@ -102,16 +108,17 @@ class DAGRunner:
     their dependencies, manages task states (running, success, failure,
     skipped), and collects basic benchmark data like execution times.
 
-    It can adjust its concurrency based on available CPU resources and an
-    optional battery-saver mode.
+    It can adjust its concurrency based on available system resources using an
+    :class:`AdaptivePolicy`.
     """
 
     def __init__(
         self,
         max_workers: int | None = None,
         runner_logger: logging.Logger | None = None,
-        battery_mode_active: bool = False,
+        policy: AdaptivePolicy | None = None,
         ignore_battery: bool = False,
+        json_logs: bool = False,
         monitor_port: int = 6300,
         checkpoint_file: str | None = None,
         failsafe_mode: bool = False,
@@ -130,8 +137,8 @@ class DAGRunner:
                 instance. If None, a logger named 'parslet-runner' is used,
                 which might be pre-configured (e.g., by the CLI) or receive a
                 basic default configuration.
-            battery_mode_active (bool): If True, enables power-saving
-                measures, primarily by reducing default concurrency.
+            policy (Optional[AdaptivePolicy]): Policy controlling worker pool
+                size based on resource probes.
             ignore_battery (bool): If True, battery-sensitive tasks will run
                 even when the system battery level is below the recommended
                 threshold.
@@ -170,24 +177,27 @@ class DAGRunner:
                         "using basicConfig fallback."
                     )
 
-        self.battery_mode_active = battery_mode_active
         self.ignore_battery = ignore_battery
         self.failsafe_mode = failsafe_mode
         self.fallback_active = False
         user_specified_max_workers = max_workers
         self.signature_file = Path(signature_file) if signature_file else None
+        self.json_logs = json_logs
         self._tamper_check = (
             Defcon.tamper_guard(Path(p) for p in watch_files) if watch_files else None
         )
 
         self.disable_cache = disable_cache or bool(os.getenv("PARSLET_NO_CACHE"))
 
-        self.scheduler = AdaptiveScheduler(battery_mode_active)
-        calculated_max_workers = self.scheduler.calculate_worker_count(
-            user_specified_max_workers
-        )
+        if policy is not None:
+            if user_specified_max_workers is not None:
+                policy.max_workers = user_specified_max_workers
+            self.policy = policy
+        else:
+            self.policy = AdaptivePolicy(max_workers=user_specified_max_workers)
 
-        self.max_workers = calculated_max_workers
+        self.scheduler = AdaptiveScheduler(policy=self.policy)
+        self.max_workers = self.scheduler.calculate_worker_count()
         self.logger.info(f"DAGRunner initialized with max_workers={self.max_workers}")
 
         # Determine monitoring port, fallback if busy
@@ -335,8 +345,28 @@ class DAGRunner:
         except (MemoryError, OSError) as e:
             raise ResourceLimitError(str(e)) from e
 
+    def _maybe_resize_pool(self) -> None:
+        """Adjust executor worker count based on current policy."""
+
+        if not hasattr(self, "executor") or self.policy is None:
+            return
+        snapshot = probe_resources()
+        new_size = self.policy.decide_pool_size(snapshot)
+        old_size = getattr(self, "_pool_size", new_size)
+        if new_size != old_size:
+            self.executor._max_workers = new_size
+            self._pool_size = new_size
+            if self.json_logs:
+                self.logger.info(
+                    json.dumps(
+                        {"event": "pool_resize", "old": old_size, "new": new_size}
+                    )
+                )
+            else:
+                self.logger.info(f"Resized worker pool from {old_size} to {new_size}")
+
     def _task_done_callback(
-        self, parslet_future: ParsletFuture, executor_future: ExecutorFuture
+        self, parslet_future: ParsletFuture, executor_future: ExecutorFuture[Any]
     ) -> None:
         """
         Callback executed when a task submitted to the ThreadPoolExecutor
@@ -424,6 +454,7 @@ class DAGRunner:
                     f"Task '{task_id}' finished. Duration: {duration:.4f}s. "
                     f"Status: {self.task_statuses.get(task_id)}"
                 )
+            self._maybe_resize_pool()
 
     def _run_task_serially(
         self,
@@ -550,6 +581,8 @@ class DAGRunner:
         # Execute tasks using a ThreadPoolExecutor.
         # The 'with' statement ensures the pool is properly shut down.
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            self.executor = executor
+            self._pool_size = self.max_workers
             for task_id in execution_order:
                 if self._tamper_check and not self._tamper_check():
                     self.logger.critical("DEFCON3 tamper detected; aborting run")
@@ -632,7 +665,7 @@ class DAGRunner:
                     try:
                         cached = load_from_cache(cache_key)
                     except FileNotFoundError:
-                        current_parslet_future._cache_key = cache_key
+                        current_parslet_future._cache_key = cache_key  # type: ignore[attr-defined]
                     else:
                         self.logger.info(
                             f"Cache hit for task '{task_id}' ({task_name})."
@@ -685,8 +718,8 @@ class DAGRunner:
                     self.task_statuses[task_id] = "RUNNING"
 
                     # store resolved args for potential failsafe re-run
-                    current_parslet_future._resolved_args = resolved_args
-                    current_parslet_future._resolved_kwargs = resolved_kwargs
+                    current_parslet_future._resolved_args = resolved_args  # type: ignore[attr-defined]
+                    current_parslet_future._resolved_kwargs = resolved_kwargs  # type: ignore[attr-defined]
 
                     exec_future = executor.submit(
                         self._wrapped_task_execution,
@@ -698,7 +731,7 @@ class DAGRunner:
                     # Add a callback to handle task completion/failure and
                     # update ParsletFuture.
                     def _cb(
-                        executor_fut: ExecutorFuture,
+                        executor_fut: ExecutorFuture[Any],
                         parslet_fut: ParsletFuture = current_parslet_future,
                     ) -> None:
                         self._task_done_callback(parslet_fut, executor_fut)

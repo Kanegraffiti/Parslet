@@ -24,6 +24,7 @@ def cli() -> None:
     run_p.add_argument("workflow")
     run_p.add_argument("--monitor", action="store_true", help="Show progress")
     run_p.add_argument("--battery-mode", action="store_true")
+    run_p.add_argument("--json-logs", action="store_true")
     run_p.add_argument("--failsafe-mode", action="store_true")
     run_p.add_argument(
         "--simulate",
@@ -79,6 +80,7 @@ def cli() -> None:
 
         from parslet.cli import load_workflow_module
         from parslet.core import DAG, DAGRunner
+        from parslet.core.policy import AdaptivePolicy
         from parslet.security.defcon import Defcon
 
         wf = Path(args.workflow)
@@ -97,11 +99,15 @@ def cli() -> None:
             except Exception as e:
                 logger.error(f"Failed to export DAG to PNG: {e}", exc_info=False)
 
+        policy = None
+        if args.battery_mode:
+            policy = AdaptivePolicy(max_workers=2, battery_threshold=40)
         runner = DAGRunner(
-            battery_mode_active=args.battery_mode,
+            policy=policy,
             failsafe_mode=args.failsafe_mode,
             watch_files=[str(wf)],
             disable_cache=args.no_cache,
+            json_logs=args.json_logs,
         )
 
         if args.simulate:

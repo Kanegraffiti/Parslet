@@ -6,9 +6,9 @@ We've all been there. You're in the middle of something important, and you see t
 How Does It Work?
 -----------------
 
-When you tell Parslet to run in battery-saver mode, its smart scheduler (the ``AdaptiveScheduler``) gets extra cautious. It looks at your device's CPU, available memory, and most importantly, your current battery percentage.
+When you tell Parslet to run in battery-saver mode, an :class:`AdaptivePolicy` kicks in. It looks at your device's CPU, available memory, and most importantly, your current battery percentage.
 
-Based on what it sees, it will reduce the number of tasks it tries to run at the same time. Often, it will slow down to running just one task at a time. This is like putting your phone into "Low Power Mode"—it helps your battery last as long as possible so you can finish your work.
+Based on what it sees, the policy decides how many worker threads to keep alive. If the battery drops below about 40%, the pool is automatically cut in half; when the battery recovers, it can grow again up to its cap. Often, it will slow down to running just one task at a time. This is like putting your phone into "Low Power Mode"—it helps your battery last as long as possible so you can finish your work.
 
 How Do I Turn It On?
 --------------------
