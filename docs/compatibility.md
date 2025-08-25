@@ -14,6 +14,9 @@ Parsl `@python_app` functions are rewritten as `@parslet_task` and any top
 level task invocations are wrapped into a `main()` function returning a list of
 `ParsletFuture` objects.
 
+See `examples/compat/parsl_demo.py` for a minimal workflow that can be
+converted.
+
 ## Export to Parsl
 
 ```
@@ -47,3 +50,6 @@ parslet convert --from-dask in.py --to-parslet out.py
 ```
 parslet convert --from-parslet in.py --to-dask out.py
 ```
+
+The `examples/compat/dask_demo.py` script shows a tiny Dask workflow that
+works with the converter.

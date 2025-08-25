@@ -136,16 +136,16 @@ parslet run my_package.workflow:main --max-workers 4 --json-logs --export-stats 
 
 ---
 
-## What Else Can It Do? 
+## What Else Can It Do?
 
 Parslet is small, but it's packed with neat features for real-world use.
 
--   **Works Offline:** Your automated workflows run even without an internet connection.
--   **Saves Battery:** Use the special `--battery-mode` to tell Parslet to take it easy and conserve power.
--   **Smart About Resources:** It automatically checks your device's CPU and memory to run smoothly without crashing.
--   **DEFCON:** A multi-layered defense system in Parslet that proactively blocks zero-day exploits and malicious DAG behavior using offline rules.
--   **Plays Well with Others:** If you ever move to a big server, Parslet has tools to convert your recipes to run on powerful systems like Parsl or Dask.
--   **Made for Termux:** We use it and test it on Android phones, so you know it'll work.
+-   **Works Offline:** Your automated workflows run even without an internet connection. See the [examples](docs/examples.md).
+-   **Saves Battery:** Use the special `--battery-mode` to tell Parslet to take it easy and conserve power. Read about [battery mode](docs/source/battery_mode.rst).
+-   **Smart About Resources:** It automatically checks your device's CPU and memory to run smoothly without crashing. The [AdaptivePolicy](docs/policy.md) adjusts workers on the fly.
+-   **DEFCON:** A multi-layered defense system in Parslet that proactively blocks zero-day exploits and malicious DAG behavior using offline rules. Learn more in the [security notes](docs/technical-overview.md).
+-   **Plays Well with Others:** If you ever move to a big server, Parslet has tools to convert your recipes to run on powerful systems like Parsl or Dask. See [compatibility](docs/compatibility.md).
+-   **Made for Termux:** We use it and test it on Android phones, so you know it'll work. Check the [install guide](docs/install.md).
 
 Want to see more? Check out the `use_cases/` and `examples/` folders for more advanced recipes!
 
