@@ -142,7 +142,15 @@
 <p>Parslet is designed for devices that might not be very powerful.</p>
 <p>By default, it looks at your device’s CPU cores and available memory to pick a sensible number of tasks to run at once.</p>
 <p>If you’re on a laptop or phone and want to save battery, just add the <code class="docutils literal notranslate"><span class="pre">--battery-mode</span></code> flag. This tells Parslet to take it easy and run fewer tasks at the same time. You can always override this with <code class="docutils literal notranslate"><span class="pre">--max-workers</span></code> if you know best.</p>
-<p>Want to see what’s happening in real-time? Use the <code class="docutils literal notranslate"><span class="pre">--monitor</span></code> flag to get a live view of your tasks as they run.</p>
+<p>Want to see what’s happening in real-time? Use the <code class="docutils literal notranslate"><span class="pre">--monitor</span></code> flag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parslet<span class="w"> </span>run<span class="w"> </span>my_flow.py<span class="w"> </span>--monitor
+</pre></div>
+</div>
+<p>To analyze performance, export execution stats and plot an ASCII heatmap:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parslet<span class="w"> </span>run<span class="w"> </span>my_flow.py<span class="w"> </span>--export-stats<span class="w"> </span>stats.json
+python<span class="w"> </span>examples/tools/plot_stats.py<span class="w"> </span>stats.json
+</pre></div>
+</div>
 <p>For more command-line options, like exporting a picture of your workflow, check out the <a class="reference internal" href="cli.html"><span class="doc">Your Remote Control: The Parslet CLI</span></a> guide. To learn more about how battery mode works, see <a class="reference internal" href="battery_mode.html"><span class="doc">Running on Fumes? Use Battery-Saver Mode!</span></a>.</p>
 </section>
 </section>

@@ -59,6 +59,17 @@ By default, it looks at your device's CPU cores and available memory to pick a s
 
 If you're on a laptop or phone and want to save battery, just add the ``--battery-mode`` flag. This tells Parslet to take it easy and run fewer tasks at the same time. You can always override this with ``--max-workers`` if you know best.
 
-Want to see what's happening in real-time? Use the ``--monitor`` flag to get a live view of your tasks as they run.
+Want to see what's happening in real-time? Use the ``--monitor`` flag:
+
+.. code-block:: bash
+
+   parslet run my_flow.py --monitor
+
+To analyze performance, export execution stats and plot an ASCII heatmap:
+
+.. code-block:: bash
+
+   parslet run my_flow.py --export-stats stats.json
+   python examples/tools/plot_stats.py stats.json
 
 For more command-line options, like exporting a picture of your workflow, check out the :doc:`cli` guide. To learn more about how battery mode works, see :doc:`battery_mode`.
