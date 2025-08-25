@@ -21,3 +21,15 @@ Workflows installed as modules are also supported:
 ```bash
 parslet run pkg.workflow:main --json-logs --export-stats stats.json
 ```
+
+Watch tasks live with ``--monitor``:
+
+```bash
+parslet run path/to/workflow.py --monitor
+```
+
+And turn exported stats into an ASCII heatmap:
+
+```bash
+python examples/tools/plot_stats.py stats.json
+```
