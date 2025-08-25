@@ -89,3 +89,50 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation M
 
 /* focus ring */
 :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
+/* Sections */
+.definition, .usecases { padding: 2rem 1rem; max-width: 1050px; margin: 0 auto; }
+.ticks { margin: .8rem 0 0 0; padding-left: 1.2rem; }
+.ticks li { margin: .25rem 0; }
+
+.use-grid {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+.uc header { display: flex; align-items: center; gap: .6rem; margin-bottom: .4rem; }
+.uc .glyph { width: 22px; height: 22px; opacity: .85; }
+.flow { margin-top: .6rem; }
+.flow[hidden] { display: none; }
+.flow-svg {
+  width: 100%; height: auto; color: var(--fg);
+  background: linear-gradient(0deg, transparent, transparent);
+  border-radius: 10px; border: 1px solid #e7e7ec1a; padding: .4rem;
+}
+
+/* Animations */
+@media (prefers-reduced-motion: no-preference) {
+  .hero img[src$="parslet-logo.svg"] { animation: float 6s ease-in-out infinite; }
+  .flow-svg .b { stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw 1.2s ease-out forwards; }
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Theme override via data attribute */
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --fg: #1b1b1d;
+  --muted: #5b5b63;
+  --card: #f6f6f8;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #101114;
+  --fg: #eaeaf0;
+  --muted: #a0a1a8;
+  --card: #16181d;
+}
