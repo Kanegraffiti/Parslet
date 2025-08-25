@@ -128,6 +128,12 @@ Ready to try it? You can be up and running in less than a minute.
 
 You'll see the `print` statements from your tasks as they run, in the correct order 🎉
 
+You can also reference a workflow by module path and tweak execution:
+
+```bash
+parslet run my_package.workflow:main --max-workers 4 --json-logs --export-stats stats.json
+```
+
 ---
 
 ## What Else Can It Do? 

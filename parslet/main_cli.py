@@ -6,6 +6,7 @@ It is intended to be simple to keep the barrier to entry low for new users.
 """
 
 import argparse
+import json
 import sys
 
 from parslet.security import offline_guard
@@ -23,10 +24,12 @@ def cli() -> None:
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     run_p = sub.add_parser("run", help="Run a workflow")
-    run_p.add_argument("workflow")
+    run_p.add_argument("workflow", help="Workflow file path or module:func reference")
     run_p.add_argument("--monitor", action="store_true", help="Show progress")
     run_p.add_argument("--battery-mode", action="store_true")
-    run_p.add_argument("--json-logs", action="store_true")
+    run_p.add_argument(
+        "--json-logs", action="store_true", help="Emit logs in JSON format"
+    )
     run_p.add_argument("--failsafe-mode", action="store_true")
     run_p.add_argument("--offline", action="store_true", help="Disable network access")
     run_p.add_argument(
@@ -36,10 +39,21 @@ def cli() -> None:
     )
     run_p.add_argument("--no-cache", action="store_true", help="Disable task caching")
     run_p.add_argument(
+        "--max-workers",
+        type=int,
+        help="Maximum number of worker threads",
+    )
+    run_p.add_argument(
         "--export-png",
         type=str,
         metavar="PATH",
         help="Export a PNG visualization of the DAG to the given path.",
+    )
+    run_p.add_argument(
+        "--export-stats",
+        type=str,
+        metavar="PATH",
+        help="Write task execution stats to the given JSON file",
     )
 
     rad_p = sub.add_parser("rad", help="Run RAD by Parslet example")
@@ -77,11 +91,12 @@ def cli() -> None:
         from parslet.core.policy import AdaptivePolicy
         from parslet.security.defcon import Defcon
 
-        wf = Path(args.workflow)
-        if not Defcon.scan_code([wf]):
+        wf_input = args.workflow
+        mod = load_workflow_module(wf_input)
+        wf = Path(mod.__file__ or "")
+        if wf and not Defcon.scan_code([wf]):
             logger.error("DEFCON1 rejection: unsafe code")
             return
-        mod = load_workflow_module(str(wf))
         futures = mod.main()
         dag = DAG()
         dag.build_dag(futures)
@@ -99,9 +114,10 @@ def cli() -> None:
         runner = DAGRunner(
             policy=policy,
             failsafe_mode=args.failsafe_mode,
-            watch_files=[str(wf)],
+            watch_files=[str(wf)] if wf else None,
             disable_cache=args.no_cache,
             json_logs=args.json_logs,
+            max_workers=args.max_workers,
         )
 
         if args.simulate:
@@ -147,6 +163,20 @@ def cli() -> None:
         else:
             with offline_guard(args.offline):
                 runner.run(dag)
+            if args.export_stats:
+                try:
+                    with open(args.export_stats, "w", encoding="utf-8") as fh:
+                        json.dump(
+                            {
+                                "task_statuses": runner.task_statuses,
+                                "task_execution_times": runner.task_execution_times,
+                            },
+                            fh,
+                            indent=2,
+                        )
+                    logger.info(f"Execution stats exported to {args.export_stats}")
+                except Exception as e:  # pragma: no cover - defensive
+                    logger.error(f"Failed to export stats: {e}", exc_info=False)
     elif args.cmd == "rad":
         from examples.rad_parslet.rad_dag import main as rad_main
         from parslet.core import DAG, DAGRunner
