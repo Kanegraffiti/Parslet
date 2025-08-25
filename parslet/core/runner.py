@@ -229,6 +229,9 @@ class DAGRunner:
         # "SKIPPED", or "RUNNING" (transient).
         self.task_statuses: dict[str, str] = {}
 
+        # Reference to the DAG being executed, used for richer error messages
+        self._dag: DAG | None = None
+
     def get_task_benchmarks(self) -> dict[str, dict[str, Any]]:
         """
         Retrieves benchmark data for all tasks processed or known by the
@@ -368,6 +371,12 @@ class DAGRunner:
             else:
                 self.logger.info(f"Resized worker pool from {old_size} to {new_size}")
 
+    def _remediation_hint(self, exc: Exception) -> str:
+        """Provide a simple one-line remediation hint based on the exception."""
+        if isinstance(exc, FileNotFoundError):
+            return "File not found: verify path or working directory"
+        return "Check task inputs or environment"
+
     def _task_done_callback(
         self, parslet_future: ParsletFuture, executor_future: ExecutorFuture[Any]
     ) -> None:
@@ -430,22 +439,20 @@ class DAGRunner:
             # Task execution failed.
             parslet_future.set_exception(e)
             self.task_statuses[task_id] = "FAILED"
+            deps: list[str] = []
+            if self._dag:
+                try:
+                    deps = self._dag.get_dependencies(task_id)
+                except Exception:  # pragma: no cover - best effort
+                    deps = []
+            deps_str = ", ".join(deps) if deps else "none"
+            hint = self._remediation_hint(e)
             self.logger.error(
                 f"Task '{task_id}' ({parslet_future.func.__name__}) failed "
-                f"during execution: {type(e).__name__}: {e}",
+                f"with {type(e).__name__}: {e}. Predecessors: {deps_str}. "
+                f"Hint: {hint}",
                 exc_info=True,
             )
-            diagnostic_msg = (
-                f"Task '{task_id}' ({parslet_future.func.__name__}) failed. "
-                "Some things to check:\n"
-                "            - Are input files/data correct and accessible "
-                "for this task?\n"
-                "            - Are there issues with external services or "
-                "resources it depends on?\n"
-                "            - Review the task's own logs or the error "
-                "message above for specific details."
-            )
-            self.logger.info(diagnostic_msg)
         finally:
             # Record execution time regardless of success or failure, if start
             # time was logged.
@@ -524,6 +531,7 @@ class DAGRunner:
         Args:
             dag (DAG): The Parslet DAG object containing tasks to be executed.
         """
+        self._dag = dag
         self.logger.info(
             f"DAGRunner starting execution with {self.max_workers} worker " "thread(s)."
         )
