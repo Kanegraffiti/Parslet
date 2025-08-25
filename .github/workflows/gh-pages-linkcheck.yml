@@ -1,0 +1,15 @@
+name: Link Check (gh-pages)
+on:
+  push:
+    branches: [ gh-pages ]
+jobs:
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Link Checker
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: --verbose --no-progress --exclude-mailto .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
