@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Parslet · Parallel workflows for low‑resource devices</title>
-  <meta name="description" content="Parslet is a tiny Python workflow engine with DAGs, adaptive battery‑aware scheduling, and Termux/Android support.">
+  <title>Parslet · Parallel workflows for low-resource devices</title>
+  <meta name="description" content="Parslet is a tiny Python workflow engine with DAGs, adaptive battery-aware scheduling, Termux/Android support, and experimental Parsl/Dask interop.">
   <meta property="og:title" content="Parslet" />
-  <meta property="og:description" content="Parallel workflows for low‑resource devices. Battery‑aware, offline‑first, and Parsl/Dask‑friendly." />
+  <meta property="og:description" content="Parallel workflows for low-resource devices. Battery-aware, offline-first, and Parsl/Dask-friendly." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://kanegraffiti.github.io/Parslet/" />
   <meta name="twitter:card" content="summary" />
@@ -20,33 +20,44 @@
     <span>Parslet</span>
   </a>
   <nav class="nav">
+    <a href="#definition">Definition</a>
     <a href="#features">Features</a>
+    <a href="#usecases">Use-Cases</a>
     <a href="#quickstart">Quickstart</a>
     <a href="#interop">Interop</a>
     <a href="#termux">Termux</a>
     <a href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Docs</a>
     <a href="https://github.com/Kanegraffiti/Parslet" target="_blank" rel="noopener">GitHub</a>
-    <button id="themeToggle" class="btn secondary" aria-label="Toggle theme">☾</button>
+    <button id="themeToggle" class="btn secondary" aria-label="Toggle theme" aria-pressed="false" title="Theme">☾</button>
   </nav>
 </header>
 
 <main id="top">
   <section class="hero">
     <div class="badge">Speaking at ParslFest 2025</div>
-    <h1>Parallel workflows for low‑resource devices</h1>
-    <p class="sub">
-      A tiny Python DAG engine that thrives on phones, Pis, and edge devices—offline‑first and battery‑aware.
-    </p>
+    <h1>Parallel workflows for low-resource devices</h1>
+    <p class="sub">A tiny Python DAG engine that thrives on phones, Pis, and edge devices—offline-first and battery-aware.</p>
     <div class="cta">
       <a class="btn primary" href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Read the Docs</a>
       <a class="btn ghost" href="https://github.com/Kanegraffiti/Parslet" target="_blank" rel="noopener">GitHub</a>
     </div>
   </section>
 
+  <!-- NEW: Definition -->
+  <section id="definition" class="definition">
+    <h2>What is Parslet?</h2>
+    <p><strong>Parslet</strong> is a pocket-sized workflow engine for Python. You write small functions (tasks), Parslet links them as a <em>DAG</em> and runs them efficiently—scaling down on low battery, working happily offline, and fitting neatly on Android via Termux or tiny edge devices.</p>
+    <ul class="ticks">
+      <li>Define tasks with a decorator, return a final list of futures—<em>that’s your workflow</em>.</li>
+      <li>Adaptive, battery-aware runner with sensible defaults and a simple CLI.</li>
+      <li>Experimental import/export to <strong>Parsl</strong> and <strong>Dask</strong> for portability.</li>
+    </ul>
+  </section>
+
   <section class="why">
     <div class="why-grid">
-      <div class="card"><h3>Offline‑first</h3><p>Run workflows without connectivity. Great for field work and clinics.</p></div>
-      <div class="card"><h3>Battery‑aware</h3><p>Adaptive scheduling that scales down when power is scarce.</p></div>
+      <div class="card"><h3>Offline-first</h3><p>Run workflows without connectivity. Great for field work and clinics.</p></div>
+      <div class="card"><h3>Battery-aware</h3><p>Adaptive scheduling that scales down when power is scarce.</p></div>
       <div class="card"><h3>Tiny & Pythonic</h3><p>Just write functions. Parslet handles dependencies as a DAG.</p></div>
     </div>
   </section>
@@ -55,76 +66,201 @@
     <h2>Key features</h2>
     <div class="grid">
       <div class="card"><h4>DAG, not ceremony</h4><p>Compose tasks, get futures, return a final list—done.</p></div>
-      <div class="card"><h4>Adaptive scheduling</h4><p>Battery‑aware policy with sensible defaults and CLI control.</p></div>
+      <div class="card"><h4>Adaptive scheduling</h4><p>Battery-aware policy with CLI control.</p></div>
       <div class="card"><h4>Stats & monitor</h4><p>Export run stats and watch progress live in your terminal.</p></div>
-      <div class="card"><h4>Deterministic caching</h4><p>Opt‑in content‑hash caching for expensive pure tasks.</p></div>
+      <div class="card"><h4>Deterministic caching</h4><p>Opt-in content-hash caching for expensive pure tasks.</p></div>
       <div class="card"><h4>Parsl & Dask interop</h4><p>Experimental import/export keeps you portable.</p></div>
-      <div class="card"><h4>Termux native</h4><p>Friendly on Android; designed for constrained devices.</p></div>
+      <div class="card"><h4>Termux native</h4><p>Designed for constrained Android devices.</p></div>
+    </div>
+  </section>
+
+  <!-- NEW: Use-Cases with inline SVG diagrams -->
+  <section id="usecases" class="usecases">
+    <h2>Practical Use-Cases</h2>
+
+    <div class="use-grid">
+
+      <!-- Battery-Aware Data Pipeline -->
+      <article class="uc card">
+        <header>
+          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
+          <h3>Battery-Aware Data Pipeline</h3>
+        </header>
+        <p>Check battery → choose quick or full analysis → save results. Great for phones in the field.</p>
+        <button class="btn secondary flow-toggle" data-target="flow-battery">View flow</button>
+        <div class="flow" id="flow-battery" hidden>
+          <!-- simple block flow -->
+          <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Battery aware flow">
+            <defs>
+              <style>
+                .b { fill:none; stroke:currentColor; stroke-width:2; }
+                .n { fill:var(--card); stroke:currentColor; }
+              </style>
+            </defs>
+            <rect class="n" x="10" y="30" rx="6" width="110" height="60"></rect>
+            <text x="65" y="65" text-anchor="middle">check_battery</text>
+            <path class="b" d="M120,60 L170,60"></path>
+            <rect class="n" x="170" y="10" rx="6" width="110" height="60"></rect>
+            <text x="225" y="45" text-anchor="middle">quick_compute</text>
+            <rect class="n" x="170" y="70" rx="6" width="110" height="60"></rect>
+            <text x="225" y="105" text-anchor="middle">full_compute</text>
+            <path class="b" d="M170,40 L120,60 L170,90"></path>
+            <path class="b" d="M280,40 L330,60"></path>
+            <path class="b" d="M280,100 L330,60"></path>
+            <rect class="n" x="330" y="30" rx="6" width="80" height="60"></rect>
+            <text x="370" y="65" text-anchor="middle">save</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- RAD clinical triage -->
+      <article class="uc card">
+        <header>
+          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
+          <h3>RAD by Parslet (Triage)</h3>
+        </header>
+        <p>Ingest → preprocess → two light models → agree=auto-note, disagree=human review.</p>
+        <button class="btn secondary flow-toggle" data-target="flow-rad">View flow</button>
+        <div class="flow" id="flow-rad" hidden>
+          <svg viewBox="0 0 480 140" class="flow-svg" role="img" aria-label="RAD flow">
+            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
+            <rect class="n" x="10"  y="40" rx="6" width="90"  height="60"></rect>
+            <text x="55" y="75" text-anchor="middle">ingest</text>
+            <path class="b" d="M100,70 L140,70"></path>
+            <rect class="n" x="140" y="40" rx="6" width="100" height="60"></rect>
+            <text x="190" y="75" text-anchor="middle">preprocess</text>
+            <path class="b" d="M240,70 L280,40"></path>
+            <path class="b" d="M240,70 L280,100"></path>
+            <rect class="n" x="280" y="10" rx="6" width="90" height="50"></rect>
+            <text x="325" y="40" text-anchor="middle">model A</text>
+            <rect class="n" x="280" y="80" rx="6" width="90" height="50"></rect>
+            <text x="325" y="110" text-anchor="middle">model B</text>
+            <path class="b" d="M370,35 L420,35"></path>
+            <path class="b" d="M370,105 L420,105"></path>
+            <rect class="n" x="420" y="20" rx="6" width="50" height="30"></rect>
+            <text x="445" y="40" font-size="10" text-anchor="middle">agree</text>
+            <rect class="n" x="420" y="90" rx="6" width="50" height="30"></rect>
+            <text x="445" y="110" font-size="10" text-anchor="middle">review</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Edge MCU -->
+      <article class="uc card">
+        <header>
+          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
+          <h3>Edge MCU Sensor Processing</h3>
+        </header>
+        <p>Batch read → clean → feature extract → store/export; resilient on low RAM.</p>
+        <button class="btn secondary flow-toggle" data-target="flow-edge">View flow</button>
+        <div class="flow" id="flow-edge" hidden>
+          <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Edge sensor flow">
+            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
+            <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
+            <text x="55" y="65" text-anchor="middle">read</text>
+            <path class="b" d="M100,60 L150,60"></path>
+            <rect class="n" x="150" y="30" rx="6" width="90" height="60"></rect>
+            <text x="195" y="65" text-anchor="middle">clean</text>
+            <path class="b" d="M240,60 L290,60"></path>
+            <rect class="n" x="290" y="30" rx="6" width="90" height="60"></rect>
+            <text x="335" y="65" text-anchor="middle">features</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Text cleaner -->
+      <article class="uc card">
+        <header>
+          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
+          <h3>Text Cleaner</h3>
+        </header>
+        <p>Load text → normalize → dedupe → save, useful for SMS/USSD exports.</p>
+        <button class="btn secondary flow-toggle" data-target="flow-text">View flow</button>
+        <div class="flow" id="flow-text" hidden>
+          <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Text cleaner flow">
+            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
+            <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
+            <text x="55" y="65" text-anchor="middle">load</text>
+            <path class="b" d="M100,60 L150,60"></path>
+            <rect class="n" x="150" y="30" rx="6" width="100" height="60"></rect>
+            <text x="200" y="65" text-anchor="middle">normalize</text>
+            <path class="b" d="M250,60 L300,60"></path>
+            <rect class="n" x="300" y="30" rx="6" width="90" height="60"></rect>
+            <text x="345" y="65" text-anchor="middle">dedupe</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Image filter -->
+      <article class="uc card">
+        <header>
+          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
+          <h3>Image Filter</h3>
+        </header>
+        <p>Load image → grayscale → blur → save; ideal for lightweight image ops.</p>
+        <button class="btn secondary flow-toggle" data-target="flow-image">View flow</button>
+        <div class="flow" id="flow-image" hidden>
+          <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Image filter flow">
+            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
+            <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
+            <text x="55" y="65" text-anchor="middle">load</text>
+            <path class="b" d="M100,60 L150,60"></path>
+            <rect class="n" x="150" y="30" rx="6" width="100" height="60"></rect>
+            <text x="200" y="65" text-anchor="middle">grayscale</text>
+            <path class="b" d="M250,60 L300,60"></path>
+            <rect class="n" x="300" y="30" rx="6" width="90" height="60"></rect>
+            <text x="345" y="65" text-anchor="middle">blur</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Interop -->
+      <article class="uc card">
+        <header>
+          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
+          <h3>Parsl/Dask Interop (exp.)</h3>
+        </header>
+        <p>Convert simple scripts to move between ecosystems with a CLI bridge.</p>
+        <button class="btn secondary flow-toggle" data-target="flow-interop">View flow</button>
+        <div class="flow" id="flow-interop" hidden>
+          <svg viewBox="0 0 480 120" class="flow-svg" role="img" aria-label="Interop flow">
+            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
+            <rect class="n" x="20" y="30" rx="6" width="110" height="60"></rect>
+            <text x="75" y="65" text-anchor="middle">parsl app</text>
+            <path class="b" d="M130,60 L180,60"></path>
+            <rect class="n" x="180" y="30" rx="6" width="120" height="60"></rect>
+            <text x="240" y="65" text-anchor="middle">parslet convert</text>
+            <path class="b" d="M300,60 L350,60"></path>
+            <rect class="n" x="350" y="30" rx="6" width="110" height="60"></rect>
+            <text x="405" y="65" text-anchor="middle">parslet DAG</text>
+          </svg>
+        </div>
+      </article>
+
     </div>
   </section>
 
   <section id="quickstart" class="quickstart">
     <h2>Quickstart</h2>
-
-    <div class="codeblock">
-<pre><code class="language-bash"># Install from PyPI
-pip install parslet</code></pre>
-    </div>
-
-    <div class="codeblock">
-<pre><code class="language-python">from parslet import parslet_task, ParsletFuture, DAG, DAGRunner
-from typing import List
-
-@parslet_task
-def hello(name: str) -&gt; str:
-    return f"Hello, {name}!"
-
-@parslet_task
-def loud(text: str) -&gt; str:
-    return text.upper()
-
-def main() -&gt; List[ParsletFuture]:
-    a = hello("Parslet")
-    b = loud(a)
-    return [b]
-
-if __name__ == "__main__":
-    dag = DAG()
-    dag.add_tasks(*main())
-    DAGRunner(dag).run()</code></pre>
-    </div>
-
-    <p>Run it:</p>
-    <div class="codeblock">
-<pre><code class="language-bash">parslet run my_workflow.py</code></pre>
-    </div>
-
+    <p><strong>Docs:</strong> See the full picture on Read the Docs.</p>
+    <div class="codeblock"><pre><code class="language-bash">pip install parslet</code></pre></div>
+    <div class="codeblock"><pre><code class="language-bash">parslet run my_workflow.py</code></pre></div>
     <p>Export a DAG image (requires graphviz):</p>
-    <div class="codeblock">
-<pre><code class="language-bash">parslet run my_workflow.py --export-png dag.png</code></pre>
-    </div>
+    <div class="codeblock"><pre><code class="language-bash">parslet run my_workflow.py --export-png dag.png</code></pre></div>
   </section>
 
   <section id="interop" class="interop">
     <h2>Interop (experimental)</h2>
-    <p>Convert simple scripts to move between ecosystems.</p>
-    <div class="codeblock">
-<pre><code class="language-bash"># Parsl → Parslet
-parslet convert --from-parsl app.py --to-parslet out.py
-
-# Dask → Parslet
-parslet convert --from-dask dask.py --to-parslet out.py</code></pre>
-    </div>
+    <div class="codeblock"><pre><code class="language-bash">parslet convert --from-parsl app.py --to-parslet out.py
+parslet convert --from-dask dask.py --to-parslet out.py</code></pre></div>
   </section>
 
   <section id="termux" class="termux">
     <h2>Android / Termux</h2>
-    <div class="codeblock">
-<pre><code class="language-bash">pkg install python
+    <div class="codeblock"><pre><code class="language-bash">pkg install python
 pip install parslet
 termux-setup-storage
-parslet run examples/battery_aware_demo.py</code></pre>
-    </div>
+parslet run examples/battery_aware_demo.py</code></pre></div>
   </section>
 </main>
 
