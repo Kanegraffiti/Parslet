@@ -8,21 +8,64 @@ shims that mimic a subset of each API.
 
 Dask compatibility
 ------------------
-Use ``parslet.compat.delayed`` and ``parslet.compat.compute`` in place
-of Dask's ``dask.delayed`` and ``dask.compute``.  You can also convert a
-script programmatically:
+The Dask shim focuses on :func:`dask.delayed` style workflows.  Instead of
+rewriting your pipelines by hand you can simply swap in Parslet's drop-in
+replacements for the decorator and execution helpers.
+
+.. code-block:: python
+
+   from parslet.compat import delayed, compute
+
+   @delayed
+   def add(a, b):
+       return a + b
+
+   result = compute(add(1, 2))[0]
+
+The objects returned from :func:`parslet.compat.delayed` are normal
+``ParsletFuture`` instances so they integrate seamlessly with native Parslet
+tasks.  Complex graphs can be converted ahead of time:
 
 .. code-block:: python
 
    from parslet.compat import convert_dask_to_parslet
 
-   new_code = convert_dask_to_parslet(open("workflow.py").read())
+   source = open("workflow.py").read()
+   new_source = convert_dask_to_parslet(source)
+   exec(new_source, globals())
+
+Current support covers the core delayed API and synchronous execution.
+Distributed schedulers, bags and dataframes are intentionally out of scope.
 
 Parsl compatibility
 -------------------
-``parslet.compat.python_app`` and ``parslet.compat.bash_app`` wrap
-functions similar to Parsl's decorators.  The ``convert_parsl_to_parslet``
-function converts source code in bulk.
+The Parsl layer mirrors the ``python_app`` and ``bash_app`` decorators
+used in Parsl.  The resulting functions behave like Parslet tasks while
+preserving the familiar call semantics:
+
+.. code-block:: python
+
+   from parslet.compat import python_app, bash_app
+
+   @python_app
+   def square(x):
+       return x * x
+
+   @bash_app
+   def list_dir(path, outputs=[]):
+       return f"ls {path} > {outputs[0]}"
+
+   fut = square(5)
+   print(fut.result())
+
+When migrating larger code bases you can translate whole modules using
+``convert_parsl_to_parslet``.  The converter rewrites imports and decorator
+usage so that Parslet can execute the resulting workflow.
+
+Only the eager execution model is implemented; advanced features such as
+Parsl's data staging, futures from remote filesystems, or the monitoring
+services are not yet replicated.  Parslet acts as a light-weight bridge for
+workflows that want to start small and later graduate to full Parsl.
 
 See ``examples/`` for scripts that mirror typical Dask and Parsl DAGs
 running under Parslet.
