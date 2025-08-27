@@ -1,71 +1,80 @@
 Compatibility Layer
 ===================
 
-Parslet includes lightweight adapters allowing you to reuse familiar
-Dask and Parsl style syntax. The :mod:`parslet.compat` package provides
-AST transformers for converting existing scripts as well as runtime
-shims that mimic a subset of each API.
+Parslet includes a small compatibility layer so that simple Parsl and Dask
+workflows can be exchanged with Parslet. It provides two mechanisms:
+
+* **Runtime shims** that mimic portions of each library's API.
+* **Source-to-source converters** implemented as abstract syntax tree (AST)
+  transforms.
+
+.. note::
+
+   These features are experimental and focus on pure Python code intended
+   for local execution. Data staging directives, provider configuration and
+   advanced Dask scheduler settings are not translated.
 
 Dask compatibility
 ------------------
-The Dask shim focuses on :func:`dask.delayed` style workflows.  Instead of
-rewriting your pipelines by hand you can simply swap in Parslet's drop-in
-replacements for the decorator and execution helpers.
+
+Drop-in replacements for :func:`dask.delayed` and :func:`dask.compute` live in
+:mod:`parslet.compat`:
 
 .. code-block:: python
 
    from parslet.compat import delayed, compute
 
    @delayed
-   def add(a, b):
-       return a + b
+   def add(x, y):
+       return x + y
 
-   result = compute(add(1, 2))[0]
+   total = compute(add(1, 2))[0]
 
-The objects returned from :func:`parslet.compat.delayed` are normal
-``ParsletFuture`` instances so they integrate seamlessly with native Parslet
-tasks.  Complex graphs can be converted ahead of time:
+Existing Dask scripts can be translated either programmatically or via the CLI:
 
 .. code-block:: python
 
    from parslet.compat import convert_dask_to_parslet
 
-   source = open("workflow.py").read()
-   new_source = convert_dask_to_parslet(source)
-   exec(new_source, globals())
+   rewritten = convert_dask_to_parslet(open("workflow.py").read())
 
-Current support covers the core delayed API and synchronous execution.
-Distributed schedulers, bags and dataframes are intentionally out of scope.
+.. code-block:: bash
+
+   parslet convert --from-dask workflow.py --to-parslet workflow_parslet.py
+
+To move in the opposite direction:
+
+.. code-block:: bash
+
+   parslet convert --from-parslet recipe.py --to-dask recipe_dask.py
 
 Parsl compatibility
 -------------------
-The Parsl layer mirrors the ``python_app`` and ``bash_app`` decorators
-used in Parsl.  The resulting functions behave like Parslet tasks while
-preserving the familiar call semantics:
+
+Parsl interoperability mirrors the Dask bridge. Parslet provides
+``python_app`` and ``bash_app`` decorators as well as conversion utilities.
 
 .. code-block:: python
 
-   from parslet.compat import python_app, bash_app
+   from parslet.compat import python_app
 
    @python_app
-   def square(x):
-       return x * x
+   def hello():
+       return "hi"
 
-   @bash_app
-   def list_dir(path, outputs=[]):
-       return f"ls {path} > {outputs[0]}"
+.. code-block:: bash
 
-   fut = square(5)
-   print(fut.result())
+   parslet convert --from-parsl app.py --to-parslet app_parslet.py
+   parslet convert --from-parslet recipe.py --to-parsl recipe_parsl.py
 
-When migrating larger code bases you can translate whole modules using
-``convert_parsl_to_parslet``.  The converter rewrites imports and decorator
-usage so that Parslet can execute the resulting workflow.
+Each exported script recreates the original DAG by rendering every node as a
+Parsl ``@python_app`` and wiring the dependencies.
 
-Only the eager execution model is implemented; advanced features such as
-Parsl's data staging, futures from remote filesystems, or the monitoring
-services are not yet replicated.  Parslet acts as a light-weight bridge for
-workflows that want to start small and later graduate to full Parsl.
+Caveats
+-------
 
-See ``examples/`` for scripts that mirror typical Dask and Parsl DAGs
-running under Parslet.
+* Only pure Python task bodies are handled; Bash apps and staging directives are
+  ignored.
+* The generated code targets local execution and requires further tuning for
+  distributed or HPC environments.
+* Always review the converted source before relying on it in production.

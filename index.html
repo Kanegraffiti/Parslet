@@ -1,267 +1,216 @@
-<!doctype html>
-<html lang="en">
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Parslet · Parallel workflows for low-resource devices</title>
-  <meta name="description" content="Parslet is a tiny Python workflow engine with DAGs, adaptive battery-aware scheduling, Termux/Android support, and experimental Parsl/Dask interop.">
-  <meta property="og:title" content="Parslet" />
-  <meta property="og:description" content="Parallel workflows for low-resource devices. Battery-aware, offline-first, and Parsl/Dask-friendly." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://kanegraffiti.github.io/Parslet/" />
-  <meta name="twitter:card" content="summary" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><circle cx=%228%22 cy=%228%22 r=%227%22 fill=%22%234e2a84%22/></svg>">
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Parslet &mdash; Parslet 0.5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction: What is Parslet, Really?" href="introduction.html" /> 
 </head>
-<body>
-<header class="site-header">
-  <a class="brand" href="#top">
-    <img src="assets/img/parslet-logo.svg" alt="Parslet logo" height="36" />
-    <span>Parslet</span>
-  </a>
-  <nav class="nav">
-    <a href="#definition">Definition</a>
-    <a href="#features">Features</a>
-    <a href="#usecases">Use-Cases</a>
-    <a href="#quickstart">Quickstart</a>
-    <a href="#interop">Interop</a>
-    <a href="#termux">Termux</a>
-    <a href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Docs</a>
-    <a href="https://github.com/Kanegraffiti/Parslet" target="_blank" rel="noopener">GitHub</a>
-    <button id="themeToggle" class="btn secondary" aria-label="Toggle theme" aria-pressed="false" title="Theme">☾</button>
-  </nav>
-</header>
 
-<main id="top">
-  <section class="hero">
-    <div class="badge">Speaking at ParslFest 2025</div>
-    <h1>Parallel workflows for low-resource devices</h1>
-    <p class="sub">A tiny Python DAG engine that thrives on phones, Pis, and edge devices—offline-first and battery-aware.</p>
-    <div class="cta">
-      <a class="btn primary" href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Read the Docs</a>
-      <a class="btn ghost" href="https://github.com/Kanegraffiti/Parslet" target="_blank" rel="noopener">GitHub</a>
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Parslet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Parslet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to Parslet</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="welcome-to-parslet">
+<h1>Welcome to Parslet<a class="headerlink" href="#welcome-to-parslet" title="Link to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#let-s-start-with-a-story">Let’s Start with a Story</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#what-problem-does-parslet-solve">What Problem Does Parslet Solve?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#the-three-big-ideas-in-parslet">The Three Big Ideas in Parslet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#how-is-parslet-different-from-the-big-guys">How is Parslet Different from the Big Guys?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#recommended-installation-from-pypi">Recommended Installation (from PyPI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#installation-for-developers-from-source">Installation for Developers (from Source)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#defining-your-tasks">Defining Your Tasks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#running-your-workflow">Running Your Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#being-smart-with-resources">Being Smart with Resources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-hello-world-of-parslet">1. The “Hello World” of Parslet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-offline-photo-filter">2. The Offline Photo Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-offline-text-cleaner">3. The Offline Text Cleaner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-video-frame-extractor">4. The Video Frame Extractor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#the-rad-parslet-medical-imaging-pipeline">5. The RAD-Parslet Medical Imaging Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#edge-mcu-sensor-data-processor">6. Edge MCU Sensor Data Processor</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="use_cases.html#remote-telecom-tower-monitoring">Remote Telecom Tower Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="use_cases.html#solar-site-optimization">Solar Site Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#the-buttons-on-your-remote-control">The Buttons on Your Remote Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cli.html#an-example">An Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#a-simple-example">A Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tasks.html#what-happens-when-things-go-wrong-error-handling">What Happens When Things Go Wrong? (Error Handling)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#how-does-it-work">How Does It Work?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#how-do-i-turn-it-on">How Do I Turn It On?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#what-if-i-still-need-to-go-a-little-faster">What if I Still Need to Go a Little Faster?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="exporting.html#example">Example</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="compatibility.html#dask-compatibility">Dask compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compatibility.html#parsl-compatibility">Parsl compatibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compatibility.html#caveats">Caveats</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#style-guide">Style guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#development-workflow">Development workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#running-the-tests">Running the tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#pre-commit-hooks">Pre-commit hooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="testing.html#continuous-integration">Continuous integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction.html" class="btn btn-neutral float-right" title="Introduction: What is Parslet, Really?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  </section>
 
-  <!-- NEW: Definition -->
-  <section id="definition" class="definition">
-    <h2>What is Parslet?</h2>
-    <p><strong>Parslet</strong> is a pocket-sized workflow engine for Python. You write small functions (tasks), Parslet links them as a <em>DAG</em> and runs them efficiently—scaling down on low battery, working happily offline, and fitting neatly on Android via Termux or tiny edge devices.</p>
-    <ul class="ticks">
-      <li>Define tasks with a decorator, return a final list of futures—<em>that’s your workflow</em>.</li>
-      <li>Adaptive, battery-aware runner with sensible defaults and a simple CLI.</li>
-      <li>Experimental import/export to <strong>Parsl</strong> and <strong>Dask</strong> for portability.</li>
-    </ul>
-  </section>
+  <hr/>
 
-  <section class="why">
-    <div class="why-grid">
-      <div class="card"><h3>Offline-first</h3><p>Run workflows without connectivity. Great for field work and clinics.</p></div>
-      <div class="card"><h3>Battery-aware</h3><p>Adaptive scheduling that scales down when power is scarce.</p></div>
-      <div class="card"><h3>Tiny & Pythonic</h3><p>Just write functions. Parslet handles dependencies as a DAG.</p></div>
-    </div>
-  </section>
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Parslet Team.</p>
+  </div>
 
-  <section id="features" class="features">
-    <h2>Key features</h2>
-    <div class="grid">
-      <div class="card"><h4>DAG, not ceremony</h4><p>Compose tasks, get futures, return a final list—done.</p></div>
-      <div class="card"><h4>Adaptive scheduling</h4><p>Battery-aware policy with CLI control.</p></div>
-      <div class="card"><h4>Stats & monitor</h4><p>Export run stats and watch progress live in your terminal.</p></div>
-      <div class="card"><h4>Deterministic caching</h4><p>Opt-in content-hash caching for expensive pure tasks.</p></div>
-      <div class="card"><h4>Parsl & Dask interop</h4><p>Experimental import/export keeps you portable.</p></div>
-      <div class="card"><h4>Termux native</h4><p>Designed for constrained Android devices.</p></div>
-    </div>
-  </section>
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
-  <!-- NEW: Use-Cases with inline SVG diagrams -->
-  <section id="usecases" class="usecases">
-    <h2>Practical Use-Cases</h2>
-
-    <div class="use-grid">
-
-      <!-- Battery-Aware Data Pipeline -->
-      <article class="uc card">
-        <header>
-          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
-          <h3>Battery-Aware Data Pipeline</h3>
-        </header>
-        <p>Check battery → choose quick or full analysis → save results. Great for phones in the field.</p>
-        <button class="btn secondary flow-toggle" data-target="flow-battery">View flow</button>
-        <div class="flow" id="flow-battery" hidden>
-          <!-- simple block flow -->
-          <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Battery aware flow">
-            <rect class="n" x="10" y="30" rx="6" width="110" height="60"></rect>
-            <text x="65" y="65" text-anchor="middle">check_battery</text>
-            <path class="b" d="M120,60 L170,60"></path>
-            <rect class="n" x="170" y="10" rx="6" width="110" height="60"></rect>
-            <text x="225" y="45" text-anchor="middle">quick_compute</text>
-            <rect class="n" x="170" y="70" rx="6" width="110" height="60"></rect>
-            <text x="225" y="105" text-anchor="middle">full_compute</text>
-            <path class="b" d="M170,40 L120,60 L170,90"></path>
-            <path class="b" d="M280,40 L330,60"></path>
-            <path class="b" d="M280,100 L330,60"></path>
-            <rect class="n" x="330" y="30" rx="6" width="80" height="60"></rect>
-            <text x="370" y="65" text-anchor="middle">save</text>
-          </svg>
-        </div>
-      </article>
-
-      <!-- RAD clinical triage -->
-      <article class="uc card">
-        <header>
-          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
-          <h3>RAD by Parslet (Triage)</h3>
-        </header>
-        <p>Ingest → preprocess → two light models → agree=auto-note, disagree=human review.</p>
-        <button class="btn secondary flow-toggle" data-target="flow-rad">View flow</button>
-        <div class="flow" id="flow-rad" hidden>
-          <svg viewBox="0 0 480 140" class="flow-svg" role="img" aria-label="RAD flow">
-            <rect class="n" x="10"  y="40" rx="6" width="90"  height="60"></rect>
-            <text x="55" y="75" text-anchor="middle">ingest</text>
-            <path class="b" d="M100,70 L140,70"></path>
-            <rect class="n" x="140" y="40" rx="6" width="100" height="60"></rect>
-            <text x="190" y="75" text-anchor="middle">preprocess</text>
-            <path class="b" d="M240,70 L280,40"></path>
-            <path class="b" d="M240,70 L280,100"></path>
-            <rect class="n" x="280" y="10" rx="6" width="90" height="50"></rect>
-            <text x="325" y="40" text-anchor="middle">model A</text>
-            <rect class="n" x="280" y="80" rx="6" width="90" height="50"></rect>
-            <text x="325" y="110" text-anchor="middle">model B</text>
-            <path class="b" d="M370,35 L420,35"></path>
-            <path class="b" d="M370,105 L420,105"></path>
-            <rect class="n" x="420" y="20" rx="6" width="50" height="30"></rect>
-            <text x="445" y="40" font-size="10" text-anchor="middle">agree</text>
-            <rect class="n" x="420" y="90" rx="6" width="50" height="30"></rect>
-            <text x="445" y="110" font-size="10" text-anchor="middle">review</text>
-          </svg>
-        </div>
-      </article>
-
-      <!-- Edge MCU -->
-      <article class="uc card">
-        <header>
-          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
-          <h3>Edge MCU Sensor Processing</h3>
-        </header>
-        <p>Batch read → clean → feature extract → store/export; resilient on low RAM.</p>
-        <button class="btn secondary flow-toggle" data-target="flow-edge">View flow</button>
-        <div class="flow" id="flow-edge" hidden>
-          <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Edge sensor flow">
-            <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
-            <text x="55" y="65" text-anchor="middle">read</text>
-            <path class="b" d="M100,60 L150,60"></path>
-            <rect class="n" x="150" y="30" rx="6" width="90" height="60"></rect>
-            <text x="195" y="65" text-anchor="middle">clean</text>
-            <path class="b" d="M240,60 L290,60"></path>
-            <rect class="n" x="290" y="30" rx="6" width="90" height="60"></rect>
-            <text x="335" y="65" text-anchor="middle">features</text>
-          </svg>
-        </div>
-      </article>
-
-      <!-- Text cleaner -->
-      <article class="uc card">
-        <header>
-          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
-          <h3>Text Cleaner</h3>
-        </header>
-        <p>Load text → normalize → dedupe → save, useful for SMS/USSD exports.</p>
-        <button class="btn secondary flow-toggle" data-target="flow-text">View flow</button>
-        <div class="flow" id="flow-text" hidden>
-          <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Text cleaner flow">
-            <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
-            <text x="55" y="65" text-anchor="middle">load</text>
-            <path class="b" d="M100,60 L150,60"></path>
-            <rect class="n" x="150" y="30" rx="6" width="100" height="60"></rect>
-            <text x="200" y="65" text-anchor="middle">normalize</text>
-            <path class="b" d="M250,60 L300,60"></path>
-            <rect class="n" x="300" y="30" rx="6" width="90" height="60"></rect>
-            <text x="345" y="65" text-anchor="middle">dedupe</text>
-          </svg>
-        </div>
-      </article>
-
-      <!-- Image filter -->
-      <article class="uc card">
-        <header>
-          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
-          <h3>Image Filter</h3>
-        </header>
-        <p>Load image → grayscale → blur → save; ideal for lightweight image ops.</p>
-        <button class="btn secondary flow-toggle" data-target="flow-image">View flow</button>
-        <div class="flow" id="flow-image" hidden>
-          <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Image filter flow">
-            <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
-            <text x="55" y="65" text-anchor="middle">load</text>
-            <path class="b" d="M100,60 L150,60"></path>
-            <rect class="n" x="150" y="30" rx="6" width="100" height="60"></rect>
-            <text x="200" y="65" text-anchor="middle">grayscale</text>
-            <path class="b" d="M250,60 L300,60"></path>
-            <rect class="n" x="300" y="30" rx="6" width="90" height="60"></rect>
-            <text x="345" y="65" text-anchor="middle">blur</text>
-          </svg>
-        </div>
-      </article>
-
-      <!-- Interop -->
-      <article class="uc card">
-        <header>
-          <img class="glyph" src="assets/img/dag-glyph.svg" alt="" aria-hidden="true">
-          <h3>Parsl/Dask Interop (exp.)</h3>
-        </header>
-        <p>Convert simple scripts to move between ecosystems with a CLI bridge.</p>
-        <button class="btn secondary flow-toggle" data-target="flow-interop">View flow</button>
-        <div class="flow" id="flow-interop" hidden>
-          <svg viewBox="0 0 480 120" class="flow-svg" role="img" aria-label="Interop flow">
-            <rect class="n" x="20" y="30" rx="6" width="110" height="60"></rect>
-            <text x="75" y="65" text-anchor="middle">parsl app</text>
-            <path class="b" d="M130,60 L180,60"></path>
-            <rect class="n" x="180" y="30" rx="6" width="120" height="60"></rect>
-            <text x="240" y="65" text-anchor="middle">parslet convert</text>
-            <path class="b" d="M300,60 L350,60"></path>
-            <rect class="n" x="350" y="30" rx="6" width="110" height="60"></rect>
-            <text x="405" y="65" text-anchor="middle">parslet DAG</text>
-          </svg>
-        </div>
-      </article>
-
-    </div>
-  </section>
-
-  <section id="quickstart" class="quickstart">
-    <h2>Quickstart</h2>
-    <p><strong>Docs:</strong> See the full picture on Read the Docs.</p>
-    <div class="codeblock"><pre><code class="language-bash">pip install parslet</code></pre></div>
-    <div class="codeblock"><pre><code class="language-bash">parslet run my_workflow.py</code></pre></div>
-    <p>Export a DAG image (requires graphviz):</p>
-    <div class="codeblock"><pre><code class="language-bash">parslet run my_workflow.py --export-png dag.png</code></pre></div>
-  </section>
-
-  <section id="interop" class="interop">
-    <h2>Interop (experimental)</h2>
-    <div class="codeblock"><pre><code class="language-bash">parslet convert --from-parsl app.py --to-parslet out.py
-parslet convert --from-dask dask.py --to-parslet out.py</code></pre></div>
-  </section>
-
-  <section id="termux" class="termux">
-    <h2>Android / Termux</h2>
-    <div class="codeblock"><pre><code class="language-bash">pkg install python
-pip install parslet
-termux-setup-storage
-parslet run examples/battery_aware_demo.py</code></pre></div>
-  </section>
-</main>
-
-<footer class="site-footer">
-  <p>© <span id="year"></span> Parslet. MIT License.</p>
-  <p>
-    <a href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Docs</a> ·
-    <a href="https://github.com/Kanegraffiti/Parslet" target="_blank" rel="noopener">GitHub</a> ·
-    <a href="https://github.com/Kanegraffiti/Parslet/blob/main/LICENSE" target="_blank" rel="noopener">License</a>
-  </p>
 </footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
 
-<script src="assets/js/main.js"></script>
 </body>
 </html>
