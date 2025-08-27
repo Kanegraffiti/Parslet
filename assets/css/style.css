@@ -7,6 +7,7 @@
   --secondary: #0b7a75; /* teal/green */
   --card: #f6f6f8;
   --ring: #8aa9ff;
+  --flow: #f6f6f8;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,6 +16,7 @@
     --fg: #eaeaf0;
     --muted: #a0a1a8;
     --card: #16181d;
+    --flow: #272a31;
   }
 }
 
@@ -28,6 +30,7 @@ body {
 
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
+img { max-width: 100%; height: auto; }
 
 .site-header {
   position: sticky; top: 0; z-index: 10;
@@ -39,6 +42,12 @@ a:hover { text-decoration: underline; }
 .nav { display: flex; gap: .8rem; align-items: center; }
 .nav a { color: var(--fg); opacity: .85; }
 .nav a:hover { opacity: 1; }
+
+@media (max-width: 600px) {
+  .site-header { flex-direction: column; align-items: center; }
+  .nav { flex-wrap: wrap; justify-content: center; }
+  .nav a, .nav button { flex: 1 1 100%; text-align: center; }
+}
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -107,6 +116,8 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation M
   background: linear-gradient(0deg, transparent, transparent);
   border-radius: 10px; border: 1px solid #e7e7ec1a; padding: .4rem;
 }
+.flow-svg .b { fill: none; stroke: currentColor; stroke-width: 2; }
+.flow-svg .n { fill: var(--flow); stroke: currentColor; }
 
 /* Animations */
 @media (prefers-reduced-motion: no-preference) {
@@ -128,6 +139,7 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation M
   --fg: #1b1b1d;
   --muted: #5b5b63;
   --card: #f6f6f8;
+  --flow: #f6f6f8;
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -135,4 +147,5 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation M
   --fg: #eaeaf0;
   --muted: #a0a1a8;
   --card: #16181d;
+  --flow: #272a31;
 }
