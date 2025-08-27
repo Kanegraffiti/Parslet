@@ -6,6 +6,8 @@ Parslet's runtime flows through a small set of primitives:
 tasks -> futures -> DAG -> Runner -> Executor
 ```
 
+![Parslet runtime flow](assets/architecture_flow.svg)
+
 1. `parslet_task` wraps Python callables and registers **tasks**.
 2. Calling a task returns a `ParsletFuture` placeholder for its result.
 3. A `DAG` links futures into a dependency graph.

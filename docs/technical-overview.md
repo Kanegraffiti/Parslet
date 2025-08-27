@@ -47,6 +47,8 @@ This is the part of Parslet you talk to from your command line. It's the friendl
 
 So, what happens step-by-step when you type `parslet run my_recipe.py`?
 
+![Execution flow from CLI to results](assets/execution_flow.svg)
+
 1.  **Order Up!** The **Front Counter** (`main_cli`) gets your command.
 2.  **Read the Recipe:** It finds and reads your `my_recipe.py` file.
 3.  **Find the Final Step:** It calls your `main()` function to get the final IOU note for your recipe.
