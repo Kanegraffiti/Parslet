@@ -3,7 +3,7 @@ The Parslet Engine: How It All Fits Together
 
 The heart of Parslet is designed to be small, simple, and easy to understand. Think of it as a small team of workers, each with a very specific job. This design lets you run simple recipes on your phone but also handle bigger jobs on your laptop.
 
-.. image:: ../visuals/architecture.svg
+.. image:: ../visuals/architecture.png
    :alt: A diagram showing the different parts of the Parslet engine.
 
 Here's a look at the main players on the team:
