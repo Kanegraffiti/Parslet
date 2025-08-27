@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kanegraffiti.github.io/Parslet/sitemap.xml
