@@ -12,9 +12,10 @@
     root.dataset.theme = (mode === 'system') ? '' : mode;
     localStorage.setItem('parslet-theme', mode);
     if (btn) {
-      btn.setAttribute('aria-pressed', mode !== 'system');
+      const isDark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      btn.setAttribute('aria-pressed', isDark);
       btn.title = `Theme: ${mode}`;
-      btn.textContent = mode === 'light' ? '☀' : mode === 'dark' ? '☾' : 'A';
+      btn.textContent = isDark ? '☾' : '☀';
     }
   }
   const saved = localStorage.getItem('parslet-theme') || 'system';

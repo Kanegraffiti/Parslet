@@ -91,12 +91,6 @@
         <div class="flow" id="flow-battery" hidden>
           <!-- simple block flow -->
           <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Battery aware flow">
-            <defs>
-              <style>
-                .b { fill:none; stroke:currentColor; stroke-width:2; }
-                .n { fill:var(--card); stroke:currentColor; }
-              </style>
-            </defs>
             <rect class="n" x="10" y="30" rx="6" width="110" height="60"></rect>
             <text x="65" y="65" text-anchor="middle">check_battery</text>
             <path class="b" d="M120,60 L170,60"></path>
@@ -123,7 +117,6 @@
         <button class="btn secondary flow-toggle" data-target="flow-rad">View flow</button>
         <div class="flow" id="flow-rad" hidden>
           <svg viewBox="0 0 480 140" class="flow-svg" role="img" aria-label="RAD flow">
-            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
             <rect class="n" x="10"  y="40" rx="6" width="90"  height="60"></rect>
             <text x="55" y="75" text-anchor="middle">ingest</text>
             <path class="b" d="M100,70 L140,70"></path>
@@ -155,7 +148,6 @@
         <button class="btn secondary flow-toggle" data-target="flow-edge">View flow</button>
         <div class="flow" id="flow-edge" hidden>
           <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Edge sensor flow">
-            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
             <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
             <text x="55" y="65" text-anchor="middle">read</text>
             <path class="b" d="M100,60 L150,60"></path>
@@ -178,7 +170,6 @@
         <button class="btn secondary flow-toggle" data-target="flow-text">View flow</button>
         <div class="flow" id="flow-text" hidden>
           <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Text cleaner flow">
-            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
             <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
             <text x="55" y="65" text-anchor="middle">load</text>
             <path class="b" d="M100,60 L150,60"></path>
@@ -201,7 +192,6 @@
         <button class="btn secondary flow-toggle" data-target="flow-image">View flow</button>
         <div class="flow" id="flow-image" hidden>
           <svg viewBox="0 0 420 120" class="flow-svg" role="img" aria-label="Image filter flow">
-            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
             <rect class="n" x="10" y="30" rx="6" width="90" height="60"></rect>
             <text x="55" y="65" text-anchor="middle">load</text>
             <path class="b" d="M100,60 L150,60"></path>
@@ -224,7 +214,6 @@
         <button class="btn secondary flow-toggle" data-target="flow-interop">View flow</button>
         <div class="flow" id="flow-interop" hidden>
           <svg viewBox="0 0 480 120" class="flow-svg" role="img" aria-label="Interop flow">
-            <defs><style>.b{fill:none;stroke:currentColor;stroke-width:2}.n{fill:var(--card);stroke:currentColor}</style></defs>
             <rect class="n" x="20" y="30" rx="6" width="110" height="60"></rect>
             <text x="75" y="65" text-anchor="middle">parsl app</text>
             <path class="b" d="M130,60 L180,60"></path>
