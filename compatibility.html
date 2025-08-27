@@ -104,23 +104,59 @@ AST transformers for converting existing scripts as well as runtime
 shims that mimic a subset of each API.</p>
 <section id="dask-compatibility">
 <h2>Dask compatibility<a class="headerlink" href="#dask-compatibility" title="Link to this heading"></a></h2>
-<p>Use <code class="docutils literal notranslate"><span class="pre">parslet.compat.delayed</span></code> and <code class="docutils literal notranslate"><span class="pre">parslet.compat.compute</span></code> in place
-of Dask’s <code class="docutils literal notranslate"><span class="pre">dask.delayed</span></code> and <code class="docutils literal notranslate"><span class="pre">dask.compute</span></code>.  You can also convert a
-script programmatically:</p>
+<p>The Dask shim focuses on <code class="docutils literal notranslate"><span class="pre">dask.delayed</span></code> style workflows. Instead of
+rewriting your pipelines by hand you can simply swap in Parslet&#39;s drop-in
+replacements for the decorator and execution helpers.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">parslet.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">delayed</span><span class="p">,</span> <span class="n">compute</span>
+
+<span class="nd">@delayed</span>
+<span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">compute</span><span class="p">(</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div></div>
+<p>The objects returned from <code class="docutils literal notranslate"><span class="pre">parslet.compat.delayed</span></code> are normal
+<code class="docutils literal notranslate"><span class="pre">ParsletFuture</span></code> instances so they integrate seamlessly with native Parslet
+tasks. Complex graphs can be converted ahead of time:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">parslet.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_dask_to_parslet</span>
 
-<span class="n">new_code</span> <span class="o">=</span> <span class="n">convert_dask_to_parslet</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;workflow.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
-</pre></div>
-</div>
+<span class="n">source</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"workflow.py"</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">new_source</span> <span class="o">=</span> <span class="n">convert_dask_to_parslet</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="nb">exec</span><span class="p">(</span><span class="n">new_source</span><span class="p">,</span> <span class="nb">globals</span><span class="p">())</span>
+</pre></div></div>
+<p>Current support covers the core delayed API and synchronous execution.
+Distributed schedulers, bags and dataframes are intentionally out of scope.</p>
 </section>
+
 <section id="parsl-compatibility">
 <h2>Parsl compatibility<a class="headerlink" href="#parsl-compatibility" title="Link to this heading"></a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">parslet.compat.python_app</span></code> and <code class="docutils literal notranslate"><span class="pre">parslet.compat.bash_app</span></code> wrap
-functions similar to Parsl’s decorators.  The <code class="docutils literal notranslate"><span class="pre">convert_parsl_to_parslet</span></code>
-function converts source code in bulk.</p>
+<p>The Parsl layer mirrors the <code class="docutils literal notranslate"><span class="pre">python_app</span></code> and <code class="docutils literal notranslate"><span class="pre">bash_app</span></code> decorators
+used in Parsl. The resulting functions behave like Parslet tasks while
+preserving the familiar call semantics:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">parslet.compat</span><span class="w"> </span><span class="kn">import</span> <span class="n">python_app</span><span class="p">,</span> <span class="n">bash_app</span>
+
+<span class="nd">@python_app</span>
+<span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span>
+
+<span class="nd">@bash_app</span>
+<span class="k">def</span> <span class="nf">list_dir</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="p">[]</span><span class="p">):</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"ls </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">{</span><span class="n">outputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span>
+
+<span class="n">fut</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fut</span><span class="o">.</span><span class="n">result</span><span class="p">())</span>
+</pre></div></div>
+<p>When migrating larger code bases you can translate whole modules using
+<code class="docutils literal notranslate"><span class="pre">convert_parsl_to_parslet</span></code>. The converter rewrites imports and decorator
+usage so that Parslet can execute the resulting workflow.</p>
+<p>Only the eager execution model is implemented; advanced features such as
+Parsl's data staging, futures from remote filesystems, or the monitoring
+services are not yet replicated. Parslet acts as a light-weight bridge for
+workflows that want to start small and later graduate to full Parsl.</p>
 <p>See <code class="docutils literal notranslate"><span class="pre">examples/</span></code> for scripts that mirror typical Dask and Parsl DAGs
 running under Parslet.</p>
 </section>
+
 </section>
 
 
