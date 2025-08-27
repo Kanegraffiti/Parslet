@@ -52,20 +52,30 @@ When you run this with `parslet run my_recipe.py`, Parslet will read the file, s
 
 ### Step 3: Playing Well with the Big Kids (Parsl & Dask)
 
-One of Parslet's superpowers is that it helps you "graduate" to bigger tools when you need more power.
+One of Parslet's superpowers is that it helps you "graduate" to bigger tools when you need more power. Parslet ships with a compatibility layer and a source-code converter so that your work can move in either direction.
 
--   **Using Parsl:** You can take your Parslet recipe and run it with its big brother, Parsl. We have a special helper tool that makes this easy. It's great for when you get access to a powerful server and need to run your recipe there.
-
--   **Converting from Parsl or Dask:** Did someone give you a recipe that was written for the "big kid" tools? No problem! Parslet has a command-line converter that can translate Parsl or Dask scripts into Parslet scripts for you.
+-   **Using Parsl:** When a workflow outgrows your laptop, translate it to a Parsl script and run it on a cluster.
 
     ```bash
-    # To convert a Parsl script:
-    parslet convert --from-parsl their_cool_script.py
-
-    # To convert a Dask script:
-    parslet convert --from-dask another_cool_script.py
+    # Convert a Parslet recipe to Parsl
+    parslet convert --from-parslet my_recipe.py --to-parsl my_recipe_parsl.py
+    python my_recipe_parsl.py  # executed with a Parsl executor
     ```
-    This will create a new `_parslet.py` file that you can run right away!
+
+-   **Converting from Parsl or Dask:** If you are handed a Parsl or Dask workflow, Parslet can import it so you can run it offline.
+
+    ```bash
+    # Parsl -> Parslet
+    parslet convert --from-parsl their_cool_script.py --to-parslet local_script.py
+
+    # Dask -> Parslet
+    parslet convert --from-dask another_cool_script.py --to-parslet local_script.py
+
+    # You can also export back to Dask if needed
+    parslet convert --from-parslet my_recipe.py --to-dask my_recipe_dask.py
+    ```
+
+    Each command performs an AST rewrite and produces a new file with a `_parslet.py`, `_parsl.py`, or `_dask.py` suffix. The converter currently supports pure Python `@python_app` tasks and `dask.delayed` graphs and is intended for local execution—complex data staging or provider settings are out of scope.
 
 ### Never Lose Your Work! (Resuming Recipes)
 
