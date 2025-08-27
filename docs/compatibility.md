@@ -1,55 +1,83 @@
-# Parsl Compatibility
+# Parsl and Dask Compatibility
 
-Parslet can import simple Parsl workflows and export Parslet DAGs back to
-Parsl. This feature is **experimental** and currently supports only
-pure-Python `@python_app` tasks without data staging.
+Parslet ships with a small compatibility layer that enables two kinds of
+interoperability:
 
-## Import from Parsl
+1. **Runtime shims** that mimic parts of the Parsl and Dask APIs so that
+   lightweight scripts can execute under Parslet with little or no modification.
+2. **Source-to-source converters** that translate code between frameworks using
+   abstract syntax tree (AST) rewriting.
 
+## Parsl
+
+### Runtime wrappers
+
+`parslet.compat.python_app` and `parslet.compat.bash_app` behave like
+Parsl's decorators but schedule tasks on Parslet's `DAGRunner`:
+
+```python
+from parslet.compat import python_app
+
+@python_app
+def hello(name):
+    return f"Hello {name}"
 ```
+
+### Converting Parsl to Parslet
+
+```bash
 parslet convert --from-parsl in.py --to-parslet out.py
 ```
 
-Parsl `@python_app` functions are rewritten as `@parslet_task` and any top
-level task invocations are wrapped into a `main()` function returning a list of
-`ParsletFuture` objects.
+The converter rewrites `@python_app` functions as `@parslet_task` and wraps
+top-level invocations into a `main()` function returning `ParsletFuture` objects.
+See `examples/compat/parsl_demo.py` for a minimal workflow.
 
-See `examples/compat/parsl_demo.py` for a minimal workflow that can be
-converted.
+### Exporting Parslet to Parsl
 
-## Export to Parsl
-
-```
-parslet convert --from-parslet in.py --to-parsl out.py
+```bash
+parslet convert --from-parslet recipe.py --to-parsl recipe_parsl.py
 ```
 
-A Parslet workflow's `main()` is executed to build a DAG. Each node is rendered
-as a Parsl `@python_app` with a small driver that recreates the same task
-edges.
+Each node in the Parslet DAG is rendered as a Parsl `@python_app` and connected
+with the same edges.
+
+## Dask
+
+### Runtime wrappers
+
+Drop-in replacements for `dask.delayed` and `dask.compute` live in
+`parslet.compat.delayed` and `parslet.compat.compute`:
+
+```python
+from parslet.compat import delayed, compute
+
+@delayed
+def add(a, b):
+    return a + b
+
+total = compute(add(1, 2))[0]
+```
+
+### Converting Dask to Parslet
+
+```bash
+parslet convert --from-dask pipeline.py --to-parslet pipeline_parslet.py
+```
+
+### Exporting Parslet to Dask
+
+```bash
+parslet convert --from-parslet recipe.py --to-dask recipe_dask.py
+```
+
+`examples/compat/dask_demo.py` provides a tiny workflow that round-trips through the converter.
 
 ## Caveats
 
-* Only pure Python task bodies are handled; Bash apps or staging directives are
-  ignored.
-* The generated code is intended for local execution and does not configure
-  providers.
-
-# Dask Compatibility
-
-Parslet can also import basic Dask `delayed` workflows and export Parslet DAGs
-back to Dask. This is **experimental** and mirrors the Parsl caveats above.
-
-## Import from Dask
-
-```
-parslet convert --from-dask in.py --to-parslet out.py
-```
-
-## Export to Dask
-
-```
-parslet convert --from-parslet in.py --to-dask out.py
-```
-
-The `examples/compat/dask_demo.py` script shows a tiny Dask workflow that
-works with the converter.
+* Only pure Python task bodies are handled; Bash apps, staging directives and
+  provider configurations are ignored.
+* The generated code targets local execution. Additional tuning is required for
+  distributed or HPC environments.
+* This compatibility layer is **experimental**—always review the output before
+  relying on it for production work.
