@@ -1,0 +1,175 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What Are Parslet Tasks? &mdash; Parslet 0.5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Running on Fumes? Use Battery-Saver Mode!" href="battery_mode.html" />
+    <link rel="prev" title="Your Remote Control: The Parslet CLI" href="cli.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Parslet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">What Are Parslet Tasks?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#a-simple-example">A Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-happens-when-things-go-wrong-error-handling">What Happens When Things Go Wrong? (Error Handling)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Parslet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">What Are Parslet Tasks?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tasks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="what-are-parslet-tasks">
+<h1>What Are Parslet Tasks?<a class="headerlink" href="#what-are-parslet-tasks" title="Link to this heading"></a></h1>
+<p>Tasks are the heart of Parslet. They are the individual steps or “building blocks” of your automated workflow.</p>
+<p>A task is just a regular Python function that you give a special <code class="docutils literal notranslate"><span class="pre">&#64;parslet_task</span></code> decorator.</p>
+<p>When you call a task function, it doesn’t run right away. Instead, it returns a <code class="docutils literal notranslate"><span class="pre">ParsletFuture</span></code> object (think of it as an IOU for the result). You create your workflow by passing these IOUs into other tasks, which tells Parslet the order of operations.</p>
+<section id="a-simple-example">
+<h2>A Simple Example<a class="headerlink" href="#a-simple-example" title="Link to this heading"></a></h2>
+<p>Let’s build a simple workflow with a few tasks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">parslet</span><span class="w"> </span><span class="kn">import</span> <span class="n">parslet_task</span><span class="p">,</span> <span class="n">ParsletFuture</span>
+
+<span class="c1"># This task squares a number.</span>
+<span class="nd">@parslet_task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span>
+
+<span class="c1"># This task adds two numbers.</span>
+<span class="nd">@parslet_task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="c1"># Our main function defines the workflow.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ParsletFuture</span><span class="p">]:</span>
+    <span class="c1"># Create two IOUs by calling the square task.</span>
+    <span class="c1"># Parslet can run these at the same time!</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">second</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="c1"># Create a final IOU that depends on the first two.</span>
+    <span class="c1"># Parslet will wait for them to finish before running this.</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">add</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ParsletFuture</span></code> objects are like little promises. The <code class="docutils literal notranslate"><span class="pre">DAGRunner</span></code> (Parslet’s engine) figures out the right order to resolve these promises and runs the tasks on a thread pool.</p>
+<p>It’s also smart about your device’s resources. It looks at your CPU, memory, and even your battery level to decide how many tasks to run at once. To learn more, see <a class="reference internal" href="battery_mode.html"><span class="doc">Running on Fumes? Use Battery-Saver Mode!</span></a>.</p>
+</section>
+<section id="what-happens-when-things-go-wrong-error-handling">
+<h2>What Happens When Things Go Wrong? (Error Handling)<a class="headerlink" href="#what-happens-when-things-go-wrong-error-handling" title="Link to this heading"></a></h2>
+<p>If a task runs into an error and crashes, Parslet is designed to handle it gracefully.</p>
+<p>Any tasks that were waiting for the failed task’s result will be automatically skipped. You won’t get a messy crash for the whole workflow.</p>
+<p>If you try to get the result of a skipped task, Parslet will raise a friendly <code class="docutils literal notranslate"><span class="pre">UpstreamTaskFailedError</span></code> to let you know what happened.</p>
+<p><strong>Pro-Tip:</strong> If you’re running a long workflow, use the <code class="docutils literal notranslate"><span class="pre">--checkpoint-file</span></code> option. This tells Parslet to save a record of every task that finishes successfully. If the workflow gets interrupted, you can just run it again, and it will pick up right where it left off.</p>
+<p>For a friendly, step-by-step example, check out <code class="docutils literal notranslate"><span class="pre">examples/hello.py</span></code>. For a more real-world pipeline, see <code class="docutils literal notranslate"><span class="pre">examples/text_cleaner.py</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cli.html" class="btn btn-neutral float-left" title="Your Remote Control: The Parslet CLI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="battery_mode.html" class="btn btn-neutral float-right" title="Running on Fumes? Use Battery-Saver Mode!" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Parslet Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

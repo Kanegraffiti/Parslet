@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction: What is Parslet, Really? &mdash; Parslet 0.5.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=1dd76d02"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Parslet Installation Guide" href="install.html" />
+    <link rel="prev" title="Welcome to Parslet" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Parslet
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction: What is Parslet, Really?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#let-s-start-with-a-story">Let’s Start with a Story</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-problem-does-parslet-solve">What Problem Does Parslet Solve?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-three-big-ideas-in-parslet">The Three Big Ideas in Parslet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-task-parslet-task">1. The Task (<code class="docutils literal notranslate"><span class="pre">&#64;parslet_task</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-iou-note-parsletfuture">2. The “IOU” Note (<code class="docutils literal notranslate"><span class="pre">ParsletFuture</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-workflow-connecting-the-dots">3. The Workflow (Connecting the Dots)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-is-parslet-different-from-the-big-guys">How is Parslet Different from the Big Guys?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Development</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Parslet</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Introduction: What is Parslet, Really?</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/introduction.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction-what-is-parslet-really">
+<h1>Introduction: What is Parslet, Really?<a class="headerlink" href="#introduction-what-is-parslet-really" title="Link to this heading"></a></h1>
+<p>Welcome to Parslet! If you’ve ever wished you had a personal assistant for your computer or phone that could run a bunch of tasks for you automatically, you’ve come to the right place.</p>
+<section id="let-s-start-with-a-story">
+<h2>Let’s Start with a Story<a class="headerlink" href="#let-s-start-with-a-story" title="Link to this heading"></a></h2>
+<p>Imagine you have a recipe for your favorite smoothie. It has several steps:</p>
+<ol class="arabic simple">
+<li><p><strong>Chop</strong> the bananas and strawberries.</p></li>
+<li><p><strong>Pour</strong> in the milk.</p></li>
+<li><p><strong>Add</strong> a scoop of protein powder.</p></li>
+<li><p><strong>Blend</strong> everything together.</p></li>
+</ol>
+<p>Some steps have to happen in order (you can’t blend before you add the milk), but others could happen at the same time (you could chop the fruits while you get the milk).</p>
+<p><strong>Parslet is a tool that helps you write down this “recipe” of computer tasks in a Python script and then runs it for you as smartly as possible.</strong></p>
+<p>Each step in your recipe is a <strong>Task</strong>. Parslet automatically figures out the correct order to run your tasks and can even run independent tasks in parallel to save time. The entire recipe, with all its steps and their connections, is called a <strong>DAG</strong> (a fancy term for a workflow path).</p>
+</section>
+<section id="what-problem-does-parslet-solve">
+<h2>What Problem Does Parslet Solve?<a class="headerlink" href="#what-problem-does-parslet-solve" title="Link to this heading"></a></h2>
+<p>Parslet is designed for a world where not everyone has a supercomputer or a perfect internet connection. It’s for:</p>
+<ul class="simple">
+<li><p>A student in a rural area using a tablet to collect and analyze survey data.</p></li>
+<li><p>A farmer using a Raspberry Pi to monitor a solar-powered irrigation system.</p></li>
+<li><p>A developer in a bustling city, prototyping an app on their phone while on the go.</p></li>
+</ul>
+<p>In these situations, you can’t rely on the cloud. Workflows need to run <strong>offline</strong> and be <strong>mindful of battery life</strong>. Parslet is lightweight, works offline by default, and even has a <strong>battery-saver mode</strong> to keep you running longer.</p>
+</section>
+<section id="the-three-big-ideas-in-parslet">
+<h2>The Three Big Ideas in Parslet<a class="headerlink" href="#the-three-big-ideas-in-parslet" title="Link to this heading"></a></h2>
+<p>There are just three core concepts you need to know.</p>
+<section id="the-task-parslet-task">
+<h3>1. The Task (<code class="docutils literal notranslate"><span class="pre">&#64;parslet_task</span></code>)<a class="headerlink" href="#the-task-parslet-task" title="Link to this heading"></a></h3>
+<p>A task is just a regular Python function. You just add <code class="docutils literal notranslate"><span class="pre">&#64;parslet_task</span></code> on top to let Parslet know it’s a step in your workflow.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">parslet</span><span class="w"> </span><span class="kn">import</span> <span class="n">parslet_task</span>
+
+<span class="nd">@parslet_task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="c1"># This is a simple task that adds two numbers.</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
+</div>
+</section>
+<section id="the-iou-note-parsletfuture">
+<h3>2. The “IOU” Note (<code class="docutils literal notranslate"><span class="pre">ParsletFuture</span></code>)<a class="headerlink" href="#the-iou-note-parsletfuture" title="Link to this heading"></a></h3>
+<p>Here’s the cool part. When you <em>call</em> a task, it doesn’t run right away. Instead, it gives you back a placeholder, like an IOU note. We call this a <strong><code class="docutils literal notranslate"><span class="pre">ParsletFuture</span></code></strong>.</p>
+<p>This IOU note is a promise that the result will be available <em>in the future</em>, once the task actually runs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># This does NOT calculate 3 + 4 yet.</span>
+<span class="c1"># It just gives you an IOU for the result.</span>
+<span class="n">future_result</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="the-workflow-connecting-the-dots">
+<h3>3. The Workflow (Connecting the Dots)<a class="headerlink" href="#the-workflow-connecting-the-dots" title="Link to this heading"></a></h3>
+<p>You create your workflow by passing the IOU from one task as an input to another. This is how you tell Parslet the order of your steps.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@parslet_task</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">square</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span>
+
+<span class="c1"># We give the `square` task the IOU from our `add` task.</span>
+<span class="c1"># Parslet now knows it must wait for `add` to finish</span>
+<span class="c1"># before it can run `square`.</span>
+<span class="n">future_sum</span> <span class="o">=</span> <span class="n">add</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">future_squared</span> <span class="o">=</span> <span class="n">square</span><span class="p">(</span><span class="n">future_sum</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <strong><code class="docutils literal notranslate"><span class="pre">DAGRunner</span></code></strong> is the engine that looks at your chain of IOUs, builds the map of your workflow, and runs everything in the right order.</p>
+</section>
+</section>
+<section id="how-is-parslet-different-from-the-big-guys">
+<h2>How is Parslet Different from the Big Guys?<a class="headerlink" href="#how-is-parslet-different-from-the-big-guys" title="Link to this heading"></a></h2>
+<p>You might have heard of other workflow tools like <strong>Parsl</strong> or <strong>Dask</strong>. They are amazing, but they’re built for a different job.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Parslet</p></th>
+<th class="head"><p>Parsl / Dask</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Best For</strong></p></td>
+<td><p>Offline, low-power devices (phones, R-Pi)</p></td>
+<td><p>Supercomputers, cloud servers, big data analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Main Goal</strong></p></td>
+<td><p>Reliability and simplicity, anywhere</p></td>
+<td><p>Maximum power on high-performance systems</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>Complexity</strong></p></td>
+<td><p>Very few dependencies, easy to install</p></td>
+<td><p>More complex, designed for distributed computing</p></td>
+</tr>
+</tbody>
+</table>
+<p>Parslet is your go-to tool for automation on the edge. And when your project gets big enough for the supercomputers, Parslet gives you tools to “graduate” your workflow to run on Parsl.</p>
+<p>Ready to build your first workflow? Let’s get started!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Parslet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="install.html" class="btn btn-neutral float-right" title="Parslet Installation Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Parslet Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
