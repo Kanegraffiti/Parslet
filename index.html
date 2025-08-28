@@ -8,6 +8,12 @@
   <meta name="description" content="Parslet: pocket-sized parallel workflows for edge devices." />
   <link rel="stylesheet" href="assets/css/prism.min.css" />
   <link rel="stylesheet" href="assets/css/styles.css" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-sA+e7cN65PFDvghENkuZKOR6zyPDDkLMOVnmtz6dSg0="
+    crossorigin=""
+  />
   <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml"/>
   <meta property="og:title" content="Parslet"/>
   <meta property="og:description" content="Pocket-sized parallel workflows."/>
@@ -30,6 +36,7 @@
   <header class="site-header" id="top">
     <div class="container flex-between">
       <a href="#top" class="logo" aria-label="Parslet home"><img src="assets/images/logo.svg" alt="Parslet logo"/></a>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">☰</button>
       <nav aria-label="Main navigation">
         <ul class="nav-list">
           <li><a href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
@@ -145,6 +152,13 @@ parslet run hello_parslet.py</code></pre>
       </div>
     </section>
 
+    <section class="audience" id="audience">
+      <h2 class="container">Android Developer Reach</h2>
+      <div class="container">
+        <div id="audience-map" class="audience-map" aria-label="Map showing distribution of Parslet Android developers"></div>
+      </div>
+    </section>
+
     <section class="interop" id="interop">
       <h2 class="container">Interoperability</h2>
       <div class="container grid-2">
@@ -187,6 +201,12 @@ parslet convert --from-dask dask_workflow.py -o converted_parslet.py</code></pre
   </footer>
 
   <script src="assets/js/prism.min.js" defer></script>
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-oHeY9TxVMxWuKE0S8Hk2dwg99R0Mnq+H3DR8HFZn9Oo="
+    crossorigin=""
+    defer
+  ></script>
   <script src="assets/js/main.js" defer></script>
 </body>
 </html>
