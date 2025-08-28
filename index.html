@@ -1,216 +1,74 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Parslet &mdash; Parslet 0.5.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-
-  
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=1dd76d02"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Introduction: What is Parslet, Really?" href="introduction.html" /> 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Parslet - Parallel Parsing Made Simple</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+<body>
+<header class="top-nav">
+  <a class="logo" href="#">
+    <svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-labelledby="logoTitle">
+      <title id="logoTitle">Parslet logo</title>
+      <rect width="120" height="40" fill="none" />
+      <text x="0" y="28" font-size="28" font-family="sans-serif" fill="#FF6F00">Parslet</text>
+    </svg>
+  </a>
+  <nav class="menu">
+    <a href="docs_index.html">Docs</a>
+    <a href="#">Install</a>
+    <a href="#">Community</a>
+    <a href="#">GitHub</a>
+  </nav>
+</header>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="#" class="icon icon-home">
-            Parslet
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a></li>
-<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
-<li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
-<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
-</ul>
-
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Parslet</a>
-      </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to Parslet</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul>
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="welcome-to-parslet">
-<h1>Welcome to Parslet<a class="headerlink" href="#welcome-to-parslet" title="Link to this heading"></a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction: What is Parslet, Really?</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="introduction.html#let-s-start-with-a-story">Let’s Start with a Story</a></li>
-<li class="toctree-l2"><a class="reference internal" href="introduction.html#what-problem-does-parslet-solve">What Problem Does Parslet Solve?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="introduction.html#the-three-big-ideas-in-parslet">The Three Big Ideas in Parslet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="introduction.html#how-is-parslet-different-from-the-big-guys">How is Parslet Different from the Big Guys?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Parslet Installation Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#recommended-installation-from-pypi">Recommended Installation (from PyPI)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installation-for-developers-from-source">Installation for Developers (from Source)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage: Your First Parslet Workflow</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#defining-your-tasks">Defining Your Tasks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#running-your-workflow">Running Your Workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#being-smart-with-resources">Being Smart with Resources</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-hello-world-of-parslet">1. The “Hello World” of Parslet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-offline-photo-filter">2. The Offline Photo Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-offline-text-cleaner">3. The Offline Text Cleaner</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-video-frame-extractor">4. The Video Frame Extractor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#the-rad-parslet-medical-imaging-pipeline">5. The RAD-Parslet Medical Imaging Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#edge-mcu-sensor-data-processor">6. Edge MCU Sensor Data Processor</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="use_cases.html">Real-World Use Cases</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="use_cases.html#remote-telecom-tower-monitoring">Remote Telecom Tower Monitoring</a></li>
-<li class="toctree-l2"><a class="reference internal" href="use_cases.html#solar-site-optimization">Solar Site Optimization</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="cli.html">Your Remote Control: The Parslet CLI</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cli.html#the-buttons-on-your-remote-control">The Buttons on Your Remote Control</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cli.html#an-example">An Example</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="tasks.html">What Are Parslet Tasks?</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tasks.html#a-simple-example">A Simple Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tasks.html#what-happens-when-things-go-wrong-error-handling">What Happens When Things Go Wrong? (Error Handling)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="battery_mode.html">Running on Fumes? Use Battery-Saver Mode!</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#how-does-it-work">How Does It Work?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#how-do-i-turn-it-on">How Do I Turn It On?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="battery_mode.html#what-if-i-still-need-to-go-a-little-faster">What if I Still Need to Go a Little Faster?</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="exporting.html">Exporting</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="exporting.html#example">Example</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Architecture</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">The Parslet Engine: How It All Fits Together</a></li>
-<li class="toctree-l1"><a class="reference internal" href="security.html">Security Sentries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="compatibility.html">Compatibility Layer</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="compatibility.html#dask-compatibility">Dask compatibility</a></li>
-<li class="toctree-l2"><a class="reference internal" href="compatibility.html#parsl-compatibility">Parsl compatibility</a></li>
-<li class="toctree-l2"><a class="reference internal" href="compatibility.html#caveats">Caveats</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Development</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#style-guide">Style guide</a></li>
-<li class="toctree-l2"><a class="reference internal" href="contributing.html#development-workflow">Development workflow</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="testing.html">Testing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#running-the-tests">Running the tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#pre-commit-hooks">Pre-commit hooks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="testing.html#continuous-integration">Continuous integration</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="challenge.html">Our Parslet Showcase</a></li>
-<li class="toctree-l1"><a class="reference internal" href="benchmark_results.html">How Fast Is Parslet? (Our Benchmark Results)</a></li>
-</ul>
-</div>
+<section class="hero">
+  <div class="hero-content">
+    <h1>Scale Parsing with Parslet</h1>
+    <p>Parslet brings elegant parsing utilities that grow from your laptop to the cloud.</p>
+    <div class="cta">
+      <a class="btn primary" href="docs_index.html">Get Started</a>
+      <a class="btn secondary" href="#">Learn More</a>
+    </div>
+  </div>
+  <svg class="hero-art" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M0,150 Q150,50 300,150 T600,150" fill="none" stroke="#FF6F00" stroke-width="8"/>
+    <path d="M0,200 Q150,100 300,200 T600,200" fill="none" stroke="#2196F3" stroke-width="8"/>
+  </svg>
 </section>
 
-
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="introduction.html" class="btn btn-neutral float-right" title="Introduction: What is Parslet, Really?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2025, Parslet Team.</p>
+<section class="features">
+  <div class="feature">
+    <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="50" cy="50" r="40" fill="#2196F3" />
+      <text x="50" y="58" font-size="40" text-anchor="middle" fill="white">1</text>
+    </svg>
+    <h3>Composable</h3>
+    <p>Build complex parsers from simple blocks.</p>
   </div>
+  <div class="feature">
+    <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="10" y="10" width="80" height="80" fill="#FF6F00" />
+      <text x="50" y="60" font-size="40" text-anchor="middle" fill="white">2</text>
+    </svg>
+    <h3>Fast</h3>
+    <p>Designed for performance with minimal overhead.</p>
+  </div>
+  <div class="feature">
+    <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <polygon points="50,10 90,90 10,90" fill="#4CAF50" />
+      <text x="50" y="65" font-size="40" text-anchor="middle" fill="white">3</text>
+    </svg>
+    <h3>Open</h3>
+    <p>Fully open source with an active community.</p>
+  </div>
+</section>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
+<footer>
+  <p>&copy; 2024 Parslet. Built with love and SVGs.</p>
 </footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
 
+<script src="main.js"></script>
 </body>
 </html>
