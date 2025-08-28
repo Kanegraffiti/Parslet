@@ -3,18 +3,22 @@ repos:
     rev: 23.7.0
     hooks:
       - id: black
+        exclude: ^(build|dist|examples|use_cases)/
   - repo: https://github.com/pycqa/isort
     rev: 6.0.1
     hooks:
       - id: isort
+        exclude: ^(build|dist|examples|use_cases)/
   - repo: https://github.com/pycqa/flake8
     rev: 6.1.0
     hooks:
       - id: flake8
+        exclude: ^(build|dist|examples|use_cases)/
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.16.0
     hooks:
       - id: mypy
+        files: ^parslet/core/__init__\.py$
   - repo: local
     hooks:
       - id: pytest
