@@ -14,13 +14,13 @@ from .parsl_bridge import (  # noqa: F401
     convert_task_to_parsl,
     execute_with_parsl,
 )
+from .policy import AdaptivePolicy  # noqa: F401
 from .runner import (  # noqa: F401
     BatteryLevelLowError,
     DAGRunner,
     UpstreamTaskFailedError,
 )
 from .scheduler import AdaptiveScheduler  # noqa: F401
-from .policy import AdaptivePolicy  # noqa: F401
 from .task import ParsletFuture, parslet_task, set_allow_redefine  # noqa: F401
 
 try:

@@ -9,6 +9,8 @@ Parslet_Results/
 checkpoint.json
 examples/assets/
 dist/
+build/
+docs/build/
 *.egg-info/
 *.png
 *.jpg
