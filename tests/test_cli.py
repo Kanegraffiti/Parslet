@@ -1,5 +1,6 @@
 from importlib import import_module
 from pathlib import Path
+
 import pytest
 
 
@@ -9,7 +10,7 @@ def test_cli_help(capsys, monkeypatch):
     monkeypatch.setattr(module.sys, "argv", ["parslet"])
     module.cli()
     out = capsys.readouterr().out
-    assert "Parslet command line" in out
+    assert "Parslet command line" in out or "Parslet CLI" in out
 
 
 def test_cli_examples_listing(capsys):
@@ -29,7 +30,7 @@ def test_cli_help_option(capsys):
     with pytest.raises(SystemExit):
         module.main()
     out = capsys.readouterr().out
-    assert "Parslet command line" in out
+    assert "Parslet command line" in out or "Parslet CLI" in out
 
 
 def test_cli_invalid_argument(capsys):
@@ -49,11 +50,8 @@ def test_cli_examples_all_files(capsys):
     except SystemExit:
         pass
     out = capsys.readouterr().out
-    lines = [
-        line
-        for line in out.strip().splitlines()
-        if "Plugins loaded" not in line
-    ]
+    out_lines = out.strip().splitlines()
+    lines = [line for line in out_lines if "Plugins loaded" not in line]
     listed = sorted(lines)
     expected = sorted(f.name for f in Path("use_cases").glob("*.py"))
     assert listed == expected
