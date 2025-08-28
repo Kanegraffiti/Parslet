@@ -1,74 +1,192 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Parslet - Parallel Parsing Made Simple</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parslet</title>
+  <meta name="description" content="Parslet: pocket-sized parallel workflows for edge devices." />
+  <link rel="stylesheet" href="assets/css/prism.min.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml"/>
+  <meta property="og:title" content="Parslet"/>
+  <meta property="og:description" content="Pocket-sized parallel workflows."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://kanegraffiti.github.io/Parslet/"/>
+  <meta property="og:image" content="https://kanegraffiti.github.io/Parslet/assets/images/logo.svg"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Parslet",
+    "operatingSystem": "Android, Linux",
+    "applicationCategory": "WorkflowAutomation",
+    "offers": {"@type": "Offer","price": "0"}
+  }
+  </script>
 </head>
 <body>
-<header class="top-nav">
-  <a class="logo" href="#">
-    <svg width="120" height="40" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" aria-labelledby="logoTitle">
-      <title id="logoTitle">Parslet logo</title>
-      <rect width="120" height="40" fill="none" />
-      <text x="0" y="28" font-size="28" font-family="sans-serif" fill="#FF6F00">Parslet</text>
-    </svg>
-  </a>
-  <nav class="menu">
-    <a href="docs_index.html">Docs</a>
-    <a href="#">Install</a>
-    <a href="#">Community</a>
-    <a href="#">GitHub</a>
-  </nav>
-</header>
-
-<section class="hero">
-  <div class="hero-content">
-    <h1>Scale Parsing with Parslet</h1>
-    <p>Parslet brings elegant parsing utilities that grow from your laptop to the cloud.</p>
-    <div class="cta">
-      <a class="btn primary" href="docs_index.html">Get Started</a>
-      <a class="btn secondary" href="#">Learn More</a>
+  <header class="site-header" id="top">
+    <div class="container flex-between">
+      <a href="#top" class="logo" aria-label="Parslet home"><img src="assets/images/logo.svg" alt="Parslet logo"/></a>
+      <nav aria-label="Main navigation">
+        <ul class="nav-list">
+          <li><a href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener" class="nav-link">Docs</a></li>
+          <li><a href="https://github.com/Kanegraffiti/Parslet/tree/main/examples" target="_blank" rel="noopener" class="nav-link">Examples</a></li>
+          <li><a href="https://github.com/Kanegraffiti/Parslet" target="_blank" rel="noopener" class="nav-link">GitHub</a></li>
+          <li><button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">🌙</button></li>
+        </ul>
+      </nav>
     </div>
-  </div>
-  <svg class="hero-art" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M0,150 Q150,50 300,150 T600,150" fill="none" stroke="#FF6F00" stroke-width="8"/>
-    <path d="M0,200 Q150,100 300,200 T600,200" fill="none" stroke="#2196F3" stroke-width="8"/>
-  </svg>
-</section>
+  </header>
 
-<section class="features">
-  <div class="feature">
-    <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="50" cy="50" r="40" fill="#2196F3" />
-      <text x="50" y="58" font-size="40" text-anchor="middle" fill="white">1</text>
-    </svg>
-    <h3>Composable</h3>
-    <p>Build complex parsers from simple blocks.</p>
-  </div>
-  <div class="feature">
-    <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect x="10" y="10" width="80" height="80" fill="#FF6F00" />
-      <text x="50" y="60" font-size="40" text-anchor="middle" fill="white">2</text>
-    </svg>
-    <h3>Fast</h3>
-    <p>Designed for performance with minimal overhead.</p>
-  </div>
-  <div class="feature">
-    <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <polygon points="50,10 90,90 10,90" fill="#4CAF50" />
-      <text x="50" y="65" font-size="40" text-anchor="middle" fill="white">3</text>
-    </svg>
-    <h3>Open</h3>
-    <p>Fully open source with an active community.</p>
-  </div>
-</section>
+  <main>
+    <section class="hero" id="hero">
+      <div class="container grid-2">
+        <div class="hero-text">
+          <h1>Parslet: Pocket-sized parallel workflows.</h1>
+          <p>A tiny Python DAG runner for Android/Termux, Raspberry Pi, and low-power edge devices—offline-first, battery-aware, and Parsl-friendly.</p>
+          <div class="btn-group">
+            <a class="btn btn-primary" href="#quickstart">Install via pip</a>
+            <a class="btn btn-ghost" href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Read the Docs</a>
+            <a class="btn btn-ghost" href="https://github.com/Kanegraffiti/Parslet" target="_blank" rel="noopener">View on GitHub</a>
+          </div>
+        </div>
+        <div class="hero-img" aria-hidden="true">
+          <img src="assets/images/dag.svg" alt="" />
+        </div>
+      </div>
+    </section>
 
-<footer>
-  <p>&copy; 2024 Parslet. Built with love and SVGs.</p>
-</footer>
+    <section class="ribbon">
+      <p>As seen at ParslFest 2025</p>
+    </section>
 
-<script src="main.js"></script>
+    <section class="why container" id="why">
+      <h2>Why Parslet</h2>
+      <div class="grid-4">
+        <div class="card feature reveal"><img src="assets/images/android.svg" alt="Android icon"/><h3>Runs where you are</h3><p>Android/Termux and Raspberry Pi friendly.</p></div>
+        <div class="card feature reveal"><img src="assets/images/battery.svg" alt="Battery icon"/><h3>Battery-aware</h3><p>Optional reduced concurrency when power is low.</p></div>
+        <div class="card feature reveal"><img src="assets/images/offline.svg" alt="Offline icon"/><h3>Offline-first</h3><p>Tolerant of flaky or absent networks.</p></div>
+        <div class="card feature reveal"><img src="assets/images/topology.svg" alt="Topology icon"/><h3>Portable DAGs</h3><p>Export and import sharable graphs for collaboration.</p></div>
+      </div>
+    </section>
+
+    <section class="code" id="quickstart">
+      <h2 class="container">Quickstart</h2>
+      <div class="tabs container" role="tablist" aria-label="Code examples">
+        <button role="tab" aria-selected="true" aria-controls="panel-linux" id="tab-linux" class="tab">Linux/macOS</button>
+        <button role="tab" aria-selected="false" aria-controls="panel-android" id="tab-android" class="tab">Termux/Android</button>
+      </div>
+      <div class="tab-panels container">
+        <pre id="panel-linux" class="tab-panel" role="tabpanel" aria-labelledby="tab-linux"><code class="language-bash">python -m venv .venv && source .venv/bin/activate
+pip install --upgrade pip
+pip install parslet
+
+# hello_parslet.py
+from parslet import parslet_task, ParsletFuture
+from typing import List
+
+@parslet_task
+def greet(name: str) -> str:
+    return f"Hello, {name}"
+
+@parslet_task
+def shout(x: str) -> str:
+    return x.upper()
+
+def main() -> List[ParsletFuture]:
+    a = greet("Parslet")
+    b = shout(a)
+    return [b]
+
+parslet run hello_parslet.py</code></pre>
+        <pre id="panel-android" class="tab-panel hidden" role="tabpanel" aria-labelledby="tab-android"><code class="language-bash">pkg update -y && pkg install -y python graphviz
+python -m venv .venv && source .venv/bin/activate
+pip install --upgrade pip
+pip install parslet
+parslet run hello_parslet.py</code></pre>
+      </div>
+    </section>
+
+    <section class="how container" id="how">
+      <h2>How it works</h2>
+      <div class="grid-2">
+        <div class="diagram" aria-hidden="true"><img src="assets/images/dag.svg" alt=""/></div>
+        <ul class="steps">
+          <li>Define tasks</li>
+          <li>Wire dependencies</li>
+          <li>Run DAG</li>
+          <li>Optionally export graph/PNG</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <h2 class="container">Features</h2>
+      <div class="container grid-3">
+        <div class="card feature reveal"><img src="assets/images/termux.svg" alt="Termux icon"/><h3>Termux-Ready</h3><p>Works on your phone with Termux.</p></div>
+        <div class="card feature reveal"><img src="assets/images/battery.svg" alt="Battery icon"/><h3>Battery Mode</h3><p>Throttle tasks when batteries dip.</p></div>
+        <div class="card feature reveal"><img src="assets/images/dag.svg" alt="DAG icon"/><h3>DAG Export</h3><p>Run with <code>--export-png</code> to snapshot graphs.</p></div>
+        <div class="card feature reveal"><img src="assets/images/topology.svg" alt="Topology icon"/><h3>CLI Live Monitor</h3><p>Watch progress live in your terminal.</p></div>
+        <div class="card feature reveal"><img src="assets/images/interop.svg" alt="Interop icon"/><h3>Interop</h3><p>Parsl/Dask conversion (experimental).</p></div>
+        <div class="card feature reveal"><img src="assets/images/offline.svg" alt="Offline icon"/><h3>DEFCON modes</h3><p>Hardened options for sensitive deployments.</p></div>
+      </div>
+    </section>
+
+    <section class="use-cases" id="use-cases">
+      <h2 class="container">Real Use Cases</h2>
+      <div class="container grid-2">
+        <div class="card reveal"><img src="assets/images/battery.svg" alt=""/><h3>Battery-Aware Data Pipeline</h3><p><code>parslet run examples/battery_aware_demo.py</code></p><a class="btn btn-ghost" href="https://github.com/Kanegraffiti/Parslet/tree/main/examples" target="_blank" rel="noopener">Try it</a></div>
+        <div class="card reveal"><img src="assets/images/topology.svg" alt=""/><h3>RAD by Parslet</h3><p><code>parslet run examples/rad_pipeline.py</code></p><a class="btn btn-ghost" href="https://github.com/Kanegraffiti/Parslet/tree/main/examples" target="_blank" rel="noopener">Try it</a></div>
+        <div class="card reveal"><img src="assets/images/pi.svg" alt=""/><h3>Edge MCU Sensor Processing</h3><p><code>parslet run examples/edge_mcu_sensor_processing.py</code></p><a class="btn btn-ghost" href="https://github.com/Kanegraffiti/Parslet/tree/main/examples" target="_blank" rel="noopener">Try it</a></div>
+        <div class="card reveal"><img src="assets/images/android.svg" alt=""/><h3>Text Cleaner</h3><p><code>parslet run examples/text_cleaner.py</code></p><a class="btn btn-ghost" href="https://github.com/Kanegraffiti/Parslet/tree/main/examples" target="_blank" rel="noopener">Try it</a></div>
+      </div>
+    </section>
+
+    <section class="interop" id="interop">
+      <h2 class="container">Interoperability</h2>
+      <div class="container grid-2">
+        <div>
+          <p>Convert Parsl or Dask workflows (experimental):</p>
+          <pre><code class="language-bash"># Parsl → Parslet-ish
+parslet convert --from-parsl path/to/parsl_script.py -o converted_parslet.py
+
+# Dask → Parslet DAG
+parslet convert --from-dask dask_workflow.py -o converted_parslet.py</code></pre>
+          <p class="small">See <a href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Interop docs</a> for limitations.</p>
+        </div>
+        <div aria-hidden="true"><img src="assets/images/interop.svg" alt=""/></div>
+      </div>
+    </section>
+
+    <section class="community" id="community">
+      <div class="container">
+        <h2>Join the community</h2>
+        <p>Contribute, share use cases, and help Parslet grow.</p>
+        <div class="btn-group">
+          <a class="btn btn-primary" href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Read the Docs</a>
+          <a class="btn btn-ghost" href="https://github.com/Kanegraffiti/Parslet/tree/main/examples" target="_blank" rel="noopener">Examples on GitHub</a>
+          <a class="btn btn-ghost" href="#quickstart">Install via pip</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="footer-nav">
+        <li><a href="https://parslet.readthedocs.io/en/latest/" target="_blank" rel="noopener">Docs</a></li>
+        <li><a href="https://github.com/Kanegraffiti/Parslet" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://github.com/Kanegraffiti/Parslet/blob/main/LICENSE" target="_blank" rel="noopener">License</a></li>
+        <li><a href="https://github.com/Kanegraffiti/Parslet/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a></li>
+      </ul>
+      <p class="small">Built for ParslFest 2025.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/prism.min.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>
