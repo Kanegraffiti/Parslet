@@ -19,7 +19,7 @@ The best way to learn Parslet is by seeing it in action. This guide breaks down 
     ```
 -   **Expected Output:** The final result of the calculation, `100`, will be printed to your console.
 
-![Hello Parslet Example](../docs/visuals/hello_py.jpg)
+![Hello Parslet Example](../docs/visuals/hello_py.svg)
 
 ---
 
@@ -44,7 +44,7 @@ The best way to learn Parslet is by seeing it in action. This guide breaks down 
     ```
     This will create a file named `pipeline.png` showing the four steps connected in a line.
 
-![Image Filter Example](../docs/visuals/image_filter.jpg)
+![Image Filter Example](../docs/visuals/image_filter.svg)
 
 ---
 
@@ -66,7 +66,7 @@ The best way to learn Parslet is by seeing it in action. This guide breaks down 
         ```
 -   **Expected Output:** A file named `word_counts.txt` will be created with the JSON results, and a diagram named `text_cleaner_dag.png` will be generated.
 
-![Hello Parslet Example](../docs/visuals/text_cleaner.jpg)
+![Hello Parslet Example](../docs/visuals/text_cleaner.svg)
 
 ---
 
@@ -86,7 +86,7 @@ The best way to learn Parslet is by seeing it in action. This guide breaks down 
         ```
 -   **Dependencies:** This example requires `opencv-python` and `numpy`, which you can install with `pip install opencv-python numpy`.
 
-![Hello Parslet Example](../docs/visuals/video_frames.jpg)
+![Hello Parslet Example](../docs/visuals/video_frames.svg)
 
 ---
 
@@ -108,7 +108,7 @@ The best way to learn Parslet is by seeing it in action. This guide breaks down 
     -   `review_flag.txt`: `true` or `false`.
     -   `meta.json`: A file with metadata about the model versions and their agreement score.
 
-![Hello Parslet Example](../docs/visuals/rad_parslet.jpg)
+![Hello Parslet Example](../docs/visuals/rad_parslet.svg)
 
 ---
 
@@ -127,5 +127,5 @@ The best way to learn Parslet is by seeing it in action. This guide breaks down 
     ```
 -   **Expected Output:** A new directory will be created in `Parslet_Results/` containing `clean_data.csv` and `anomalies.json`.
 
-  ![Hello Parslet Example](../docs/visuals/edge_mcu.jpg)
+  ![Hello Parslet Example](../docs/visuals/edge_mcu.svg)
 

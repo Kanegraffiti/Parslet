@@ -4,6 +4,7 @@
 ![Parsl-compatible](https://img.shields.io/badge/parsl-compatible-purple.svg)
 ![Termux-Ready](https://img.shields.io/badge/termux-ready-purple.svg)
 ![License](https://img.shields.io/github/license/Kanegraffiti/Parslet)
+![PyPI version](https://img.shields.io/pypi/v/parslet)
 
 ### What is Parslet?
 
