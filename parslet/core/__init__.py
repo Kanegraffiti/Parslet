@@ -13,6 +13,14 @@ from .dag_io import (  # noqa: F401
 from .parsl_bridge import (  # noqa: F401
     convert_task_to_parsl,
     execute_with_parsl,
+    parsl_python,
+)
+from .ir import (  # noqa: F401
+    IRTask,
+    IRGraph,
+    infer_edges_from_params,
+    toposort,
+    normalize_names,
 )
 from .policy import AdaptivePolicy  # noqa: F401
 from .runner import (  # noqa: F401
@@ -35,4 +43,12 @@ __all__ = [
     "DAGRunner",
     "AdaptivePolicy",
     "AdaptiveScheduler",
+    "convert_task_to_parsl",
+    "execute_with_parsl",
+    "parsl_python",
+    "IRTask",
+    "IRGraph",
+    "infer_edges_from_params",
+    "toposort",
+    "normalize_names",
 ]

@@ -202,6 +202,22 @@ mypy
 pytest -q
 ```
 
+### Interoperability
+
+Parslet ships with experimental bridges for [Parsl](https://parsl-project.org).
+Use ``parsl_python`` to call a Parsl ``python_app`` as a Parslet task:
+
+```python
+from parslet.core.parsl_bridge import parsl_python
+
+@parsl_python
+def add(x, y):
+    return x + y
+```
+
+The returned ``add`` function behaves like a regular ``@parslet_task`` and can
+participate in a Parslet DAG while executing the body via Parsl.
+
 ---
 
 ## License

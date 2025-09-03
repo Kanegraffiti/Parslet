@@ -23,6 +23,10 @@ def hello(name):
     return f"Hello {name}"
 ```
 
+For the opposite direction, ``parslet.core.parsl_bridge.parsl_python`` exposes a
+Parsl ``python_app`` as a Parslet task so that existing Parsl code can be mixed
+into a Parslet workflow without rewriting.
+
 ### Converting Parsl to Parslet
 
 ```bash

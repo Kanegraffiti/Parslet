@@ -5,7 +5,11 @@ import types
 import pytest
 
 from parslet.core import parslet_task
-from parslet.core.parsl_bridge import convert_task_to_parsl, execute_with_parsl
+from parslet.core.parsl_bridge import (
+    convert_task_to_parsl,
+    execute_with_parsl,
+    parsl_python,
+)
 
 
 class DummyFuture:
@@ -19,7 +23,7 @@ class DummyFuture:
 def make_stub_parsl():
     parsl_mod = types.ModuleType("parsl")
 
-    def python_app(func):
+    def python_app(func=None, *, executor=None):
         def wrapper(*args, **kwargs):
             resolved_args = [
                 a.result() if isinstance(a, DummyFuture) else a for a in args
@@ -128,3 +132,15 @@ def test_execute_with_parsl_creates_run_dir(stub_parsl):
         import shutil
 
         shutil.rmtree(config.run_dir)
+
+
+def test_parsl_python_runs_under_parsl(stub_parsl):
+    parsl = stub_parsl
+
+    @parsl_python
+    def add(x, y):
+        return x + y
+
+    fut = add(1, 2)
+    # Execute the underlying function to simulate DAGRunner behaviour
+    assert fut.func(*fut.args, **fut.kwargs) == 3

@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.6.0 - 2025-07-30
+- Interop overhaul: initial IR model and Parsl bridge helpers
+
 ## v0.1.0 - 2025-04-10
 
 - Full flake8 cleanup
