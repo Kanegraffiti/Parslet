@@ -10,10 +10,41 @@ import os
 import tempfile
 
 from .dag import DAG
-from .task import ParsletFuture
+from .task import ParsletFuture, parslet_task
 
 
-__all__ = ["convert_task_to_parsl", "execute_with_parsl"]
+__all__ = ["convert_task_to_parsl", "execute_with_parsl", "parsl_python"]
+
+
+# Cache DataFlowKernel instances keyed by executor label.  This keeps the
+# bridge light‑weight and avoids repeatedly initialising Parsl when the
+# decorator is used many times within a single process.
+_DFK_CACHE: Dict[str, Any] = {}
+
+
+def _ensure_parsl_loaded(config: Any | None, executor: str | None) -> None:
+    """Lazily load Parsl with a small thread pool configuration."""
+
+    try:
+        import parsl
+        from parsl.config import Config
+        from parsl.executors.threads import ThreadPoolExecutor
+    except Exception as exc:  # pragma: no cover - import-time failure
+        raise ImportError(
+            "Parsl is required for Parslet-Parsl interoperability.\n"
+            "Install it via `pip install parsl`."
+        ) from exc
+
+    label = executor or "local"
+    if label in _DFK_CACHE:
+        return
+
+    if config is None:
+        config = Config(executors=[ThreadPoolExecutor(label=label)])
+
+    parsl.clear()
+    parsl.load(config)
+    _DFK_CACHE[label] = parsl.dfk()
 
 
 def convert_task_to_parsl(parslet_func):
@@ -114,3 +145,34 @@ def execute_with_parsl(
     results = [parsl_futures[f.task_id].result() for f in entry_futures]
     parsl.dfk().cleanup()
     return results
+
+
+def parsl_python(func=None, *, config: Any | None = None, executor: str | None = None):
+    """Expose a Parsl ``python_app`` as a Parslet task.
+
+    The returned callable behaves like a normal ``@parslet_task`` function
+    but its body executes under Parsl.  ``config`` and ``executor`` mirror the
+    similarly named arguments from Parsl's decorator.  A tiny thread pool
+    configuration is used by default so that the bridge works in minimal
+    environments such as Termux.
+    """
+
+    if func is None:
+        return lambda f: parsl_python(f, config=config, executor=executor)
+
+    try:
+        from parsl import python_app
+    except Exception as exc:  # pragma: no cover - import failure
+        raise ImportError(
+            "Parsl is required for Parslet-Parsl interoperability.\n"
+            "Install it via `pip install parsl`."
+        ) from exc
+
+    parsl_app = python_app(func, executor=executor)
+
+    @parslet_task
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        _ensure_parsl_loaded(config=config, executor=executor)
+        return parsl_app(*args, **kwargs).result()
+
+    return wrapper
