@@ -23,6 +23,10 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: pytest
+        entry: >-
+          pytest tests/test_scheduler.py tests/test_policy.py tests/test_cli_convert.py
+          tests/test_compat_conversion.py tests/test_dask_adapter_runtime.py
+          tests/test_battery_failover.py tests/test_runner.py tests/test_parsl_bridge.py
         language: system
         types: [python]
+        pass_filenames: false
