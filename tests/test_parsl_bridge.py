@@ -82,9 +82,7 @@ def stub_parsl(monkeypatch):
     monkeypatch.setitem(sys.modules, "parsl", stub)
     monkeypatch.setitem(sys.modules, "parsl.config", stub.config)
     monkeypatch.setitem(sys.modules, "parsl.executors", stub.executors)
-    monkeypatch.setitem(
-        sys.modules, "parsl.executors.threads", stub.executors.threads
-    )
+    monkeypatch.setitem(sys.modules, "parsl.executors.threads", stub.executors.threads)
     return stub
 
 
@@ -135,8 +133,6 @@ def test_execute_with_parsl_creates_run_dir(stub_parsl):
 
 
 def test_parsl_python_runs_under_parsl(stub_parsl):
-    parsl = stub_parsl
-
     @parsl_python
     def add(x, y):
         return x + y

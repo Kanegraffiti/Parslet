@@ -50,6 +50,9 @@ packages = {find = {include = ["parslet*"], exclude = ["termux", "use_cases", "t
 [tool.black]
 line-length = 88
 
+[tool.isort]
+profile = "black"
+
 [tool.ruff]
 line-length = 88
 
