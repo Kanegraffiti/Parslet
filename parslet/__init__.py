@@ -5,7 +5,15 @@ interface compact and easy to learn.  Everything else remains available under
 ``parslet.core`` or other subpackages.
 """
 
-from .core import DAG, DAGRunner, ParsletFuture, parslet_task
+from .core import (
+    DAG,
+    DAGRunner,
+    EnergyAwarePolicy,
+    ParsletFuture,
+    parslet_task,
+    task_variant,
+)
+from .utils.power import PowerState, get_power_state, watch
 
 try:
     from importlib.metadata import version as _pkg_version
@@ -17,4 +25,14 @@ try:
 except Exception:
     __version__ = "0.0.0"
 
-__all__ = ["parslet_task", "ParsletFuture", "DAG", "DAGRunner"]
+__all__ = [
+    "parslet_task",
+    "ParsletFuture",
+    "DAG",
+    "DAGRunner",
+    "task_variant",
+    "EnergyAwarePolicy",
+    "PowerState",
+    "get_power_state",
+    "watch",
+]

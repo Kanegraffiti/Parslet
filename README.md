@@ -48,6 +48,7 @@ Most tools like this are built for powerful servers in a data center. Parslet is
 -   **Run in Termux:** It’s built and tested to work perfectly inside [Termux](https://termux.dev/en/), the command-line tool for Android.
 -   **Work Offline:** No internet? No problem. Your workflows will still run.
 -   **Empower Everyone:** It’s for students, creators, and developers who might not have a laptop but have a brilliant idea.
+-   **Battery-smart scheduling:** Adapts on Android, Raspberry Pi, and Linux laptops to stretch runtime.
 
 ---
 

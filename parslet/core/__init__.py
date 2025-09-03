@@ -10,26 +10,31 @@ from .dag_io import (  # noqa: F401
     export_dag_to_json,
     import_dag_from_json,
 )
+from .ir import (  # noqa: F401
+    IRGraph,
+    IRTask,
+    infer_edges_from_params,
+    normalize_names,
+    toposort,
+)
 from .parsl_bridge import (  # noqa: F401
     convert_task_to_parsl,
     execute_with_parsl,
     parsl_python,
 )
-from .ir import (  # noqa: F401
-    IRTask,
-    IRGraph,
-    infer_edges_from_params,
-    toposort,
-    normalize_names,
-)
-from .policy import AdaptivePolicy  # noqa: F401
+from .policy import AdaptivePolicy, EnergyAwarePolicy  # noqa: F401
 from .runner import (  # noqa: F401
     BatteryLevelLowError,
     DAGRunner,
     UpstreamTaskFailedError,
 )
 from .scheduler import AdaptiveScheduler  # noqa: F401
-from .task import ParsletFuture, parslet_task, set_allow_redefine  # noqa: F401
+from .task import (  # noqa: F401
+    ParsletFuture,
+    parslet_task,
+    set_allow_redefine,
+    task_variant,
+)
 
 try:
     __version__ = metadata.version("parslet")
@@ -42,6 +47,7 @@ __all__ = [
     "DAG",
     "DAGRunner",
     "AdaptivePolicy",
+    "EnergyAwarePolicy",
     "AdaptiveScheduler",
     "convert_task_to_parsl",
     "execute_with_parsl",
