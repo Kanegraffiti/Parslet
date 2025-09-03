@@ -28,7 +28,7 @@ _RESULT_NOT_SET = object()
 # Module-level logger for task utilities
 logger = logging.getLogger(__name__)
 
-__all__ = ["parslet_task", "ParsletFuture", "set_allow_redefine"]
+__all__ = ["parslet_task", "ParsletFuture", "set_allow_redefine", "task_variant"]
 
 
 class ParsletFuture:
@@ -81,6 +81,15 @@ class ParsletFuture:
         self.func: Callable[..., Any] = func
         self.args: tuple = args
         self.kwargs: dict[str, Any] = kwargs
+
+        # Energy-related metadata copied from the decorated function.  These
+        # attributes are optional and default to sensible values so older
+        # tasks defined without energy hints continue to work unchanged.
+        self.energy_cost: str = getattr(func, "_parslet_energy_cost", "med")
+        self.deadline_s: int | None = getattr(func, "_parslet_deadline_s", None)
+        self.qos: str = getattr(func, "_parslet_qos", "standard")
+        self.degradable: bool = getattr(func, "_parslet_degradable", True)
+        self.variant_key: str | None = getattr(func, "_parslet_variant_key", None)
 
         # Internal attributes to store the outcome of the task execution.
         self._result: Any = _RESULT_NOT_SET
@@ -209,6 +218,10 @@ def parslet_task(
     version: str = "1",
     allow_shell: bool = False,
     allow_redefine: bool = False,
+    energy_cost: str = "med",
+    deadline_s: int | None = None,
+    qos: str = "standard",
+    degradable: bool = True,
 ) -> Callable[..., ParsletFuture]:
     """
     Decorator to define a Python function as a Parslet task.
@@ -289,6 +302,10 @@ def parslet_task(
         func_to_wrap._parslet_remote = remote
         func_to_wrap._parslet_cache = cache
         func_to_wrap._parslet_cache_version = version
+        func_to_wrap._parslet_energy_cost = energy_cost
+        func_to_wrap._parslet_deadline_s = deadline_s
+        func_to_wrap._parslet_qos = qos
+        func_to_wrap._parslet_degradable = degradable
 
         @functools.wraps(func_to_wrap)
         def wrapper(*args: object, **kwargs: object) -> ParsletFuture:
@@ -327,6 +344,10 @@ def parslet_task(
         wrapper._parslet_remote = remote
         wrapper._parslet_cache = cache
         wrapper._parslet_cache_version = version
+        wrapper._parslet_energy_cost = energy_cost
+        wrapper._parslet_deadline_s = deadline_s
+        wrapper._parslet_qos = qos
+        wrapper._parslet_degradable = degradable
 
         return wrapper
 
@@ -376,3 +397,26 @@ def get_all_registered_tasks() -> dict[str, Callable[..., Any]]:
                                        names to their callable functions.
     """
     return _TASK_REGISTRY.copy()
+
+
+def task_variant(key: str) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    """Decorator to mark a function as an alternate implementation.
+
+    Variants allow tasks to provide lighter or heavier implementations that
+    the scheduler may switch between depending on power conditions.  The
+    decorator simply records the variant ``key`` on the function object so the
+    runner can later choose an appropriate implementation.
+    """
+
+    def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+        func._parslet_variant_key = key
+        # If the function has been wrapped by ``parslet_task`` the original
+        # callable is stored under ``_parslet_original_func``.  Propagate the
+        # variant marker so :class:`ParsletFuture` instances created from the
+        # wrapper can see it.
+        original = getattr(func, "_parslet_original_func", None)
+        if original is not None:
+            original._parslet_variant_key = key
+        return func
+
+    return decorator
