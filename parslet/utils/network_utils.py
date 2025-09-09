@@ -19,7 +19,13 @@ def is_network_available(
     try:
         with socket.create_connection((host, port), timeout=timeout):
             return True
-    except OSError:
+    except Exception:
+        # ``socket.create_connection`` can raise a variety of exceptions
+        # depending on the type and value of ``timeout`` or the reachability of
+        # the host.  In addition to ``OSError`` (for network errors) it may
+        # raise ``ValueError`` or ``TypeError`` when invalid parameters are
+        # supplied.  Treat all of these cases as "network unavailable" instead
+        # of propagating the error so callers get a simple True/False result.
         return False
 
 
