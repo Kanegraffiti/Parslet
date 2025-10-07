@@ -120,6 +120,12 @@
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">--simulate</span></code></dt><dd><p>This is the “preview” button. It will show you the flowchart for your recipe and check your device’s RAM and battery, but it won’t actually run any of the tasks. It’s great for double-checking your work.</p>
 </dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--context</span> <span class="pre">&lt;Name&gt;</span></code></dt><dd><p>Declare a luxury “scene” that should be considered active for this run. You can specify this flag multiple times. It partners with the new <code class="docutils literal notranslate"><span class="pre">&#64;parslet_task(contexts=[...])</span></code> decorator to gate tasks until the right conditions (like <code class="docutils literal notranslate"><span class="pre">network.online</span></code> or <code class="docutils literal notranslate"><span class="pre">battery&gt;=60</span></code>) are met.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--concierge</span></code></dt><dd><p>Treat yourself to Parslet’s concierge briefing and ledger. You’ll see a curated pre-flight summary of live detectors and a post-run ledger that reads like a boutique operations report.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">--concierge-runbook</span> <span class="pre">&lt;Path&gt;</span></code></dt><dd><p>Ask Parslet to write a JSON dossier with the complete itinerary, including context evaluations and execution timings. Perfect for sharing with clients or teammates.</p>
+</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">--export-dot</span></code> / <code class="docutils literal notranslate"><span class="pre">--export-png</span></code></dt><dd><p>These buttons tell Parslet to take a picture of your recipe’s flowchart for you. See <a class="reference internal" href="exporting.html"><span class="doc">Exporting</span></a> for more details.</p>
 </dd>
 <dt><code class="docutils literal notranslate"><span class="pre">--log-level</span></code> and <code class="docutils literal notranslate"><span class="pre">--verbose</span></code></dt><dd><p>These control how much information Parslet prints to the screen while it’s working. If you have the <cite>Rich</cite> library installed, it will even show you a beautiful, colorful report card for your tasks.</p>

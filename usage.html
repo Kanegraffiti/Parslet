@@ -50,6 +50,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#defining-your-tasks">Defining Your Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-your-workflow">Running Your Workflow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#being-smart-with-resources">Being Smart with Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#curate-context-scenes">Curate Context Scenes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Parslet Recipes: Real-World Examples</a></li>
@@ -152,6 +153,19 @@ python<span class="w"> </span>examples/tools/plot_stats.py<span class="w"> </spa
 </pre></div>
 </div>
 <p>For more command-line options, like exporting a picture of your workflow, check out the <a class="reference internal" href="cli.html"><span class="doc">Your Remote Control: The Parslet CLI</span></a> guide. To learn more about how battery mode works, see <a class="reference internal" href="battery_mode.html"><span class="doc">Running on Fumes? Use Battery-Saver Mode!</span></a>.</p>
+</section>
+<section id="curate-context-scenes">
+<h2>Curate Context Scenes<a class="headerlink" href="#curate-context-scenes" title="Link to this heading"></a></h2>
+<p>Parslet tasks can now declare <em>context scenes</em> that must be active before they run. It’s the same power you’d expect from Tasker, but native to your Python code.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">parslet</span><span class="w"> </span><span class="kn">import</span> <span class="n">parslet_task</span>
+
+<span class="nd">@parslet_task</span><span class="p">(</span><span class="n">contexts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;network.online&quot;</span><span class="p">,</span> <span class="s2">&quot;battery&gt;=60&quot;</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;luxury_sync&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">luxury_sync</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">upload_to_vault</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use <code class="docutils literal notranslate"><span class="pre">parslet</span> <span class="pre">run</span> <span class="pre">workflow.py</span> <span class="pre">--context</span> <span class="pre">home</span> <span class="pre">--context</span> <span class="pre">vpn</span></code> to manually activate scenes, or rely on Parslet’s detectors for network, VPN, power source, and time-of-day. Any task whose context is not satisfied is marked <code class="docutils literal notranslate"><span class="pre">DEFERRED</span></code> and safely skipped until conditions improve.</p>
+<p>Activate <code class="docutils literal notranslate"><span class="pre">--concierge</span></code> for a pre-flight briefing and <code class="docutils literal notranslate"><span class="pre">--concierge-runbook</span></code> for a JSON dossier containing the itinerary, context evaluations, and runtimes.</p>
 </section>
 </section>
 

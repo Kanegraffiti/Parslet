@@ -34,6 +34,15 @@ Here are some of the most common buttons you can press:
 ``--simulate``
     This is the "preview" button. It will show you the flowchart for your recipe and check your device's RAM and battery, but it won't actually run any of the tasks. It's great for double-checking your work.
 
+``--context <Name>``
+    Declare a luxury "scene" that should be considered active for this run. You can specify this flag multiple times. It partners with the new ``@parslet_task(contexts=[...])`` decorator to gate tasks until the right conditions (like ``network.online`` or ``battery>=60``) are met.
+
+``--concierge``
+    Treat yourself to Parslet's concierge briefing and ledger. You'll see a curated pre-flight summary of live detectors and a post-run ledger that reads like a boutique operations report.
+
+``--concierge-runbook <Path>``
+    Ask Parslet to write a JSON dossier with the complete itinerary, including context evaluations and execution timings. Perfect for sharing with clients or teammates.
+
 ``--export-dot`` / ``--export-png``
     These buttons tell Parslet to take a picture of your recipe's flowchart for you. See :doc:`exporting` for more details.
 
