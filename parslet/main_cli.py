@@ -88,6 +88,24 @@ def cli() -> None:
         metavar="PATH",
         help="Write task execution stats to the given JSON file",
     )
+    run_p.add_argument(
+        "--context",
+        action="append",
+        default=[],
+        metavar="NAME",
+        help="Force-enable a context tag (can be passed multiple times)",
+    )
+    run_p.add_argument(
+        "--concierge",
+        action="store_true",
+        help="Activate the Parslet Concierge briefing and ledger",
+    )
+    run_p.add_argument(
+        "--concierge-runbook",
+        type=str,
+        metavar="PATH",
+        help="Write the concierge runbook JSON to PATH",
+    )
 
     rad_p = sub.add_parser("rad", help="Run RAD by Parslet example")
     rad_p.add_argument("image", nargs="?")
@@ -122,7 +140,12 @@ def cli() -> None:
             from rich.table import Table
 
             from parslet.cli import load_workflow_module
-            from parslet.core import DAG, DAGRunner
+            from parslet.core import (
+                ConciergeOrchestrator,
+                ContextOracle,
+                DAG,
+                DAGRunner,
+            )
             from parslet.core.policy import AdaptivePolicy
             from parslet.security.defcon import Defcon
 
@@ -135,6 +158,11 @@ def cli() -> None:
             futures = mod.main()
             dag = DAG()
             dag.build_dag(futures)
+
+            context_oracle = ContextOracle(args.context or None)
+            concierge = None
+            if args.concierge or args.concierge_runbook:
+                concierge = ConciergeOrchestrator(dag, context_oracle)
 
             if getattr(mod, "__converted_from_parsl__", False):
                 from parslet.compat.parsl_adapter import export_parsl_dag
@@ -170,6 +198,7 @@ def cli() -> None:
                 disable_cache=args.no_cache,
                 json_logs=args.json_logs,
                 max_workers=args.max_workers,
+                context_oracle=context_oracle,
             )
 
             if args.simulate:
@@ -183,7 +212,13 @@ def cli() -> None:
                     print(f"Available RAM: {ram:.1f} MB")
                 if batt is not None:
                     print(f"Battery level: {batt}%")
+                if concierge is not None:
+                    print("")
+                    print(concierge.render_prologue())
                 return
+
+            if concierge is not None:
+                print(concierge.render_prologue())
 
             if args.monitor:
 
@@ -212,6 +247,17 @@ def cli() -> None:
             else:
                 with offline_guard(args.offline):
                     runner.run(dag)
+                if concierge is not None:
+                    summary = ConciergeOrchestrator.summarise_runner(runner)
+                    if args.concierge:
+                        print(concierge.render_epilogue(summary))
+                    if args.concierge_runbook:
+                        concierge.write_runbook(args.concierge_runbook, runner)
+                        logger.info(
+                            "Concierge runbook written to %s",
+                            args.concierge_runbook,
+                        )
+
                 if args.export_stats:
                     try:
                         stats_path = args.export_stats

@@ -73,3 +73,20 @@ To analyze performance, export execution stats and plot an ASCII heatmap:
    python examples/tools/plot_stats.py stats.json
 
 For more command-line options, like exporting a picture of your workflow, check out the :doc:`cli` guide. To learn more about how battery mode works, see :doc:`battery_mode`.
+
+Curate Context Scenes
+---------------------
+
+Parslet tasks can now declare *context scenes* that must be active before they run. It's the same power you'd expect from Tasker, but native to your Python code.
+
+.. code-block:: python
+
+   from parslet import parslet_task
+
+   @parslet_task(contexts=["network.online", "battery>=60"], name="luxury_sync")
+   def luxury_sync(data: dict) -> None:
+       upload_to_vault(data)
+
+Use ``parslet run workflow.py --context home --context vpn`` to manually activate scenes, or rely on Parslet's detectors for network, VPN, power source, and time-of-day. Any task whose context is not satisfied is marked ``DEFERRED`` and safely skipped until conditions improve.
+
+Activate ``--concierge`` for a pre-flight briefing and ``--concierge-runbook`` for a JSON dossier containing the itinerary, context evaluations, and runtimes.

@@ -6,6 +6,8 @@ interface compact and easy to learn.  Everything else remains available under
 """
 
 from .core import (
+    ConciergeOrchestrator,
+    ContextOracle,
     DAG,
     DAGRunner,
     EnergyAwarePolicy,
@@ -35,4 +37,6 @@ __all__ = [
     "PowerState",
     "get_power_state",
     "watch",
+    "ContextOracle",
+    "ConciergeOrchestrator",
 ]

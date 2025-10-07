@@ -90,6 +90,9 @@ class ParsletFuture:
         self.qos: str = getattr(func, "_parslet_qos", "standard")
         self.degradable: bool = getattr(func, "_parslet_degradable", True)
         self.variant_key: str | None = getattr(func, "_parslet_variant_key", None)
+        self.contexts: list[str] = list(
+            getattr(func, "_parslet_contexts", []) or []
+        )
 
         # Internal attributes to store the outcome of the task execution.
         self._result: Any = _RESULT_NOT_SET
@@ -222,6 +225,7 @@ def parslet_task(
     deadline_s: int | None = None,
     qos: str = "standard",
     degradable: bool = True,
+    contexts: list[str] | None = None,
 ) -> Callable[..., ParsletFuture]:
     """
     Decorator to define a Python function as a Parslet task.
@@ -264,6 +268,12 @@ def parslet_task(
             :func:`parslet.security.shell_guard`.
         allow_redefine (bool): Permit replacing an existing task with the same
             name without raising an error.
+        contexts (Optional[List[str]]): Declarative context gates that must be
+            satisfied before the task is allowed to execute. Each entry can be
+            a named detector such as ``"network.online"`` or expressions like
+            ``"battery>=60"``. Prefix a name with ``!`` to require that the
+            context is inactive. See :mod:`parslet.core.context` for the
+            built-in detectors and CLI integration.
 
     Returns:
         Callable: A wrapped function that, when called, returns a
@@ -306,6 +316,7 @@ def parslet_task(
         func_to_wrap._parslet_deadline_s = deadline_s
         func_to_wrap._parslet_qos = qos
         func_to_wrap._parslet_degradable = degradable
+        func_to_wrap._parslet_contexts = list(contexts or [])
 
         @functools.wraps(func_to_wrap)
         def wrapper(*args: object, **kwargs: object) -> ParsletFuture:
@@ -348,6 +359,7 @@ def parslet_task(
         wrapper._parslet_deadline_s = deadline_s
         wrapper._parslet_qos = qos
         wrapper._parslet_degradable = degradable
+        wrapper._parslet_contexts = list(contexts or [])
 
         return wrapper
 

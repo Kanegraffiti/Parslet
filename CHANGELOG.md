@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.6.1 - 2025-10-07
+- Added ContextOracle scenes and `contexts` task metadata with CLI integration.
+- Introduced Concierge orchestrator with pre-flight briefings and JSON runbooks.
+- Expanded documentation and tests around luxury workflows and contextual gating.
+
 ## v0.6.0 - 2025-07-30
 - Interop overhaul: initial IR model and Parsl bridge helpers
 

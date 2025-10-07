@@ -30,6 +30,7 @@ from ..utils.resource_utils import (
     probe_resources,
 )
 from .cache import compute_cache_key, load_from_cache, save_to_cache
+from .context import ContextOracle, ContextResult
 from .dag import DAG, DAGCycleError
 from .policy import AdaptivePolicy
 from .scheduler import AdaptiveScheduler
@@ -40,6 +41,7 @@ __all__ = [
     "UpstreamTaskFailedError",
     "BatteryLevelLowError",
     "ResourceLimitError",
+    "ContextNotSatisfiedError",
 ]
 
 
@@ -100,6 +102,26 @@ class ResourceLimitError(RuntimeError):
     """Task failed due to system resource exhaustion (e.g., memory)."""
 
 
+class ContextNotSatisfiedError(RuntimeError):
+    """Task skipped because its context requirements were not satisfied."""
+
+    def __init__(
+        self,
+        task_id: str,
+        task_name: str,
+        results: list[ContextResult],
+    ) -> None:
+        self.task_id = task_id
+        self.task_name = task_name
+        self.results = results
+        detail = ", ".join(
+            f"{r.requirement}{'' if r.satisfied else '✘'}" for r in results
+        )
+        super().__init__(
+            f"Task '{task_id}' ({task_name}) deferred due to context requirements: {detail}."
+        )
+
+
 class DAGRunner:
     """
     Executes tasks defined in a Parslet DAG in the correct topological order.
@@ -126,6 +148,7 @@ class DAGRunner:
         signature_file: str | None = None,
         watch_files: list[str] | None = None,
         disable_cache: bool = False,
+        context_oracle: ContextOracle | None = None,
     ) -> None:
         """
         Initializes the DAGRunner.
@@ -154,6 +177,9 @@ class DAGRunner:
             disable_cache (bool): If True, disables task caching even for tasks
                 that request it. Can also be set via the ``PARSLET_NO_CACHE``
                 environment variable.
+            context_oracle (Optional[ContextOracle]): Oracle used to evaluate
+                declarative context requirements supplied by tasks. If ``None``
+                a default oracle with built-in detectors is created.
         """
         if runner_logger:
             self.logger = runner_logger
@@ -198,6 +224,7 @@ class DAGRunner:
             self.policy = AdaptivePolicy(max_workers=user_specified_max_workers)
 
         self.scheduler = AdaptiveScheduler(policy=self.policy)
+        self.context_oracle = context_oracle or ContextOracle()
         self.max_workers = self.scheduler.calculate_worker_count()
         self.logger.info(f"DAGRunner initialized with max_workers={self.max_workers}")
 
@@ -686,6 +713,33 @@ class DAGRunner:
                         self.task_execution_times[task_id] = 0.0
                         if self.checkpoint:
                             self.checkpoint.mark_complete(task_id, "SUCCESS")
+                        continue
+
+                # Evaluate declarative context requirements.
+                contexts = getattr(current_parslet_future, "contexts", [])
+                if contexts:
+                    allow, results = self.context_oracle.evaluate(contexts)
+                    if not allow:
+                        detail = ", ".join(
+                            f"{r.requirement}{'' if r.satisfied else '✘'}"
+                            for r in results
+                        )
+                        self.logger.info(
+                            "Deferring task '%s' due to context requirements: %s",
+                            task_id,
+                            detail,
+                        )
+                        current_parslet_future.set_exception(
+                            ContextNotSatisfiedError(
+                                task_id,
+                                current_parslet_future.func.__name__,
+                                list(results),
+                            )
+                        )
+                        self.task_statuses[task_id] = "DEFERRED"
+                        self.task_execution_times[task_id] = 0.0
+                        if self.checkpoint:
+                            self.checkpoint.mark_complete(task_id, "DEFERRED")
                         continue
 
                 # Check battery level for battery-sensitive tasks.
