@@ -148,6 +148,7 @@ Parslet is small, but it's packed with neat features for real-world use.
 -   **DEFCON:** A multi-layered defense system in Parslet that proactively blocks zero-day exploits and malicious DAG behavior using offline rules. Learn more in the [security notes](docs/technical-overview.md).
 -   **Plays Well with Others:** If you ever move to a big server, Parslet has tools to convert your recipes to run on powerful systems like Parsl or Dask. See [compatibility](docs/compatibility.md).
 -   **Made for Termux:** We use it and test it on Android phones, so you know it'll work. Check the [install guide](docs/install.md).
+-   **Concierge Mode & Context Scenes:** `parslet run --concierge` gives you a luxury pre-flight briefing, live context audit, and a polished post-run ledger. Combine it with `@parslet_task(contexts=[...])` to ensure tasks only run when the right battery, network, or time-of-day scene is active.
 
 Want to see more? Check out the `use_cases/` and `examples/` folders for more advanced recipes!
 
@@ -158,6 +159,28 @@ Want to see more? Check out the `use_cases/` and `examples/` folders for more ad
 Parslet can generate a picture of your workflow (a "DAG") to help you see how your tasks are connected. This is great for debugging and documentation.
 
 To use this feature, you need to have **Graphviz** installed on your system.
+
+---
+
+## Concierge Mode & Context Scenes
+
+Parslet 0.6.1 introduces **Concierge Mode**, a premium orchestration experience that makes your workflow feel like it shipped with its own operations team.
+
+-   **Concierge Briefing:** Run `parslet run my_flow.py --concierge` to get a handcrafted pre-flight report. It shows which context detectors are live (battery, network, VPN, time-of-day) and which tasks are gated by those contexts.
+-   **Context Scenes:** Declare contextual requirements directly on tasks:
+
+    ```python
+    @parslet_task(contexts=["network.online", "battery>=60"], name="sync_to_vault")
+    def sync_to_vault(payload: dict) -> None:
+        upload(payload)
+    ```
+
+    Parslet will defer the task with a `DEFERRED` status if the context isn't satisfied, protecting your workflow just like the best Tasker rule sets—only with readable Python and offline detectors.
+
+-   **Manual Overrides:** Activate ad-hoc scenes with `parslet run my_flow.py --context evening --context wifi`. You can also set a `PARSLET_CONTEXTS="evening,wifi"` environment variable or programmatically enable custom detectors using `ContextOracle`.
+-   **Concierge Runbook:** Need a paper trail? Add `--concierge-runbook runbook.json` and Parslet will record the complete itinerary, task metadata, and execution timings in a JSON dossier.
+
+This combination gives Parslet the runway to outclass traditional mobile automation apps—every run feels bespoke, intentional, and enterprise ready.
 
 -   **On Linux (Debian/Ubuntu):** `sudo apt install graphviz`
 -   **On Linux (Fedora):** `sudo dnf install graphviz`
