@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 authors = [
-    {name = "Parslet Team", email = "team@example.com"},
+    {name = "Kelechi Nwankwo", email = "kelechiann.nwankwo@gmail.com"},
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

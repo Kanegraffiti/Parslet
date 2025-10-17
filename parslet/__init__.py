@@ -25,7 +25,7 @@ except Exception:  # pragma: no cover
 try:
     __version__ = _pkg_version("parslet")
 except Exception:
-    __version__ = "0.0.0"
+    __version__ = "0.6.1"
 
 __all__ = [
     "parslet_task",
