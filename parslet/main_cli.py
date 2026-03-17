@@ -47,6 +47,11 @@ def cli() -> None:
         help="Limit workers when system battery is low",
     )
     run_p.add_argument(
+        "--force-battery",
+        action="store_true",
+        help="Run battery-sensitive tasks even when battery is low",
+    )
+    run_p.add_argument(
         "--json-logs",
         action="store_true",
         help="Emit logs in JSON format",
@@ -125,6 +130,13 @@ def cli() -> None:
     sub.add_parser("diagnose", help="Show system info")
     sub.add_parser("examples", help="List examples")
 
+    sub.add_parser("contexts", help="Show active context detectors")
+
+    cache_p = sub.add_parser("cache", help="Inspect or clear cache")
+    cache_sub = cache_p.add_subparsers(dest="cache_cmd", required=True)
+    cache_sub.add_parser("list", help="List cached entries")
+    cache_sub.add_parser("clear", help="Clear cached entries")
+
     args = parser.parse_args()
     logger = get_parslet_logger("parslet-cli")
     load_plugins()
@@ -139,7 +151,7 @@ def cli() -> None:
             from rich.live import Live
             from rich.table import Table
 
-            from parslet.cli import load_workflow_module
+            from parslet.cli import load_workflow_module, resolve_workflow_entry
             from parslet.core import (
                 ConciergeOrchestrator,
                 ContextOracle,
@@ -155,7 +167,8 @@ def cli() -> None:
             if wf and not Defcon.scan_code([wf]):
                 logger.error("DEFCON1 rejection: unsafe code")
                 return
-            futures = mod.main()
+            entry = resolve_workflow_entry(mod)
+            futures = entry()
             dag = DAG()
             dag.build_dag(futures)
 
@@ -199,6 +212,7 @@ def cli() -> None:
                 json_logs=args.json_logs,
                 max_workers=args.max_workers,
                 context_oracle=context_oracle,
+                ignore_battery=args.force_battery,
             )
 
             if args.simulate:
@@ -294,7 +308,7 @@ def cli() -> None:
             runner.run(dag)
 
         elif args.cmd == "convert":
-            from parslet.cli import load_workflow_module
+            from parslet.cli import load_workflow_module, resolve_workflow_entry
             from parslet.compat import dask_adapter, parsl_adapter
 
             if args.from_parsl and args.to_parslet:
@@ -309,7 +323,8 @@ def cli() -> None:
                 )
             elif args.from_parslet and args.to_parsl:
                 mod = load_workflow_module(args.from_parslet)
-                futures = mod.main()
+                entry = resolve_workflow_entry(mod)
+                futures = entry()
                 parsl_adapter.export_parsl_dag(futures, args.to_parsl)
                 print(
                     "Warning: experimental conversion; no staging, "
@@ -328,7 +343,8 @@ def cli() -> None:
                 )
             elif args.from_parslet and args.to_dask:
                 mod = load_workflow_module(args.from_parslet)
-                futures = mod.main()
+                entry = resolve_workflow_entry(mod)
+                futures = entry()
                 dask_adapter.export_dask_dag(futures, args.to_dask)
                 print(
                     "Warning: experimental conversion; no staging, "
@@ -355,6 +371,40 @@ def cli() -> None:
 
             for f in Path("use_cases").glob("*.py"):
                 print(f.name)
+
+        elif args.cmd == "contexts":
+            from parslet.core import ContextOracle
+            from parslet.utils.resource_utils import get_battery_level
+
+            oracle = ContextOracle()
+            snap = oracle.snapshot()
+            print("Active contexts on this device:")
+            for name, active in snap.items():
+                mark = "✔" if active else "✘"
+                print(f"  {mark} {name}")
+            batt = get_battery_level()
+            if batt is not None:
+                print(f"  battery: {batt}%")
+
+        elif args.cmd == "cache":
+            from datetime import datetime
+            from parslet.core.cache import get_cache_dir
+
+            cache_dir = get_cache_dir()
+            if args.cache_cmd == "list":
+                files = sorted(cache_dir.glob("*.pkl"))
+                if not files:
+                    print("Cache is empty.")
+                for f in files:
+                    st = f.stat()
+                    ts = datetime.fromtimestamp(st.st_mtime).isoformat(timespec="seconds")
+                    print(f"{f.name}	{st.st_size} bytes	{ts}")
+            elif args.cache_cmd == "clear":
+                count = 0
+                for f in cache_dir.glob("*.pkl"):
+                    f.unlink(missing_ok=True)
+                    count += 1
+                print(f"Cleared {count} cache entr{'y' if count == 1 else 'ies'}.")
     except Exception as exc:  # pragma: no cover - friendly error surface
         logger.error(f"An error occurred: {exc}", exc_info=False)
 

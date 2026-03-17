@@ -13,6 +13,7 @@ from .core import (
     EnergyAwarePolicy,
     ParsletFuture,
     parslet_task,
+    parslet_workflow,
     task_variant,
 )
 from .utils.power import PowerState, get_power_state, watch
@@ -29,6 +30,7 @@ except Exception:
 
 __all__ = [
     "parslet_task",
+    "parslet_workflow",
     "ParsletFuture",
     "DAG",
     "DAGRunner",

@@ -7,6 +7,38 @@ from pathlib import Path
 from types import ModuleType
 
 
+
+
+def resolve_workflow_entry(module: ModuleType):
+    """Return the workflow entry function for a loaded module.
+
+    Resolution order:
+    1) ``main`` function, for backwards compatibility.
+    2) A single callable marked with ``@parslet_workflow``.
+    """
+
+    main = getattr(module, "main", None)
+    if callable(main):
+        return main
+
+    marked = [
+        obj
+        for obj in vars(module).values()
+        if callable(obj) and getattr(obj, "_parslet_workflow_entry", False)
+    ]
+    if len(marked) == 1:
+        return marked[0]
+    if len(marked) > 1:
+        raise ImportError(
+            "Multiple @parslet_workflow entry functions found. "
+            "Keep one entrypoint or provide a module:func reference."
+        )
+
+    raise ImportError(
+        "Could not find a `main()` function. Rename your entry function to "
+        "`main()` and make sure it returns a list of `ParsletFuture` objects, "
+        "or mark one function with `@parslet_workflow`."
+    )
 def load_workflow_module(path: str) -> ModuleType:
     """Load a workflow script or module reference.
 

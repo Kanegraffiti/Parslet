@@ -106,7 +106,7 @@ Ready to try it? You can be up and running in less than a minute.
         return f"{text.upper()}!"
 
     # This is the main "recipe" function.
-    # Parslet looks for this to know how your tasks connect.
+    # Parslet looks for `main()` by default, or you can use @parslet_workflow.
     def main() -> List[ParsletFuture]:
         # First, we tell Parslet to run the say_hello task.
         # It doesn't run yet! It just gives us an "IOU" for the result.
@@ -145,14 +145,51 @@ Parslet is small, but it's packed with neat features for real-world use.
 -   **Works Offline:** Your automated workflows run even without an internet connection. See the [examples](docs/examples.md).
 -   **Saves Battery:** Use the special `--battery-mode` to tell Parslet to take it easy and conserve power. Read about [battery mode](docs/source/battery_mode.rst).
 -   **Smart About Resources:** It automatically checks your device's CPU and memory to run smoothly without crashing. The [AdaptivePolicy](docs/policy.md) adjusts workers on the fly.
--   **DEFCON:** A multi-layered defense system in Parslet that proactively blocks zero-day exploits and malicious DAG behavior using offline rules. Learn more in the [security notes](docs/technical-overview.md).
+-   **DEFCON:** Parslet's built-in safety layer. It prevents tasks from calling shell commands or accessing the network in ways you did not explicitly allow, so a buggy or malicious task cannot damage your device or leak data. Use `@parslet_task(allow_shell=True)` only when needed. Learn more in the [security notes](docs/technical-overview.md).
 -   **Plays Well with Others:** If you ever move to a big server, Parslet has tools to convert your recipes to run on powerful systems like Parsl or Dask. See [compatibility](docs/compatibility.md).
 -   **Made for Termux:** We use it and test it on Android phones, so you know it'll work. Check the [install guide](docs/install.md).
 -   **Concierge Mode & Context Scenes:** `parslet run --concierge` gives you a luxury pre-flight briefing, live context audit, and a polished post-run ledger. Combine it with `@parslet_task(contexts=[...])` to ensure tasks only run when the right battery, network, or time-of-day scene is active.
 
+-   **Parallel by default:** Independent tasks run side-by-side whenever dependencies allow, so multi-core phones/tablets finish faster.
+-   **Context visibility:** Run `parslet contexts` to inspect active detectors (`network.online`, `power.ac`, etc.) and current battery level.
+-   **Cache controls:** Use `parslet cache list` to inspect cache files and `parslet cache clear` to reclaim storage.
+
 Want to see more? Check out the `use_cases/` and `examples/` folders for more advanced recipes!
 
 ---
+
+
+## Parallel Execution (Quick Example)
+
+Parslet does not run everything one-by-one. If two tasks are independent, they run in parallel:
+
+```python
+from parslet import parslet_task, ParsletFuture
+from typing import List
+import time
+
+@parslet_task
+def fetch_prices() -> str:
+    time.sleep(2)
+    return "prices"
+
+@parslet_task
+def fetch_inventory() -> str:
+    time.sleep(2)
+    return "inventory"
+
+@parslet_task
+def combine(a: str, b: str) -> str:
+    return f"{a}+{b}"
+
+def main() -> List[ParsletFuture]:
+    a = fetch_prices()
+    b = fetch_inventory()
+    c = combine(a, b)
+    return [c]
+```
+
+With parallel execution, total runtime is near ~2s (+overhead), not ~4s, because `fetch_prices` and `fetch_inventory` run together.
 
 ## Visualizing Your Workflows
 
@@ -198,6 +235,14 @@ parslet run my_first_workflow.py --export-png my_workflow.png
 This will create an image file named `my_workflow.png` showing your workflow.
 
 ---
+
+
+## Real-World Use Cases
+
+- `use_cases/solar_scheduling.py` — reads solar panel efficiency data and proposes cleaning/maintenance schedules. Offline-friendly and battery-aware.
+- `use_cases/offline_crop_diagnosis.py` — runs local crop checks without constant internet connectivity.
+- `use_cases/triage_tool.py` — lightweight triage flow for constrained clinics or field deployments.
+- `use_cases/shared_hub_jobs.py` — orchestrates shared community-hub compute jobs on limited hardware.
 
 ## Want to Learn More? (Documentation)
 
