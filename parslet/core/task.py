@@ -28,7 +28,25 @@ _RESULT_NOT_SET = object()
 # Module-level logger for task utilities
 logger = logging.getLogger(__name__)
 
-__all__ = ["parslet_task", "ParsletFuture", "set_allow_redefine", "task_variant"]
+__all__ = [
+    "parslet_task",
+    "parslet_workflow",
+    "ParsletFuture",
+    "set_allow_redefine",
+    "task_variant",
+]
+
+
+def parslet_workflow(func: Callable[..., list["ParsletFuture"]]) -> Callable[..., list["ParsletFuture"]]:
+    """Mark a callable as a Parslet workflow entrypoint.
+
+    This removes the requirement for users to remember the ``main`` naming
+    convention in workflow files. The CLI can discover this marker and treat
+    the function as the run entrypoint.
+    """
+
+    func._parslet_workflow_entry = True
+    return func
 
 
 class ParsletFuture:
@@ -226,6 +244,8 @@ def parslet_task(
     qos: str = "standard",
     degradable: bool = True,
     contexts: list[str] | None = None,
+    retries: int = 0,
+    retry_delay_s: float = 0.0,
 ) -> Callable[..., ParsletFuture]:
     """
     Decorator to define a Python function as a Parslet task.
@@ -274,6 +294,8 @@ def parslet_task(
             ``"battery>=60"``. Prefix a name with ``!`` to require that the
             context is inactive. See :mod:`parslet.core.context` for the
             built-in detectors and CLI integration.
+        retries (int): Number of automatic retries after a task failure.
+        retry_delay_s (float): Delay between retries in seconds.
 
     Returns:
         Callable: A wrapped function that, when called, returns a
@@ -317,6 +339,8 @@ def parslet_task(
         func_to_wrap._parslet_qos = qos
         func_to_wrap._parslet_degradable = degradable
         func_to_wrap._parslet_contexts = list(contexts or [])
+        func_to_wrap._parslet_retries = max(0, int(retries))
+        func_to_wrap._parslet_retry_delay_s = max(0.0, float(retry_delay_s))
 
         @functools.wraps(func_to_wrap)
         def wrapper(*args: object, **kwargs: object) -> ParsletFuture:
@@ -360,6 +384,8 @@ def parslet_task(
         wrapper._parslet_qos = qos
         wrapper._parslet_degradable = degradable
         wrapper._parslet_contexts = list(contexts or [])
+        wrapper._parslet_retries = max(0, int(retries))
+        wrapper._parslet_retry_delay_s = max(0.0, float(retry_delay_s))
 
         return wrapper
 

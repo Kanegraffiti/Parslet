@@ -16,7 +16,7 @@ from .policy import AdaptivePolicy, EnergyAwarePolicy  # noqa: F401
 from .runner import DAGRunner  # noqa: F401
 from .runner import BatteryLevelLowError, UpstreamTaskFailedError
 from .scheduler import AdaptiveScheduler  # noqa: F401
-from .task import parslet_task  # noqa: F401
+from .task import parslet_task, parslet_workflow  # noqa: F401
 from .task import ParsletFuture, set_allow_redefine, task_variant
 
 try:
@@ -26,6 +26,7 @@ except metadata.PackageNotFoundError:  # pragma: no cover
 
 __all__ = [
     "parslet_task",
+    "parslet_workflow",
     "ParsletFuture",
     "DAG",
     "DAGRunner",

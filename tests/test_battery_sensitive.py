@@ -35,3 +35,17 @@ def test_ignore_battery_runs(monkeypatch):
     runner.run(dag)
     assert fut.result() == 8
     assert runner.task_statuses[fut.task_id] == "SUCCESS"
+
+
+def test_battery_sensitive_prints_skip_notice(monkeypatch, capsys):
+    monkeypatch.setattr("parslet.core.runner.get_battery_level", lambda: 14)
+
+    fut = needs_power(2)
+    dag = DAG()
+    dag.build_dag([fut])
+    runner = DAGRunner(max_workers=1)
+    runner.run(dag)
+
+    out = capsys.readouterr().out
+    assert "⚡ Skipped:" in out
+    assert "--force-battery" in out

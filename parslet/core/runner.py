@@ -372,11 +372,23 @@ class DAGRunner:
     ) -> object:
         """Execute a task function and translate resource errors."""
         allow_shell = getattr(parslet_future.func, "_parslet_allow_shell", False)
-        try:
-            with shell_guard(allow_shell):
-                return parslet_future.func(*args, **kwargs)
-        except (MemoryError, OSError) as e:
-            raise ResourceLimitError(str(e)) from e
+        retries = max(0, int(getattr(parslet_future.func, "_parslet_retries", 0)))
+        retry_delay_s = max(
+            0.0, float(getattr(parslet_future.func, "_parslet_retry_delay_s", 0.0))
+        )
+        attempts = retries + 1
+
+        for attempt in range(1, attempts + 1):
+            try:
+                with shell_guard(allow_shell):
+                    return parslet_future.func(*args, **kwargs)
+            except (MemoryError, OSError) as e:
+                raise ResourceLimitError(str(e)) from e
+            except Exception:
+                if attempt >= attempts:
+                    raise
+                if retry_delay_s > 0:
+                    time.sleep(retry_delay_s)
 
     def _maybe_resize_pool(self) -> None:
         """Adjust executor worker count based on current policy."""
@@ -757,7 +769,14 @@ class DAGRunner:
                     self.logger.warning(
                         f"Skipping battery-sensitive task '{task_id}' due to "
                         f"low battery ({batt_level}%)."
-                        " Use --ignore-battery to override."
+                        " Use --force-battery to override."
+                    )
+                    print(
+                        "⚡ Skipped: "
+                        f"`{current_parslet_future.func.__name__}` — battery at "
+                        f"{batt_level}%, below threshold. "
+                        "Run with --force-battery to override.",
+                        flush=True,
                     )
                     self.task_statuses[task_id] = "SKIPPED"
                     current_parslet_future.set_exception(

@@ -9,6 +9,7 @@ from typing import List, Dict, Set
 from pathlib import Path
 from collections import deque
 import logging
+import warnings
 
 from .task import ParsletFuture
 from .exporter import (
@@ -90,6 +91,11 @@ class DAG:
             future (ParsletFuture): The ParsletFuture object representing the
             task to add.
         """
+        warnings.warn(
+            "add_task() is deprecated. Use build_dag() instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         # Check if the task has already been added to avoid redundant
         # processing or cycles in this recursive addition (though build_dag
         # is preferred now).
