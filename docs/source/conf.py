@@ -17,8 +17,8 @@ project = "Parslet"
 copyright = "2025, Parslet Team"
 author = "Parslet Team"
 
-version = "0.5.1"
-release = "0.5.1"
+version = "0.6.1"
+release = "0.6.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

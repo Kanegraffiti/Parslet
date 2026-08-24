@@ -1,12 +1,3 @@
-networkx
-pillow
-psutil
-pydot
-rich
-flake8
-pytest
-black
-transformers
 sphinx
 sphinx_rtd_theme
 furo

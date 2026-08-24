@@ -9,15 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install .[dev]
-      - run: pip install -r requirements-dev.txt
-      - run: ruff parslet/core/__init__.py tests/test_imports.py
+      - run: pip install . -r requirements-dev.txt
+      - run: ruff check parslet tests --select E9,F63,F7,F82
+      - run: ruff check parslet/core/__init__.py tests/test_imports.py
       - run: black --check parslet/core/__init__.py tests/test_imports.py
       - run: mypy
       - run: pytest -q
