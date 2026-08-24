@@ -20,6 +20,6 @@ jobs:
       - run: ruff check parslet/core/__init__.py tests/test_imports.py
       - run: black --check parslet/core/__init__.py tests/test_imports.py
       - run: mypy
-      - run: pytest -q
+      - run: pytest -q --timeout=60
       - run: python -m build
       - run: python -m twine check dist/*
