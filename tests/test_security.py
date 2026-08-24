@@ -49,8 +49,9 @@ def test_shell_guard_blocks_and_allows() -> None:
     dag_allow.build_dag([fut_allow])
 
     runner = DAGRunner()
+    runner.run(dag_block)
     with pytest.raises(SecurityError):
-        runner.run(dag_block)
+        fut_block.result()
 
     runner = DAGRunner()
     runner.run(dag_allow)

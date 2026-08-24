@@ -3,7 +3,3 @@ pillow
 psutil
 pydot
 rich
-flake8
-pytest
-black
-transformers
