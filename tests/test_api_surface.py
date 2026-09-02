@@ -10,6 +10,7 @@ def test_top_level_public_api() -> None:
         "DAGRunner",
         "task_variant",
         "EnergyAwarePolicy",
+        "BatteryAwarePolicy",
         "PowerState",
         "get_power_state",
         "watch",

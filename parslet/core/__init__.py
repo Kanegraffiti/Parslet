@@ -15,7 +15,12 @@ from .parsl_bridge import (
     execute_with_parsl,
     parsl_python,
 )
-from .policy import AdaptivePolicy, EnergyAwarePolicy  # noqa: F401
+from .policy import (  # noqa: F401
+    AdaptivePolicy,
+    BatteryAwarePolicy,
+    BatteryDecision,
+    EnergyAwarePolicy,
+)
 from .runner import (
     BatteryLevelLowError,
     DAGRunner,  # noqa: F401
@@ -45,6 +50,8 @@ __all__ = [
     "UpstreamTaskFailedError",
     "AdaptivePolicy",
     "EnergyAwarePolicy",
+    "BatteryAwarePolicy",
+    "BatteryDecision",
     "AdaptiveScheduler",
     "ContextOracle",
     "ContextResult",
