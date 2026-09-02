@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- Reworked ``--battery-mode`` into a live battery-aware execution policy with
+  normal, low, and critical power bands.
+- Added configurable ``--battery-low`` and ``--battery-critical`` thresholds.
+- Added energy/QoS-aware deferral while preserving urgent and non-degradable
+  tasks, unrestricted AC operation, and safe behaviour when telemetry is
+  unavailable.
+
 ## v0.6.1 - 2025-10-07
 - Added ContextOracle scenes and `contexts` task metadata with CLI integration.
 - Introduced Concierge orchestrator with pre-flight briefings and JSON runbooks.

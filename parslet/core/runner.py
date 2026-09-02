@@ -24,6 +24,7 @@ from parslet.security.defcon import Defcon
 from ..utils.checkpointing import CheckpointManager
 from ..utils.diagnostics import find_free_port
 from ..utils.network_utils import is_network_available, is_vpn_active
+from ..utils.power import get_power_state
 from ..utils.resource_utils import (
     get_available_ram_mb,
     get_battery_level,
@@ -32,7 +33,7 @@ from ..utils.resource_utils import (
 from .cache import compute_cache_key, load_from_cache, save_to_cache
 from .context import ContextOracle, ContextResult
 from .dag import DAG, DAGCycleError
-from .policy import AdaptivePolicy
+from .policy import AdaptivePolicy, BatteryAwarePolicy
 from .scheduler import AdaptiveScheduler
 from .task import ParsletFuture
 
@@ -40,6 +41,7 @@ __all__ = [
     "DAGRunner",
     "UpstreamTaskFailedError",
     "BatteryLevelLowError",
+    "BatteryPolicyDeferredError",
     "ResourceLimitError",
     "ContextNotSatisfiedError",
 ]
@@ -98,6 +100,16 @@ class BatteryLevelLowError(RuntimeError):
         )
 
 
+class BatteryPolicyDeferredError(RuntimeError):
+    """Task deferred by the opt-in battery-aware execution policy."""
+
+    def __init__(self, task_id: str, task_name: str, reason: str) -> None:
+        self.task_id = task_id
+        self.task_name = task_name
+        self.reason = reason
+        super().__init__(f"Task '{task_id}' ({task_name}) deferred: {reason}.")
+
+
 class ResourceLimitError(RuntimeError):
     """Task failed due to system resource exhaustion (e.g., memory)."""
 
@@ -118,7 +130,8 @@ class ContextNotSatisfiedError(RuntimeError):
             f"{r.requirement}{'' if r.satisfied else '✘'}" for r in results
         )
         super().__init__(
-            f"Task '{task_id}' ({task_name}) deferred due to context requirements: {detail}."
+            f"Task '{task_id}' ({task_name}) deferred due to context "
+            f"requirements: {detail}."
         )
 
 
@@ -149,6 +162,8 @@ class DAGRunner:
         watch_files: list[str] | None = None,
         disable_cache: bool = False,
         context_oracle: ContextOracle | None = None,
+        battery_mode: bool = False,
+        battery_policy: BatteryAwarePolicy | None = None,
     ) -> None:
         """
         Initializes the DAGRunner.
@@ -180,6 +195,10 @@ class DAGRunner:
             context_oracle (Optional[ContextOracle]): Oracle used to evaluate
                 declarative context requirements supplied by tasks. If ``None``
                 a default oracle with built-in detectors is created.
+            battery_mode (bool): Enable live battery-aware concurrency and
+                task-admission decisions.
+            battery_policy (Optional[BatteryAwarePolicy]): Thresholds and
+                task-admission rules used when battery mode is enabled.
         """
         if runner_logger:
             self.logger = runner_logger
@@ -205,6 +224,8 @@ class DAGRunner:
                     )
 
         self.ignore_battery = ignore_battery
+        self.battery_mode = battery_mode
+        self.battery_policy = battery_policy or BatteryAwarePolicy()
         self.failsafe_mode = failsafe_mode
         self.fallback_active = False
         user_specified_max_workers = max_workers
@@ -226,6 +247,11 @@ class DAGRunner:
         self.scheduler = AdaptiveScheduler(policy=self.policy)
         self.context_oracle = context_oracle or ContextOracle()
         self.max_workers = self.scheduler.calculate_worker_count()
+        self._battery_worker_capacity = self.max_workers
+        if self.battery_mode and not self.ignore_battery:
+            self.max_workers = self.battery_policy.decide_max_workers(
+                get_power_state(), self._battery_worker_capacity
+            )
         self.logger.info(f"DAGRunner initialized with max_workers={self.max_workers}")
 
         # Determine monitoring port, fallback if busy
@@ -397,6 +423,10 @@ class DAGRunner:
             return
         snapshot = probe_resources()
         new_size = self.policy.decide_pool_size(snapshot)
+        if self.battery_mode and not self.ignore_battery:
+            new_size = self.battery_policy.decide_max_workers(
+                get_power_state(), new_size
+            )
         old_size = getattr(self, "_pool_size", new_size)
         if new_size != old_size:
             self.executor._max_workers = new_size
@@ -789,6 +819,40 @@ class DAGRunner:
                     if self.checkpoint:
                         self.checkpoint.mark_complete(task_id, "SKIPPED")
                     continue
+
+                # In opt-in battery mode, refresh telemetry before every task
+                # so a long workflow responds when power conditions change.
+                if self.battery_mode and not self.ignore_battery:
+                    power = get_power_state()
+                    desired_workers = self.battery_policy.decide_max_workers(
+                        power, self._battery_worker_capacity
+                    )
+                    if desired_workers != getattr(self, "_pool_size", self.max_workers):
+                        old_workers = self._pool_size
+                        executor._max_workers = desired_workers
+                        self._pool_size = desired_workers
+                        self.logger.info(
+                            "Battery mode adjusted worker ceiling from %s to %s (%s).",
+                            old_workers,
+                            desired_workers,
+                            self.battery_policy.band(power),
+                        )
+                    decision = self.battery_policy.decide_task(
+                        current_parslet_future, power
+                    )
+                    if not decision.run:
+                        reason = decision.reason or "battery policy"
+                        self.logger.warning("Deferring task '%s': %s", task_id, reason)
+                        current_parslet_future.set_exception(
+                            BatteryPolicyDeferredError(
+                                task_id,
+                                current_parslet_future.func.__name__,
+                                reason,
+                            )
+                        )
+                        self.task_statuses[task_id] = "DEFERRED"
+                        self.task_execution_times[task_id] = 0.0
+                        continue
 
                 # All dependencies resolved successfully, submit the task to
                 # the executor.
