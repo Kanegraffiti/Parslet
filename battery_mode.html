@@ -102,8 +102,43 @@
 <p>We’ve all been there. You’re in the middle of something important, and you see that dreaded “Low Battery” warning. Parslet is designed for the real world, so it has a special <strong>battery-saver mode</strong> built right in, perfect for when you’re working on a laptop, tablet, or phone.</p>
 <section id="how-does-it-work">
 <h2>How Does It Work?<a class="headerlink" href="#how-does-it-work" title="Link to this heading"></a></h2>
-<p>When you tell Parslet to run in battery-saver mode, an <code class="xref py py-class docutils literal notranslate"><span class="pre">AdaptivePolicy</span></code> kicks in. It looks at your device’s CPU, available memory, and most importantly, your current battery percentage.</p>
-<p>Based on what it sees, the policy decides how many worker threads to keep alive. If the battery drops below about 40%, the pool is automatically cut in half; when the battery recovers, it can grow again up to its cap. Often, it will slow down to running just one task at a time. This is like putting your phone into “Low Power Mode”—it helps your battery last as long as possible so you can finish your work.</p>
+<p>Battery mode samples the device throughout a run rather than making a single
+decision at startup. Its default power bands are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Power state</p></th>
+<th class="head"><p>Worker ceiling</p></th>
+<th class="head"><p>Task behaviour</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Charging or AC power</p></td>
+<td><p>Normal</p></td>
+<td><p>Run normally</p></td>
+</tr>
+<tr class="row-odd"><td><p>Above 40%</p></td>
+<td><p>Normal</p></td>
+<td><p>Run normally</p></td>
+</tr>
+<tr class="row-even"><td><p>16% to 40%</p></td>
+<td><p>Half</p></td>
+<td><p>Defer high-energy, best-effort tasks</p></td>
+</tr>
+<tr class="row-odd"><td><p>15% or below</p></td>
+<td><p>One</p></td>
+<td><p>Run light, urgent, or non-degradable work; defer optional expensive work</p></td>
+</tr>
+<tr class="row-even"><td><p>Battery unavailable</p></td>
+<td><p>Normal</p></td>
+<td><p>Run normally</p></td>
+</tr>
+</tbody>
+</table>
+<p>The last rule is important on desktops, servers, and devices that do not
+provide battery telemetry: missing information never causes Parslet to slow
+down unexpectedly. If the device is connected to power, even a very low
+battery percentage is treated as charging and the normal worker limit is
+restored.</p>
 </section>
 <section id="how-do-i-turn-it-on">
 <h2>How Do I Turn It On?<a class="headerlink" href="#how-do-i-turn-it-on" title="Link to this heading"></a></h2>
@@ -111,6 +146,26 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parslet<span class="w"> </span>run<span class="w"> </span>my_recipe.py<span class="w"> </span>--battery-mode
 </pre></div>
 </div>
+<p>You can customize the thresholds:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parslet<span class="w"> </span>run<span class="w"> </span>my_recipe.py<span class="w"> </span>--battery-mode<span class="w"> </span>--battery-low<span class="w"> </span><span class="m">35</span><span class="w"> </span>--battery-critical<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+<p>Describe task importance with the existing energy and quality-of-service
+metadata:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">parslet</span><span class="w"> </span><span class="kn">import</span> <span class="n">parslet_task</span>
+
+<span class="nd">@parslet_task</span><span class="p">(</span><span class="n">energy_cost</span><span class="o">=</span><span class="s2">"high"</span><span class="p">,</span> <span class="n">qos</span><span class="o">=</span><span class="s2">"best_effort"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_previews</span><span class="p">():</span>
+    <span class="o">...</span>
+
+<span class="nd">@parslet_task</span><span class="p">(</span><span class="n">energy_cost</span><span class="o">=</span><span class="s2">"high"</span><span class="p">,</span> <span class="n">qos</span><span class="o">=</span><span class="s2">"high"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">upload_emergency_record</span><span class="p">():</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>The preview task may be deferred as the battery falls. The high-priority
+upload remains eligible to run. Set <code class="docutils literal notranslate"><span class="pre">degradable=False</span></code> for work that must
+not be deferred automatically.</p>
 </section>
 <section id="what-if-i-still-need-to-go-a-little-faster">
 <h2>What if I Still Need to Go a Little Faster?<a class="headerlink" href="#what-if-i-still-need-to-go-a-little-faster" title="Link to this heading"></a></h2>
@@ -118,7 +173,11 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>parslet<span class="w"> </span>run<span class="w"> </span>my_recipe.py<span class="w"> </span>--battery-mode<span class="w"> </span>--max-workers<span class="w"> </span><span class="m">2</span>
 </pre></div>
 </div>
-<p>Battery mode doesn’t turn off any of Parslet’s other cool features. You can still save your progress with checkpointing, get pictures of your workflow, and see all the logs. It just tells Parslet to be a little more gentle on your device.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--force-battery</span></code> bypasses both battery-sensitive task checks and battery
+mode rationing. Battery mode does not pause arbitrary work that is already
+running; it controls worker concurrency and whether new tasks may start.</p>
+<p>Battery mode doesn’t turn off any of Parslet’s other features. You can still
+save progress with checkpointing, visualize the workflow, and inspect logs.</p>
 <p>To see all the other commands you can use, check out our guide to the <a class="reference internal" href="cli.html"><span class="doc">Your Remote Control: The Parslet CLI</span></a> (the “remote control”).</p>
 </section>
 </section>
