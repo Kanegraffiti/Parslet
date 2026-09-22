@@ -1,6 +1,7 @@
 """Resource-aware worker pool policy."""
 
 from dataclasses import dataclass
+from typing import Literal
 
 from ..utils.power import PowerState
 from ..utils.resource_utils import ResourceSnapshot
@@ -70,3 +71,80 @@ class EnergyAwarePolicy:
             if power.percent < self.low_battery_threshold:
                 return max(1, current // 2)
         return current
+
+
+BatteryBand = Literal["ac", "normal", "low", "critical", "unknown"]
+
+
+@dataclass(frozen=True)
+class BatteryDecision:
+    """A battery policy decision for one task."""
+
+    run: bool
+    band: BatteryBand
+    reason: str | None = None
+
+
+@dataclass
+class BatteryAwarePolicy(EnergyAwarePolicy):
+    """Ration local work while preserving urgent tasks.
+
+    Unknown telemetry and AC power are deliberately non-restrictive.  This
+    prevents unsupported desktops and servers from being slowed down merely
+    because they do not expose a battery sensor.
+    """
+
+    critical_battery_threshold: int = 15
+
+    def __post_init__(self) -> None:
+        if not 0 <= self.critical_battery_threshold < self.low_battery_threshold <= 100:
+            raise ValueError(
+                "battery thresholds must satisfy 0 <= critical < low <= 100"
+            )
+
+    def band(self, power: PowerState) -> BatteryBand:
+        if power.source == "ac" or power.is_charging is True:
+            return "ac"
+        if power.source == "unknown" or power.percent is None:
+            return "unknown"
+        if power.percent <= self.critical_battery_threshold:
+            return "critical"
+        if power.percent <= self.low_battery_threshold:
+            return "low"
+        return "normal"
+
+    def decide_max_workers(self, power: PowerState, current: int) -> int:
+        """Return a concurrency ceiling for the current power band."""
+
+        band = self.band(power)
+        if band == "critical":
+            return 1
+        if band == "low":
+            return max(1, current // 2)
+        return max(1, current)
+
+    def decide_task(self, fut: ParsletFuture, power: PowerState) -> BatteryDecision:
+        """Decide whether a task should start under current power conditions."""
+
+        band = self.band(power)
+        if band not in {"low", "critical"}:
+            return BatteryDecision(True, band)
+
+        # High-QoS work is never deferred automatically.  At low power only
+        # explicitly best-effort, expensive work is held.  Critical power is
+        # stricter, but non-degradable work is still allowed to complete.
+        if fut.qos == "high" or not fut.degradable:
+            return BatteryDecision(True, band)
+        if band == "low" and not (
+            fut.energy_cost == "high" and fut.qos == "best_effort"
+        ):
+            return BatteryDecision(True, band)
+        if band == "critical" and fut.energy_cost == "low":
+            return BatteryDecision(True, band)
+
+        percent = "unknown" if power.percent is None else f"{power.percent}%"
+        reason = (
+            f"{fut.energy_cost}-energy {fut.qos} task deferred at {percent} "
+            f"battery ({band} power band)"
+        )
+        return BatteryDecision(False, band, reason)

@@ -143,7 +143,7 @@ parslet run my_package.workflow:main --max-workers 4 --json-logs --export-stats 
 Parslet is small, but it's packed with neat features for real-world use.
 
 -   **Works Offline:** Your automated workflows run even without an internet connection. See the [examples](docs/examples.md).
--   **Saves Battery:** Use the special `--battery-mode` to tell Parslet to take it easy and conserve power. Read about [battery mode](docs/source/battery_mode.rst).
+-   **Rations Power Intelligently:** `--battery-mode` monitors changing power conditions, reduces local concurrency, and defers optional expensive work while preserving urgent tasks. Charging and unsupported devices remain unrestricted. Read about [battery mode](docs/source/battery_mode.rst).
 -   **Smart About Resources:** It automatically checks your device's CPU and memory to run smoothly without crashing. The [AdaptivePolicy](docs/policy.md) adjusts workers on the fly.
 -   **DEFCON:** Parslet's built-in safety layer. It prevents tasks from calling shell commands or accessing the network in ways you did not explicitly allow, so a buggy or malicious task cannot damage your device or leak data. Use `@parslet_task(allow_shell=True)` only when needed. Learn more in the [security notes](docs/technical-overview.md).
 -   **Plays Well with Others:** If you ever move to a big server, Parslet has tools to convert your recipes to run on powerful systems like Parsl or Dask. See [compatibility](docs/compatibility.md).

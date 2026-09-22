@@ -44,7 +44,21 @@ def cli() -> None:
     run_p.add_argument(
         "--battery-mode",
         action="store_true",
-        help="Limit workers when system battery is low",
+        help="Adapt workers and defer optional expensive work as battery falls",
+    )
+    run_p.add_argument(
+        "--battery-low",
+        type=int,
+        default=40,
+        metavar="PERCENT",
+        help="Battery percentage at which conservation begins",
+    )
+    run_p.add_argument(
+        "--battery-critical",
+        type=int,
+        default=15,
+        metavar="PERCENT",
+        help="Battery percentage at which critical conservation begins",
     )
     run_p.add_argument(
         "--force-battery",
@@ -153,12 +167,12 @@ def cli() -> None:
 
             from parslet.cli import load_workflow_module, resolve_workflow_entry
             from parslet.core import (
+                DAG,
                 ConciergeOrchestrator,
                 ContextOracle,
-                DAG,
                 DAGRunner,
             )
-            from parslet.core.policy import AdaptivePolicy
+            from parslet.core.policy import BatteryAwarePolicy
             from parslet.security.defcon import Defcon
 
             wf_input = args.workflow
@@ -180,7 +194,7 @@ def cli() -> None:
             if getattr(mod, "__converted_from_parsl__", False):
                 from parslet.compat.parsl_adapter import export_parsl_dag
 
-                orig = Path(getattr(mod, "__original_parsl_path__"))
+                orig = Path(mod.__original_parsl_path__)
                 export_name = f"{orig.stem}_parslet_export.py"
                 export_path = orig.with_name(export_name)
                 try:
@@ -201,11 +215,11 @@ def cli() -> None:
                     err = f"Failed to export DAG to PNG: {e}"
                     logger.error(err, exc_info=False)
 
-            policy = None
-            if args.battery_mode:
-                policy = AdaptivePolicy(max_workers=2, battery_threshold=40)
+            battery_policy = BatteryAwarePolicy(
+                low_battery_threshold=args.battery_low,
+                critical_battery_threshold=args.battery_critical,
+            )
             runner = DAGRunner(
-                policy=policy,
                 failsafe_mode=args.failsafe_mode,
                 watch_files=[str(wf)] if wf else None,
                 disable_cache=args.no_cache,
@@ -213,6 +227,8 @@ def cli() -> None:
                 max_workers=args.max_workers,
                 context_oracle=context_oracle,
                 ignore_battery=args.force_battery,
+                battery_mode=args.battery_mode,
+                battery_policy=battery_policy,
             )
 
             if args.simulate:
@@ -388,6 +404,7 @@ def cli() -> None:
 
         elif args.cmd == "cache":
             from datetime import datetime
+
             from parslet.core.cache import get_cache_dir
 
             cache_dir = get_cache_dir()
@@ -397,7 +414,9 @@ def cli() -> None:
                     print("Cache is empty.")
                 for f in files:
                     st = f.stat()
-                    ts = datetime.fromtimestamp(st.st_mtime).isoformat(timespec="seconds")
+                    ts = datetime.fromtimestamp(st.st_mtime).isoformat(
+                        timespec="seconds"
+                    )
                     print(f"{f.name}	{st.st_size} bytes	{ts}")
             elif args.cache_cmd == "clear":
                 count = 0
